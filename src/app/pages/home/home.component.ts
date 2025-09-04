@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ContactForm } from '../../components/contact-form/contact-form';
 import { Testimonials } from '../../components/testimonials/testimonials';
 import { HeaderComponent } from '../../components/header/header.component';
+import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-home',
@@ -12,30 +14,48 @@ import { HeaderComponent } from '../../components/header/header.component';
 })
 export class HomeComponent implements OnInit {
   
-  services = [
-    {
-      title: 'Property Management',
-      icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>'
-    },
-    {
-      title: 'Project Management & Oversight',
-      icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2.5-9H19v2h-1.5v17h-11V4H5V2h1.5C7.33 2 8 2.67 8 3.5S7.33 5 6.5 5H8v1h8V5h1.5c-.83 0-1.5-.67-1.5-1.5S18.17 2 19 2z"/></svg>'
-    },
-    {
-      title: 'Move Management',
-      icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
-    },
-    {
-      title: 'Concierge Services',
-      icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>'
-    },
-    {
-      title: 'Corporate Relocation',
-      icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>'
-    }
-  ];
+  services: Array<{title: string, icon: SafeHtml, description: string}> = [];
+  introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
+
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    // Home component initialization
+    this.introSection = {
+      title: 'Focusing on what truly matters...',
+      icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.focusMatters),
+      paragraphs: [
+        'At Sorella Home Solutions, we believe your time is your most valuable asset. That\'s why we take the stress of home management off your plate—so you can focus on what truly matters, like family, career, and living well. Our team, with experience managing over 13 million square feet of real estate, brings the same level of precision, professionalism, and care to your home that we\'ve delivered to some of the most complex properties in the industry.',
+        'From proactive maintenance and project oversight to 24/7 concierge support, we provide a seamless approach to caring for your home. With Sorella, investing in routine management today means avoiding costly surprises tomorrow—protecting both your time and your most important investment.',
+        'With Sorella, consider it done.'
+      ]
+    };
+    
+    this.services = [
+      {
+        title: 'Property Management',
+        icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.propertyManagement),
+        description: 'Comprehensive property oversight and maintenance coordination'
+      },
+      {
+        title: 'Project Management & Oversight',
+        icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
+        description: 'Strategic planning and execution of complex projects'
+      },
+      {
+        title: 'Move Management',
+        icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.moveManagement),
+        description: 'Seamless relocation coordination from start to finish'
+      },
+      {
+        title: 'Concierge Services',
+        icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.conciergeServices),
+        description: 'Personalized assistance for all your lifestyle needs'
+      },
+      {
+        title: 'Corporate Relocation',
+        icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.corporateRelocation),
+        description: 'Enterprise-level moving solutions for businesses'
+      }
+    ];
   }
 }

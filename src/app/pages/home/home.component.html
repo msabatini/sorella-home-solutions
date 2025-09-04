@@ -15,73 +15,131 @@
   <!-- Services Section -->
   <section id="services" class="services">
     <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-description">
+          Professional home solutions tailored to your unique needs
+        </p>
+      </div>
       <div class="services-grid">
         <div class="service-card" *ngFor="let service of services">
           <div class="service-icon" [innerHTML]="service.icon"></div>
           <h3 class="service-title">{{ service.title }}</h3>
+          <p class="service-description">{{ service.description }}</p>
           <div class="service-dot"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Portfolio Section -->
-  <section id="portfolio" class="portfolio">
+  <!-- Intro Section -->
+  <section class="service-highlight service-highlight-left service-highlight-bg intro-section">
     <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Our Work</h2>
-        <p class="section-description">
-          Take a look at some of our recent projects and transformations
-        </p>
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="introSection.icon"></div>
+        <div class="service-highlight-text">
+          <div class="service-highlight-header">
+            <div class="service-highlight-icon" [innerHTML]="introSection.icon"></div>
+            <h2 class="service-highlight-title">{{ introSection.title }}</h2>
+          </div>
+          <p class="service-highlight-description" *ngFor="let paragraph of introSection.paragraphs">
+            {{ paragraph }}
+          </p>
+        </div>
       </div>
-      <div class="portfolio-grid">
-        <div class="portfolio-item">
-          <div class="portfolio-image">
-            <svg viewBox="0 0 300 200" class="placeholder-svg">
-              <rect width="300" height="200" fill="#e0e0e0"/>
-              <text x="150" y="100" text-anchor="middle" fill="#666">Project 1</text>
-            </svg>
+    </div>
+  </section>
+
+  <!-- Property Management Highlight Section -->
+  <section id="property-management" class="service-highlight">
+    <div class="container">
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="services[0].icon"></div>
+        <div class="service-highlight-text">
+          <div class="service-highlight-header">
+            <h2 class="service-highlight-title">Property Management</h2>
+            <div class="service-highlight-icon" [innerHTML]="services[0].icon"></div>
           </div>
-          <div class="portfolio-content">
-            <h3 class="portfolio-title">Modern Kitchen Renovation</h3>
-            <p class="portfolio-description">Complete kitchen transformation with contemporary design</p>
-          </div>
+          <h3 class="service-highlight-subtitle">proactive, reliable care of your home.</h3>
+          <p class="service-highlight-description">
+            Our property management service provides trustworthy, hands-on oversight designed to give you peace of mind. From routine maintenance to unexpected issues, we respond quickly, anticipate needs before they arise, and ensure every detail of your home is cared for with consistency and reliability.
+          </p>
         </div>
-        <div class="portfolio-item">
-          <div class="portfolio-image">
-            <svg viewBox="0 0 300 200" class="placeholder-svg">
-              <rect width="300" height="200" fill="#e0e0e0"/>
-              <text x="150" y="100" text-anchor="middle" fill="#666">Project 2</text>
-            </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Management & Oversight Highlight Section -->
+  <section id="project-management" class="service-highlight service-highlight-left service-highlight-bg">
+    <div class="container">
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="services[1].icon"></div>
+        <div class="service-highlight-text">
+          <div class="service-highlight-header">
+            <div class="service-highlight-icon" [innerHTML]="services[1].icon"></div>
+            <h2 class="service-highlight-title">Project Management & Oversight</h2>
           </div>
-          <div class="portfolio-content">
-            <h3 class="portfolio-title">Luxury Bathroom Remodel</h3>
-            <p class="portfolio-description">Spa-like bathroom with premium fixtures and finishes</p>
-          </div>
+          <h3 class="service-highlight-subtitle">from renovations to repairs, handled with expert precision.</h3>
+          <p class="service-highlight-description">
+            We oversee every aspect of your home projects with professionalism and care, coordinating contractors, managing timelines, and ensuring quality at every step. Whether it's a full renovation or a simple repair, we provide reliable guidance, clear communication, and meticulous attention to detail so your projects are completed seamlessly and to the highest standards.
+          </p>
         </div>
-        <div class="portfolio-item">
-          <div class="portfolio-image">
-            <svg viewBox="0 0 300 200" class="placeholder-svg">
-              <rect width="300" height="200" fill="#e0e0e0"/>
-              <text x="150" y="100" text-anchor="middle" fill="#666">Project 3</text>
-            </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Move Management Highlight Section -->
+  <section id="move-management" class="service-highlight">
+    <div class="container">
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="services[2].icon"></div>
+        <div class="service-highlight-text">
+          <div class="service-highlight-header">
+            <h2 class="service-highlight-title">Move Management</h2>
+            <div class="service-highlight-icon" [innerHTML]="services[2].icon"></div>
           </div>
-          <div class="portfolio-content">
-            <h3 class="portfolio-title">Living Room Makeover</h3>
-            <p class="portfolio-description">Open concept living space with modern aesthetics</p>
-          </div>
+          <h3 class="service-highlight-subtitle">stress-free coordination from start to finish.</h3>
+          <p class="service-highlight-description">
+            We take the complexity out of moving by handling every detail with care and precision. From planning and packing to logistics and setup, our team ensures a smooth transition so you can settle into your new home without stress. With responsive coordination and reliable oversight, your move is managed seamlessly from beginning to end.
+          </p>
         </div>
-        <div class="portfolio-item">
-          <div class="portfolio-image">
-            <svg viewBox="0 0 300 200" class="placeholder-svg">
-              <rect width="300" height="200" fill="#e0e0e0"/>
-              <text x="150" y="100" text-anchor="middle" fill="#666">Project 4</text>
-            </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Concierge Services Highlight Section -->
+  <section id="concierge-services" class="service-highlight service-highlight-left service-highlight-bg">
+    <div class="container">
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="services[3].icon"></div>
+        <div class="service-highlight-text">
+          <div class="service-highlight-header">
+            <div class="service-highlight-icon" [innerHTML]="services[3].icon"></div>
+            <h2 class="service-highlight-title">Concierge Services</h2>
           </div>
-          <div class="portfolio-content">
-            <h3 class="portfolio-title">Home Office Design</h3>
-            <p class="portfolio-description">Functional and stylish workspace solution</p>
+          <h3 class="service-highlight-subtitle">personalized support for every detail of homeownership.</h3>
+          <p class="service-highlight-description">
+            Our concierge services provide tailored assistance to simplify and elevate daily living. From coordinating household needs and vendor services to arranging special requests, we handle the details with discretion and care. With responsive, personalized support, we ensure your home and lifestyle run smoothly, giving you more time to enjoy what matters most.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Corporate Relocation Highlight Section -->
+  <section id="corporate-relocation" class="service-highlight">
+    <div class="container">
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="services[4].icon"></div>
+        <div class="service-highlight-text">
+          <div class="service-highlight-header">
+            <h2 class="service-highlight-title">Corporate Relocation</h2>
+            <div class="service-highlight-icon" [innerHTML]="services[4].icon"></div>
           </div>
+          <h3 class="service-highlight-subtitle">tailored support for executives and employees transitioning to new homes.</h3>
+          <p class="service-highlight-description">
+            We provide comprehensive relocation services that go beyond logistics, offering property sourcing, move coordination, and concierge-level support. From settling into a new home to integrating smoothly into a new community, our team ensures every detail is managed with care, professionalism, and discretion—making transitions seamless for both executives and employees.
+          </p>
         </div>
       </div>
     </div>
