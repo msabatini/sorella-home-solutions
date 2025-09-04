@@ -38,10 +38,11 @@
     <label for="service">Service Interested In</label>
     <select id="service" formControlName="service">
       <option value="">Select a service</option>
-      <option value="kitchen">Kitchen Remodeling</option>
-      <option value="bathroom">Bathroom Renovation</option>
-      <option value="interior">Interior Design</option>
-      <option value="maintenance">Home Maintenance</option>
+      <option value="home-management">Home Management</option>
+      <option value="project-management">Project Management & Oversight</option>
+      <option value="move-management">Move Management</option>
+      <option value="concierge-services">Concierge Services</option>
+      <option value="consultation">Initial Consultation</option>
       <option value="other">Other</option>
     </select>
   </div>
@@ -53,7 +54,7 @@
       formControlName="message"
       [class.error]="getFieldError('message')"
       rows="5" 
-      placeholder="Tell us about your project..."></textarea>
+      placeholder="Tell us about your home management needs and how we can help you focus on what truly matters..."></textarea>
     <div class="error-message" *ngIf="getFieldError('message')">
       {{ getFieldError('message') }}
     </div>

@@ -16,10 +16,13 @@ export class HomeComponent implements OnInit {
   
   services: Array<{title: string, icon: SafeHtml, description: string}> = [];
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
+  chevronDownIcon: SafeHtml = {} as any;
 
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
+    this.chevronDownIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.chevronDown);
+    
     this.introSection = {
       title: 'Focusing on what truly matters...',
       icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.focusMatters),
@@ -57,5 +60,15 @@ export class HomeComponent implements OnInit {
         description: 'Enterprise-level moving solutions for businesses'
       }
     ];
+  }
+
+  scrollToServices() {
+    const servicesSection = document.getElementById('services');
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   }
 }
