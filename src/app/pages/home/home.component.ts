@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContactForm } from '../../components/contact-form/contact-form';
 import { Testimonials } from '../../components/testimonials/testimonials';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-home',
-  imports: [ContactForm, Testimonials, CommonModule],
+  imports: [ContactForm, Testimonials, CommonModule, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -35,42 +36,6 @@ export class HomeComponent implements OnInit {
   ];
 
   ngOnInit() {
-    // Add smooth scrolling for navigation links
-    this.setupSmoothScrolling();
-    // Setup mobile menu toggle
-    this.setupMobileMenu();
-  }
-
-  private setupSmoothScrolling() {
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.matches('a[href^="#"]')) {
-        e.preventDefault();
-        const id = target.getAttribute('href')?.substring(1);
-        if (id) {
-          const element = document.getElementById(id);
-          if (element) {
-            const headerOffset = 80;
-            const elementPosition = element.offsetTop;
-            const offsetPosition = elementPosition - headerOffset;
-
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-            });
-          }
-        }
-      }
-    });
-  }
-
-  private setupMobileMenu() {
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('#mobile-menu')) {
-        const navMenu = document.querySelector('.nav-menu');
-        navMenu?.classList.toggle('active');
-      }
-    });
+    // Home component initialization
   }
 }
