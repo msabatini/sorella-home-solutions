@@ -7,7 +7,10 @@
     <div class="hero-content">
       <h1 class="hero-title">Seamless Home Solutions,<br>At Your Fingertips</h1>
       <div class="hero-button">
-        <a href="#services" class="btn btn-outline">Learn More</a>
+        <button class="btn btn-outline" (click)="scrollToServices()">
+          <span>Learn More</span>
+          <div class="chevron-icon" [innerHTML]="chevronDownIcon"></div>
+        </button>
       </div>
     </div>
   </section>
@@ -152,28 +155,28 @@
   <section class="cta-section">
     <div class="container">
       <div class="cta-content">
-        <h2 class="cta-title">Ready to Transform Your Home?</h2>
+        <h2 class="cta-title">Ready to Focus on What Truly Matters?</h2>
         <p class="cta-description">
-          Get a free consultation and quote for your next home improvement project. 
-          Our experts are ready to bring your vision to life.
+          Let Sorella take care of your home so you can invest your time in what's most important to you. 
+          Experience the peace of mind that comes with professional home management.
         </p>
         <div class="cta-stats">
           <div class="stat">
-            <span class="stat-number">500+</span>
-            <span class="stat-label">Projects Completed</span>
+            <span class="stat-number">13M+</span>
+            <span class="stat-label">Sq Ft Managed</span>
           </div>
           <div class="stat">
-            <span class="stat-number">15+</span>
-            <span class="stat-label">Years Experience</span>
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Support Available</span>
           </div>
           <div class="stat">
             <span class="stat-number">100%</span>
-            <span class="stat-label">Satisfaction Rate</span>
+            <span class="stat-label">Peace of Mind</span>
           </div>
         </div>
         <div class="cta-buttons">
-          <a href="#contact" class="btn btn-primary btn-large">Get Free Quote</a>
-          <a href="tel:(555)123-4567" class="btn btn-secondary btn-large">Call Now</a>
+          <button class="btn btn-primary btn-large">Get Started Today</button>
+          <button class="btn btn-secondary btn-large">Schedule Consultation</button>
         </div>
       </div>
     </div>
@@ -183,13 +186,18 @@
   <section id="contact" class="contact">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Get In Touch</h2>
+        <h2 class="section-title">Let's Start Your Journey</h2>
         <p class="section-description">
-          Ready to transform your home? Contact us for a free consultation
+          Ready to experience the peace of mind that comes with professional home management? 
+          We're here to help you focus on what truly matters.
         </p>
       </div>
       <div class="contact-content">
         <div class="contact-info">
+          <div class="contact-intro">
+            <h3>Get Started Today</h3>
+            <p>Connect with our team to discuss how Sorella can transform your home management experience.</p>
+          </div>
           <div class="contact-item">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
@@ -197,8 +205,9 @@
               </svg>
             </div>
             <div class="contact-details">
-              <h4>Phone</h4>
-              <p>(555) 123-4567</p>
+              <h4>Call Us</h4>
+              <p>(617) 555-HOME</p>
+              <span class="contact-note">Available 24/7 for emergencies</span>
             </div>
           </div>
           <div class="contact-item">
@@ -208,8 +217,9 @@
               </svg>
             </div>
             <div class="contact-details">
-              <h4>Email</h4>
-              <p>info@sorellahomesolutions.com</p>
+              <h4>Email Us</h4>
+              <p>hello@sorellahomesolutions.com</p>
+              <span class="contact-note">We respond within 2 hours</span>
             </div>
           </div>
           <div class="contact-item">
@@ -219,8 +229,9 @@
               </svg>
             </div>
             <div class="contact-details">
-              <h4>Address</h4>
-              <p>123 Main Street<br>Your City, State 12345</p>
+              <h4>Visit Us</h4>
+              <p>Boston Metro Area<br>Serving Greater Boston</p>
+              <span class="contact-note">On-site consultations available</span>
             </div>
           </div>
         </div>

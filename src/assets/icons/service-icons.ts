@@ -52,5 +52,9 @@ export const ServiceIcons = {
     <line x1="67.68" y1="67.68" x2="74.14" y2="74.14" stroke="currentColor" stroke-width="2"/>
     <line x1="74.14" y1="25.86" x2="67.68" y2="32.32" stroke="currentColor" stroke-width="2"/>
     <line x1="32.32" y1="67.68" x2="25.86" y2="74.14" stroke="currentColor" stroke-width="2"/>
+  </svg>`,
+  
+  chevronDown: `<svg viewBox="0 0 100 100" fill="currentColor">
+    <path d="M25 35L50 60L75 35" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`
 };
