@@ -20,32 +20,32 @@ export class Testimonials implements OnInit {
   
   testimonials: Testimonial[] = [
     {
-      name: 'Sarah Johnson',
-      location: 'Downtown District',
+      name: 'Sarah Mitchell',
+      location: 'Beacon Hill',
       rating: 5,
-      text: 'Sorella Home Solutions transformed our outdated kitchen into a modern masterpiece. The attention to detail and quality of work exceeded our expectations. Highly recommended!',
-      service: 'Kitchen Remodeling'
+      text: 'Sorella has completely transformed how we manage our home. Their proactive maintenance approach caught issues before they became expensive problems, and their 24/7 support gives us incredible peace of mind. We can finally focus on what truly matters.',
+      service: 'Home Management'
     },
     {
-      name: 'Michael Chen',
-      location: 'Riverside Heights',
+      name: 'David Chen',
+      location: 'Back Bay',
       rating: 5,
-      text: 'The bathroom renovation was completed on time and within budget. The team was professional, clean, and the results are absolutely stunning. We love our new spa-like bathroom!',
-      service: 'Bathroom Renovation'
+      text: 'The project oversight for our kitchen renovation was flawless. Sorella coordinated everything—contractors, timelines, quality control—while we continued our busy lives. The attention to detail and professionalism exceeded all expectations.',
+      service: 'Project Management'
     },
     {
-      name: 'Emily Rodriguez',
-      location: 'Oak Valley',
+      name: 'Jennifer Rodriguez',
+      location: 'Cambridge',
       rating: 5,
-      text: 'Working with their interior design team was a dream. They understood our vision perfectly and created a space that truly feels like home. The whole process was seamless.',
-      service: 'Interior Design'
+      text: 'Moving with three kids seemed impossible until Sorella stepped in. They handled every detail from packing to setup, making our transition seamless. Their team treated our belongings like their own. Absolutely exceptional service.',
+      service: 'Move Management'
     },
     {
-      name: 'David Thompson',
-      location: 'Pine Ridge',
+      name: 'Robert Thompson',
+      location: 'Newton',
       rating: 5,
-      text: 'Their home maintenance service gives us peace of mind. Regular check-ups and prompt repairs have saved us from major issues. Professional and reliable service.',
-      service: 'Home Maintenance'
+      text: 'The concierge services are a game-changer. From coordinating repairs to managing deliveries, Sorella handles everything with discretion and care. It\'s like having a trusted partner who anticipates our needs before we even ask.',
+      service: 'Concierge Services'
     }
   ];
 
