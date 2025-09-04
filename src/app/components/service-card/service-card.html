@@ -1,0 +1,32 @@
+<div class="service-card" [class.expanded]="expanded">
+  <div class="service-header" (click)="toggleExpanded()">
+    <div class="service-icon" [innerHTML]="service.icon"></div>
+    <h3 class="service-title">{{ service.title }}</h3>
+    <div class="expand-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor" [class.rotated]="expanded">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+      </svg>
+    </div>
+  </div>
+  
+  <p class="service-description">{{ service.description }}</p>
+  
+  <div class="service-details" *ngIf="expanded">
+    <div class="service-features">
+      <h4>What's Included:</h4>
+      <ul>
+        <li *ngFor="let feature of service.features">{{ feature }}</li>
+      </ul>
+    </div>
+    
+    <div class="service-price" *ngIf="service.price">
+      <span class="price-label">Starting from:</span>
+      <span class="price">{{ service.price }}</span>
+    </div>
+    
+    <div class="service-actions">
+      <a href="#contact" class="btn btn-primary">Get Quote</a>
+      <button class="btn btn-secondary" (click)="$event.stopPropagation()">Learn More</button>
+    </div>
+  </div>
+</div>

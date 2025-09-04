@@ -1,0 +1,60 @@
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">What Our Clients Say</h2>
+      <p class="section-description">
+        Don't just take our word for it - hear from our satisfied customers
+      </p>
+    </div>
+    
+    <div class="testimonials-carousel">
+      <div class="testimonial-container">
+        <div class="testimonial-card" *ngFor="let testimonial of testimonials; let i = index" 
+             [class.active]="i === currentTestimonial">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+              </svg>
+            </div>
+            
+            <p class="testimonial-text">{{ testimonial.text }}</p>
+            
+            <div class="testimonial-rating">
+              <span *ngFor="let star of getStars(testimonial.rating)" class="star">★</span>
+            </div>
+            
+            <div class="testimonial-author">
+              <h4 class="author-name">{{ testimonial.name }}</h4>
+              <p class="author-location">{{ testimonial.location }}</p>
+              <p class="author-service">{{ testimonial.service }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="carousel-controls">
+        <button class="carousel-btn prev" (click)="previousTestimonial()">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+        
+        <div class="carousel-dots">
+          <button 
+            *ngFor="let testimonial of testimonials; let i = index"
+            class="dot"
+            [class.active]="i === currentTestimonial"
+            (click)="goToTestimonial(i)">
+          </button>
+        </div>
+        
+        <button class="carousel-btn next" (click)="nextTestimonial()">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
