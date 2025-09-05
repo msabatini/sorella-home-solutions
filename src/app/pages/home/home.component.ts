@@ -22,6 +22,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
   chevronDownIcon: SafeHtml = {} as any;
   
+  // Contact icons
+  phoneIcon: SafeHtml = {} as any;
+  emailIcon: SafeHtml = {} as any;
+  locationIcon: SafeHtml = {} as any;
+  
   // Contact form properties
   contactForm!: FormGroup;
   isSubmitting = false;
@@ -37,6 +42,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.scrollToTop();
     this.chevronDownIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.chevronDown);
+    
+    // Initialize contact icons
+    this.phoneIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.phone);
+    this.emailIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.email);
+    this.locationIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.location);
     
     // Initialize contact form
     this.setupContactForm();
