@@ -874,9 +874,10 @@ section {
   color: white;
   flex-shrink: 0;
   
-  svg {
+  :deep(svg) {
     width: 30px;
     height: 30px;
+    color: white;
   }
 }
 
