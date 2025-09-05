@@ -1,0 +1,372 @@
+<app-header></app-header>
+
+<main class="contact-page">
+  <!-- Hero Section -->
+  <section class="contact-hero">
+    <div class="hero-background"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">Get In Touch</h1>
+        <p class="hero-subtitle">
+          Ready to experience the Sorella difference? We're here to help you with all your home management needs.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Emergency Support</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">< 2hrs</span>
+            <span class="stat-label">Response Time</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Satisfaction Rate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="contact-intro">
+    <div class="intro-container">
+      <div class="intro-content">
+        <div class="intro-icon-wrapper">
+          <div class="intro-icon">
+            <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Heart/Care Icon with Home Elements -->
+              <path d="M32 12C28.5 8.5 23 8.5 19.5 12C16 15.5 16 21 19.5 24.5L32 37L44.5 24.5C48 21 48 15.5 44.5 12C41 8.5 35.5 8.5 32 12Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(0, 162, 255, 0.1)"/>
+              <!-- House outline within heart -->
+              <path d="M26 28L32 22L38 28V34C38 34.5 37.5 35 37 35H27C26.5 35 26 34.5 26 34V28Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M29 35V31H35V35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Decorative elements -->
+              <circle cx="20" cy="45" r="2" fill="currentColor" opacity="0.3"/>
+              <circle cx="44" cy="45" r="2" fill="currentColor" opacity="0.3"/>
+              <circle cx="32" cy="50" r="1.5" fill="currentColor" opacity="0.4"/>
+              <!-- Connection lines -->
+              <path d="M20 47C24 49 28 50 32 50C36 50 40 49 44 47" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="intro-text">
+          <h2 class="intro-title">We'd love to take care of the details, so you can focus on what matters most.</h2>
+          <p class="intro-description">
+            To get started, simply fill out the form below and a member of our team will be in touch right away.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Methods Section -->
+  <section class="contact-methods-section">
+    <div class="methods-container">
+      <div class="section-header">
+        <h2 class="section-title">Multiple Ways to Connect</h2>
+        <p class="section-subtitle">
+          Choose the contact method that works best for you. We're always ready to help.
+        </p>
+      </div>
+      
+      <div class="contact-methods-grid">
+        <div class="contact-method-card" *ngFor="let method of contactMethods">
+          <div class="method-icon-wrapper">
+            <div class="method-icon" [innerHTML]="method.icon"></div>
+          </div>
+          <h3 class="method-title">{{ method.title }}</h3>
+          <div class="method-value" *ngIf="method.link; else noLink">
+            <a [href]="method.link" class="method-link">{{ method.value }}</a>
+          </div>
+          <ng-template #noLink>
+            <div class="method-value-text">{{ method.value }}</div>
+          </ng-template>
+          <p class="method-description">{{ method.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="contact-form-section">
+    <div class="form-container">
+      <div class="form-header">
+        <h2 class="form-title">Send Us a Message</h2>
+        <p class="form-subtitle">
+          Fill out the form below and we'll get back to you within 24 hours.
+        </p>
+      </div>
+
+      <div class="form-content">
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <div class="contact-intro">
+            <h3>Get in Touch</h3>
+            <p>Ready to experience the Sorella difference? We're here to help you with all your home management needs.</p>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <h4>Phone</h4>
+              <p>(617) 555-0123</p>
+              <span class="contact-note">Call us during business hours</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <h4>Email</h4>
+              <p>hello@sorellahomesolutions.com</p>
+              <span class="contact-note">Send us a message anytime</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <h4>Location</h4>
+              <p>Greater Boston Area</p>
+              <span class="contact-note">Serving Massachusetts</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <h4>Business Hours</h4>
+              <p>Mon - Fri: 8AM - 6PM</p>
+              <span class="contact-note">Weekend consultations available</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form-wrapper">
+          <!-- Success Message -->
+          <div class="success-message" *ngIf="submitSuccess">
+            <div class="success-content">
+              <h3>Message Sent Successfully!</h3>
+              <p>Thank you for contacting us. We'll get back to you within 24 hours.</p>
+            </div>
+          </div>
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name"
+              [class.error]="isFieldInvalid('name')"
+              placeholder="Your full name">
+            <div class="error-message" *ngIf="isFieldInvalid('name')">
+              {{ getFieldError('name') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email"
+              [class.error]="isFieldInvalid('email')"
+              placeholder="your.email@example.com">
+            <div class="error-message" *ngIf="isFieldInvalid('email')">
+              {{ getFieldError('email') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone"
+              placeholder="(555) 123-4567">
+          </div>
+
+          <div class="form-group">
+            <label for="service">Service Interested In</label>
+            <select id="service" formControlName="service">
+              <option value="">Select a service</option>
+              <option value="property-management">Property Management</option>
+              <option value="project-management">Project Management & Oversight</option>
+              <option value="move-management">Move Management</option>
+              <option value="concierge-services">Concierge Services</option>
+              <option value="corporate-relocation">Corporate Relocation</option>
+              <option value="consultation">Initial Consultation</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea 
+              id="message" 
+              formControlName="message"
+              [class.error]="isFieldInvalid('message')"
+              rows="5" 
+              placeholder="Tell us about your home management needs and how we can help you focus on what truly matters..."></textarea>
+            <div class="error-message" *ngIf="isFieldInvalid('message')">
+              {{ getFieldError('message') }}
+            </div>
+          </div>
+
+          <div class="success-message" *ngIf="submitSuccess">
+            Thank you for contacting us. We'll get back to you within 24 hours.
+          </div>
+
+          <button 
+            type="submit" 
+            class="submit-btn"
+            [disabled]="isSubmitting">
+            <span *ngIf="isSubmitting">Sending...</span>
+            <span *ngIf="!isSubmitting">Send Message</span>
+          </button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Overview Section -->
+  <section class="process-section">
+    <div class="process-container">
+      <div class="section-header">
+        <h2 class="section-title">What Happens Next?</h2>
+        <p class="section-subtitle">
+          Our streamlined process ensures you get personalized service from the very first contact.
+        </p>
+      </div>
+      
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-number">1</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="timeline-text">
+              <h3 class="timeline-title">Initial Contact</h3>
+              <p class="timeline-description">
+                We'll reach out within 2 hours to schedule a convenient time for your complimentary consultation.
+              </p>
+              <div class="timeline-badge">Within 2 hours</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-number">2</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div class="timeline-text">
+              <h3 class="timeline-title">Personal Consultation</h3>
+              <p class="timeline-description">
+                We'll discuss your specific needs, lifestyle, and preferences to understand how we can best serve you.
+              </p>
+              <div class="timeline-badge">30-60 minutes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-number">3</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10,9 9,9 8,9"/>
+              </svg>
+            </div>
+            <div class="timeline-text">
+              <h3 class="timeline-title">Custom Proposal</h3>
+              <p class="timeline-description">
+                Receive a detailed, personalized service plan with transparent pricing tailored to your unique requirements.
+              </p>
+              <div class="timeline-badge">Within 24 hours</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="timeline-number">4</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3l8-8"/>
+                <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9s4.03-9 9-9c1.59 0 3.07.41 4.36 1.14"/>
+              </svg>
+            </div>
+            <div class="timeline-text">
+              <h3 class="timeline-title">Service Begins</h3>
+              <p class="timeline-description">
+                Once approved, we'll coordinate the start of your services and introduce you to your dedicated team.
+              </p>
+              <div class="timeline-badge">As scheduled</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-guarantee">
+        <div class="guarantee-content">
+          <div class="guarantee-icon">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="guarantee-text">
+            <h3>Our Commitment</h3>
+            <p>No obligation consultation • Transparent pricing • 100% satisfaction guarantee</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
