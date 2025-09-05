@@ -15,7 +15,7 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
 })
 export class HomeComponent implements OnInit {
   
-  services: Array<{title: string, icon: SafeHtml, description: string}> = [];
+  services: Array<{title: string, icon: SafeHtml, description: string, sectionId: string}> = [];
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
   chevronDownIcon: SafeHtml = {} as any;
 
@@ -38,27 +38,32 @@ export class HomeComponent implements OnInit {
       {
         title: 'Property Management',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.propertyManagement),
-        description: 'Comprehensive property oversight and maintenance coordination'
+        description: 'Comprehensive property oversight and maintenance coordination',
+        sectionId: 'property-management'
       },
       {
         title: 'Project Management & Oversight',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
-        description: 'Strategic planning and execution of complex projects'
+        description: 'Strategic planning and execution of complex projects',
+        sectionId: 'project-management'
       },
       {
         title: 'Move Management',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.moveManagement),
-        description: 'Seamless relocation coordination from start to finish'
+        description: 'Seamless relocation coordination from start to finish',
+        sectionId: 'move-management'
       },
       {
         title: 'Concierge Services',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.conciergeServices),
-        description: 'Personalized assistance for all your lifestyle needs'
+        description: 'Personalized assistance for all your lifestyle needs',
+        sectionId: 'concierge-services'
       },
       {
         title: 'Corporate Relocation',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.corporateRelocation),
-        description: 'Enterprise-level moving solutions for businesses'
+        description: 'Enterprise-level moving solutions for businesses',
+        sectionId: 'corporate-relocation'
       }
     ];
   }
@@ -67,6 +72,16 @@ export class HomeComponent implements OnInit {
     const servicesSection = document.getElementById('services');
     if (servicesSection) {
       servicesSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
+
+  scrollToSection(sectionId: string) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
