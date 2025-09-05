@@ -330,7 +330,7 @@
 
 // Detailed Services Section
 .services-detailed {
-  padding: 8rem 0;
+  padding: 8rem 0 0;
 }
 
 .detailed-container {
@@ -354,7 +354,7 @@
   // Alternating light blue backgrounds starting with first - full width
   &:nth-child(odd) {
     position: relative;
-    margin: 0 0 8rem 0;
+    margin: 0;
     padding: 6rem 0;
     
     &::before {
@@ -400,8 +400,14 @@
 .service-header {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
 }
 
 .service-number-large {
@@ -412,8 +418,8 @@
 }
 
 .service-icon-large {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   color: #00a2ff;
   
   svg {
@@ -511,11 +517,70 @@
   border-radius: 24px;
   overflow: hidden;
   background: 
-    linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bfdbfe 100%),
-    radial-gradient(circle at center, rgba(0, 162, 255, 0.1) 0%, transparent 70%);
+    linear-gradient(135deg, rgba(14, 35, 64, 0.1) 0%, rgba(0, 162, 255, 0.05) 50%, transparent 100%),
+    radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  // Service-specific background images
+  &.service-1 {
+    background-image: 
+      linear-gradient(135deg, rgba(14, 35, 64, 0.1) 0%, rgba(0, 162, 255, 0.05) 50%, transparent 100%),
+      radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%),
+      url('/services-img/SHS-services-service1.jpg');
+      
+    .visual-icon {
+      display: none;
+    }
+  }
+  
+  &.service-2 {
+    background-image: 
+      linear-gradient(135deg, rgba(14, 35, 64, 0.1) 0%, rgba(0, 162, 255, 0.05) 50%, transparent 100%),
+      radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%),
+      url('/services-img/SHS-services-service2.jpg');
+      
+    .visual-icon {
+      display: none;
+    }
+  }
+  
+  &.service-3 {
+    background-image: 
+      linear-gradient(135deg, rgba(14, 35, 64, 0.1) 0%, rgba(0, 162, 255, 0.05) 50%, transparent 100%),
+      radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%),
+      url('/services-img/SHS-services-service3.jpg');
+      
+    .visual-icon {
+      display: none;
+    }
+  }
+  
+  &.service-4 {
+    background-image: 
+      linear-gradient(135deg, rgba(14, 35, 64, 0.1) 0%, rgba(0, 162, 255, 0.05) 50%, transparent 100%),
+      radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%),
+      url('/services-img/SHS-services-service4.jpg');
+      
+    .visual-icon {
+      display: none;
+    }
+  }
+  
+  &.service-5 {
+    background-image: 
+      linear-gradient(135deg, rgba(14, 35, 64, 0.1) 0%, rgba(0, 162, 255, 0.05) 50%, transparent 100%),
+      radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%),
+      url('/services-img/SHS-services-service5.jpg');
+      
+    .visual-icon {
+      display: none;
+    }
+  }
 }
 
 .visual-background {
@@ -784,6 +849,16 @@
   
   .service-title-large {
     font-size: 1.8rem;
+  }
+  
+  .service-icon-large {
+    width: 100px;
+    height: 100px;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
   
   .cta-title {

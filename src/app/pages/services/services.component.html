@@ -102,7 +102,7 @@
           </div>
         </div>
         
-        <div class="service-visual">
+        <div class="service-visual" [ngClass]="'service-' + (i + 1)">
           <div class="visual-background"></div>
           <div class="visual-icon" [innerHTML]="service.icon"></div>
           <div class="visual-overlay"></div>
