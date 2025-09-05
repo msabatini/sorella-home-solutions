@@ -32,7 +32,7 @@
 .nav-logo-background {
   position: absolute;
   height: 140px;
-  width: 190px;
+  width: 160px;
   background-color: #0e2340;
   z-index: 1;
   border-radius: 0 0 20px 20px;
@@ -45,7 +45,7 @@
   justify-content: center;
   z-index: 2;
   height: 120px;
-  width: 190px;
+  width: 160px;
   position: relative;
   text-decoration: none;
   cursor: pointer;
@@ -164,14 +164,15 @@
   }
 
   .nav-logo {
-    height: 100px;
+    height: 90px;
+    width: 120px;
     
     .logo-icon {
       width: 80px;
       height: 80px;
       
       img {
-        height: 40px;
+        height: 60px;
       }
     }
   }
