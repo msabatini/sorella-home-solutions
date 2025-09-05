@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
+import { AnimationService } from '../../services/animation.service';
 
 @Component({
   selector: 'app-contact',
@@ -13,7 +14,7 @@ import { BackToTopComponent } from '../../components/back-to-top/back-to-top.com
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent implements OnInit, OnDestroy {
   contactForm: FormGroup;
   isSubmitting = false;
   submitSuccess = false;
@@ -26,7 +27,7 @@ export class ContactComponent implements OnInit {
     icon: SafeHtml;
   }> = [];
 
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer, private animationService: AnimationService) {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
@@ -118,6 +119,16 @@ export class ContactComponent implements OnInit {
   ngOnInit(): void {
     this.setupScrollHeader();
     this.scrollToTop();
+    
+    // Initialize animations
+    setTimeout(() => {
+      this.animationService.initScrollAnimations();
+      this.animationService.triggerPageLoadAnimations();
+    }, 100);
+  }
+
+  ngOnDestroy(): void {
+    this.animationService.destroy();
   }
 
   private setupScrollHeader() {
