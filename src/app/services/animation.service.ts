@@ -70,17 +70,28 @@ export class AnimationService {
    */
   private animateCounter(element: HTMLElement) {
     const target = parseInt(element.getAttribute('data-target') || '0');
+    const suffix = element.getAttribute('data-suffix') || '';
     const duration = parseInt(element.getAttribute('data-duration') || '2000');
+    
+    // Find the stat-number element inside the counter element
+    const numberElement = element.querySelector('.stat-number') as HTMLElement;
+    if (!numberElement) return;
+    
     const increment = target / (duration / 16); // 60fps
     let current = 0;
+
+    // Add counting class for pulse effect
+    numberElement.classList.add('counting');
 
     const updateCounter = () => {
       current += increment;
       if (current < target) {
-        element.textContent = Math.floor(current).toString();
+        numberElement.textContent = Math.floor(current).toString() + suffix;
         requestAnimationFrame(updateCounter);
       } else {
-        element.textContent = target.toString();
+        numberElement.textContent = target.toString() + suffix;
+        // Remove counting class when animation is complete
+        numberElement.classList.remove('counting');
       }
     };
 
