@@ -4,11 +4,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ContactForm } from '../../components/contact-form/contact-form';
 import { Testimonials } from '../../components/testimonials/testimonials';
 import { HeaderComponent } from '../../components/header/header.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-home',
-  imports: [ContactForm, Testimonials, CommonModule, HeaderComponent],
+  imports: [ContactForm, Testimonials, CommonModule, HeaderComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
