@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -6,6 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
+import { AnimationService } from '../../services/animation.service';
 
 @Component({
   selector: 'app-services',
@@ -13,7 +14,7 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
   templateUrl: './services.component.html',
   styleUrls: ['./services.component.scss']
 })
-export class ServicesComponent implements OnInit {
+export class ServicesComponent implements OnInit, OnDestroy {
   
   services: Array<{
     title: string;
@@ -26,12 +27,19 @@ export class ServicesComponent implements OnInit {
 
   constructor(
     private sanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private animationService: AnimationService
   ) {}
 
   ngOnInit() {
     this.scrollToTop();
     this.setupScrollHeader();
+    
+    // Initialize animations
+    setTimeout(() => {
+      this.animationService.initScrollAnimations();
+      this.animationService.triggerPageLoadAnimations();
+    }, 100);
     
     this.services = [
       {
@@ -175,5 +183,9 @@ export class ServicesComponent implements OnInit {
       left: 0,
       behavior: 'instant'
     });
+  }
+
+  ngOnDestroy(): void {
+    this.animationService.destroy();
   }
 }
