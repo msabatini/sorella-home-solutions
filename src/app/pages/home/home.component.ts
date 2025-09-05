@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -8,6 +8,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
+import { AnimationService } from '../../services/animation.service';
 
 @Component({
   selector: 'app-home',
@@ -15,17 +16,27 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   
   services: Array<{title: string, icon: SafeHtml, description: string, sectionId: string}> = [];
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
   chevronDownIcon: SafeHtml = {} as any;
 
-  constructor(private sanitizer: DomSanitizer, private router: Router) {}
+  constructor(
+    private sanitizer: DomSanitizer, 
+    private router: Router,
+    private animationService: AnimationService
+  ) {}
 
   ngOnInit() {
     this.scrollToTop();
     this.chevronDownIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.chevronDown);
+    
+    // Initialize animations after a short delay
+    setTimeout(() => {
+      this.animationService.initScrollAnimations();
+      this.animationService.triggerPageLoadAnimations();
+    }, 100);
     
     this.introSection = {
       title: 'Focusing on what truly matters...',
@@ -105,6 +116,10 @@ export class HomeComponent implements OnInit {
         }
       }, 100);
     });
+  }
+
+  ngOnDestroy() {
+    this.animationService.destroy();
   }
 
   private scrollToTop() {
