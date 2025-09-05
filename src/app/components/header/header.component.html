@@ -11,8 +11,20 @@
         <li class="nav-item">
           <a routerLink="/about" class="nav-link">About</a>
         </li>
-        <li class="nav-item">
-          <a href="#services" class="nav-link">Services</a>
+        <li class="nav-item dropdown" (mouseenter)="showDropdown()" (mouseleave)="hideDropdown()">
+          <a href="#services" class="nav-link dropdown-toggle">
+            Services
+            <svg class="dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none">
+              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <ul class="dropdown-menu" [class.show]="isDropdownOpen">
+            <li><a href="#property-management" class="dropdown-link">Property Management</a></li>
+            <li><a href="#project-management" class="dropdown-link">Project Management & Oversight</a></li>
+            <li><a href="#move-management" class="dropdown-link">Move Management</a></li>
+            <li><a href="#concierge-services" class="dropdown-link">Concierge Services</a></li>
+            <li><a href="#corporate-relocation" class="dropdown-link">Corporate Relocation</a></li>
+          </ul>
         </li>
         <li class="nav-item">
           <a href="#plans" class="nav-link">Press & Testimonials</a>
