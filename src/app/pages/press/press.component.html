@@ -1,0 +1,126 @@
+<app-header></app-header>
+
+<main class="press-page">
+  <!-- Hero Section -->
+  <section class="press-hero">
+    <div class="hero-background"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">Press & Recognition</h1>
+        <p class="hero-subtitle">
+          Discover our journey, achievements, and the stories that define Sorella Home Solutions
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ pressItems.length }}+</span>
+            <span class="stat-label">Press Features</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ availableYears.length }}</span>
+            <span class="stat-label">Years of Coverage</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Positive Coverage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Press Timeline Section -->
+  <section class="press-timeline-section">
+    <div class="timeline-container">
+      <div class="section-header">
+        <h2 class="section-title">Press Releases</h2>
+        <p class="section-subtitle">
+          Follow our journey through media coverage, awards, and industry recognition
+        </p>
+      </div>
+
+      <!-- Year Filter -->
+      <div class="year-filter">
+        <button 
+          class="year-button" 
+          [class.active]="selectedYear === null"
+          (click)="selectYear(null)">
+          All Years
+        </button>
+        <button 
+          *ngFor="let year of availableYears"
+          class="year-button" 
+          [class.active]="selectedYear === year"
+          (click)="selectYear(year)">
+          {{ year }}
+        </button>
+      </div>
+
+      <!-- Interactive Timeline -->
+      <div class="timeline">
+        <div class="timeline-line"></div>
+        
+        <div 
+          *ngFor="let item of filteredPressItems; let i = index"
+          class="timeline-item"
+          [class.left]="i % 2 === 0"
+          [class.right]="i % 2 === 1">
+          
+          <div class="timeline-marker">
+            <div class="marker-icon" [innerHTML]="getCategoryIcon(item.category)"></div>
+          </div>
+          
+          <div class="timeline-content">
+            <div class="timeline-card">
+              <div class="card-header">
+                <div class="card-category" [class]="item.category">
+                  <div class="category-icon" [innerHTML]="getCategoryIcon(item.category)"></div>
+                  <span class="category-label">{{ item.category | titlecase }}</span>
+                </div>
+                <div class="card-date">{{ getMonthYear(item.date) }}</div>
+              </div>
+              
+              <h3 class="card-title">{{ item.title }}</h3>
+              <p class="card-publication">{{ item.publication }}</p>
+              <p class="card-excerpt">{{ item.excerpt }}</p>
+              
+              <div class="card-footer">
+                <span class="full-date">{{ formatDate(item.date) }}</span>
+                <button class="read-more-btn" *ngIf="item.link">
+                  <span>Read More</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17l9.2-9.2M17 17V7H7"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <app-testimonials></app-testimonials>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="press-cta">
+    <div class="cta-container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Experience the Sorella Difference?</h2>
+        <p class="cta-description">
+          Join the growing number of homeowners who trust Sorella Home Solutions 
+          for comprehensive, professional home management services.
+        </p>
+        <div class="cta-buttons">
+          <button class="btn btn-primary btn-large">Get Started Today</button>
+          <button class="btn btn-secondary btn-large">Schedule Consultation</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
