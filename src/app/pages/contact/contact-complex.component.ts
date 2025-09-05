@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
+import { AnimationService } from '../../services/animation.service';
+import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-contact-complex',
@@ -13,12 +15,17 @@ import { BackToTopComponent } from '../../components/back-to-top/back-to-top.com
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent implements OnInit, OnDestroy {
   
   contactForm: FormGroup;
   isSubmitting = false;
-  submitSuccess = false;
+  formSubmitted = false;
   submitError = false;
+  
+  // Icon properties for contact info
+  phoneIcon: SafeHtml = {} as any;
+  emailIcon: SafeHtml = {} as any;
+  locationIcon: SafeHtml = {} as any;
 
   contactMethods: Array<{
     icon: SafeHtml;
@@ -30,24 +37,32 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private animationService: AnimationService
   ) {
     this.contactForm = this.formBuilder.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required]],
-      serviceType: ['', Validators.required],
-      propertyType: ['', Validators.required],
-      message: ['', [Validators.required, Validators.minLength(10)]],
-      preferredContact: ['email', Validators.required],
-      timeline: ['', Validators.required]
+      phone: [''],
+      serviceType: [''],
+      message: ['', [Validators.required, Validators.minLength(10)]]
     });
+
+    // Initialize icons
+    this.phoneIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.phone);
+    this.emailIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.email);
+    this.locationIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.location);
   }
 
   ngOnInit() {
     this.setupScrollHeader();
     this.initializeContactMethods();
+    this.animationService.initScrollAnimations();
+    this.animationService.triggerPageLoadAnimations();
+  }
+
+  ngOnDestroy() {
+    this.animationService.destroy();
   }
 
   private initializeContactMethods() {
@@ -96,7 +111,7 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  submitForm() {
     if (this.contactForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.submitError = false;
@@ -104,14 +119,13 @@ export class ContactComponent implements OnInit {
       // Simulate form submission
       setTimeout(() => {
         this.isSubmitting = false;
-        this.submitSuccess = true;
+        this.formSubmitted = true;
         this.contactForm.reset();
-        this.contactForm.patchValue({ preferredContact: 'email' });
         
-        // Hide success message after 5 seconds
+        // Hide success message after 8 seconds
         setTimeout(() => {
-          this.submitSuccess = false;
-        }, 5000);
+          this.formSubmitted = false;
+        }, 8000);
       }, 2000);
     } else {
       // Mark all fields as touched to show validation errors
@@ -121,9 +135,35 @@ export class ContactComponent implements OnInit {
     }
   }
 
+  onSubmit() {
+    this.submitForm();
+  }
+
   isFieldInvalid(fieldName: string): boolean {
     const field = this.contactForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+    return !!(field && field.invalid && field.touched);
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const field = this.contactForm.get(fieldName);
+    if (field && field.errors && field.touched) {
+      if (field.errors['required']) return `${this.getFieldDisplayName(fieldName)} is required`;
+      if (field.errors['email']) return 'Please enter a valid email address';
+      if (field.errors['minlength']) return `${this.getFieldDisplayName(fieldName)} is too short`;
+      if (field.errors['pattern']) return 'Please enter a valid phone number';
+    }
+    return '';
+  }
+
+  private getFieldDisplayName(fieldName: string): string {
+    const displayNames: { [key: string]: string } = {
+      fullName: 'Full name',
+      email: 'Email',
+      phone: 'Phone number',
+      serviceType: 'Service type',
+      message: 'Message'
+    };
+    return displayNames[fieldName] || fieldName;
   }
 
   getSafeHtml(html: string): SafeHtml {
