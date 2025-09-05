@@ -213,63 +213,160 @@
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="contact">
+  <!-- New Contact Section -->
+  <section id="contact" class="contact-section">
     <div class="container">
-      <div class="section-header animate-on-scroll">
-        <h2 class="section-title">Let's Start Your Journey</h2>
-        <p class="section-description">
-          Ready to experience the peace of mind that comes with professional home management? 
-          We're here to help you focus on what truly matters.
-        </p>
+      <div class="contact-header animate-on-scroll">
+        <h2>Ready to Transform Your Home Management?</h2>
+        <p>Let's discuss how Sorella can help you focus on what truly matters while we handle the rest.</p>
       </div>
-      <div class="contact-content">
+      
+      <div class="contact-wrapper">
+        <!-- Contact Information -->
         <div class="contact-info animate-on-scroll slide-left">
-          <div class="contact-intro">
-            <h3>Get Started Today</h3>
-            <p>Connect with our team to discuss how Sorella can transform your home management experience.</p>
-          </div>
-          <div class="contact-item animate-on-scroll delay-200">
-            <div class="contact-icon">
+          <div class="info-card">
+            <div class="info-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
               </svg>
             </div>
-            <div class="contact-details">
-              <h4>Call Us</h4>
+            <div class="info-content">
+              <h3>Call Us</h3>
               <p>(617) 555-HOME</p>
-              <span class="contact-note">Available 24/7 for emergencies</span>
+              <span>24/7 Emergency Support</span>
             </div>
           </div>
-          <div class="contact-item animate-on-scroll delay-400">
-            <div class="contact-icon">
+
+          <div class="info-card">
+            <div class="info-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
               </svg>
             </div>
-            <div class="contact-details">
-              <h4>Email Us</h4>
+            <div class="info-content">
+              <h3>Email Us</h3>
               <p>hello@sorellahomesolutions.com</p>
-              <span class="contact-note">We respond within 2 hours</span>
+              <span>Response within 2 hours</span>
             </div>
           </div>
-          <div class="contact-item animate-on-scroll delay-600">
-            <div class="contact-icon">
+
+          <div class="info-card">
+            <div class="info-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
               </svg>
             </div>
-            <div class="contact-details">
-              <h4>Visit Us</h4>
-              <p>Boston Metro Area<br>Serving Greater Boston</p>
-              <span class="contact-note">On-site consultations available</span>
+            <div class="info-content">
+              <h3>Service Area</h3>
+              <p>Greater Boston Metro</p>
+              <span>On-site consultations available</span>
             </div>
           </div>
         </div>
-        <app-contact-form class="animate-on-scroll slide-right delay-300"></app-contact-form>
+
+        <!-- Contact Form -->
+        <div class="contact-form-container animate-on-scroll slide-right delay-200">
+          <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="modern-contact-form">
+            <div class="form-row">
+              <div class="form-field">
+                <label for="fullName">Full Name *</label>
+                <input 
+                  type="text" 
+                  id="fullName" 
+                  formControlName="fullName"
+                  [class.invalid]="isFieldInvalid('fullName')"
+                  placeholder="Enter your full name">
+                <div class="field-error" *ngIf="isFieldInvalid('fullName')">
+                  {{ getErrorMessage('fullName') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="email">Email Address *</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email"
+                  [class.invalid]="isFieldInvalid('email')"
+                  placeholder="your.email@example.com">
+                <div class="field-error" *ngIf="isFieldInvalid('email')">
+                  {{ getErrorMessage('email') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="phone">Phone Number</label>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  formControlName="phone"
+                  placeholder="(555) 123-4567">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="serviceType">Service of Interest</label>
+                <select id="serviceType" formControlName="serviceType">
+                  <option value="">Select a service</option>
+                  <option value="property-management">Property Management</option>
+                  <option value="project-oversight">Project Management & Oversight</option>
+                  <option value="move-management">Move Management</option>
+                  <option value="concierge">Concierge Services</option>
+                  <option value="corporate-relocation">Corporate Relocation</option>
+                  <option value="consultation">Initial Consultation</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="message">Tell Us About Your Needs *</label>
+                <textarea 
+                  id="message" 
+                  formControlName="message"
+                  [class.invalid]="isFieldInvalid('message')"
+                  rows="4" 
+                  placeholder="Describe your home management needs and how we can help you focus on what truly matters..."></textarea>
+                <div class="field-error" *ngIf="isFieldInvalid('message')">
+                  {{ getErrorMessage('message') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="success-alert" *ngIf="formSubmitted && !isSubmitting">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+              <span>Thank you! We'll contact you within 24 hours to discuss your home management needs.</span>
+            </div>
+
+            <button 
+              type="submit" 
+              class="submit-btn"
+              [disabled]="isSubmitting || contactForm.invalid">
+              <span *ngIf="!isSubmitting">Get Started Today</span>
+              <span *ngIf="isSubmitting">
+                <svg class="spinner" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+                    <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                Sending...
+              </span>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </section>
+
 </main>
 
 <app-footer></app-footer>
