@@ -1,0 +1,100 @@
+<app-header></app-header>
+
+<main class="about-page">
+  <!-- Hero Section -->
+  <section class="about-hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-icon" [innerHTML]="focusIcon"></div>
+        <h1 class="hero-title">About Sorella Home Solutions</h1>
+        <p class="hero-subtitle">
+          Focusing on what truly matters...
+        </p>
+        <div class="hero-description">
+          <p>
+            At Sorella Home Solutions, we believe your time is your most valuable asset. 
+            That's why we take the stress of home management off your plate—so you can 
+            focus on what truly matters, like family, career, and living well.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Sections -->
+  <section class="about-content">
+    <div class="content-container">
+      <div class="about-grid">
+        <div class="about-card" *ngFor="let section of aboutSections; let i = index">
+          <div class="card-number">{{ (i + 1).toString().padStart(2, '0') }}</div>
+          <h3 class="card-title">{{ section.title }}</h3>
+          <p class="card-content">{{ section.content }}</p>
+          <div class="card-accent"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="values-section">
+    <div class="values-container">
+      <div class="section-header">
+        <h2 class="section-title">Our Core Values</h2>
+        <p class="section-subtitle">
+          The principles that guide everything we do
+        </p>
+      </div>
+      
+      <div class="values-grid">
+        <div class="value-card" *ngFor="let value of values">
+          <div class="value-icon">
+            <div class="icon-placeholder">{{ value.icon.charAt(0).toUpperCase() }}</div>
+          </div>
+          <h3 class="value-title">{{ value.title }}</h3>
+          <p class="value-description">{{ value.description }}</p>
+          <div class="value-dot"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-container">
+      <div class="section-header">
+        <h2 class="section-title">By the Numbers</h2>
+        <p class="section-subtitle">
+          Our track record speaks for itself
+        </p>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card" *ngFor="let stat of stats">
+          <div class="stat-number">{{ stat.number }}</div>
+          <h3 class="stat-label">{{ stat.label }}</h3>
+          <p class="stat-description">{{ stat.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="cta-container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Experience the Sorella Difference?</h2>
+        <p class="cta-description">
+          Let us handle the details so you can focus on what truly matters. 
+          Contact us today to learn how we can transform your home management experience.
+        </p>
+        <div class="cta-buttons">
+          <a href="/contact" class="cta-button primary">Get Started</a>
+          <a href="/services" class="cta-button secondary">Our Services</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
