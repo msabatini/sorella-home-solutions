@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ContactForm } from '../../components/contact-form/contact-form';
 import { Testimonials } from '../../components/testimonials/testimonials';
@@ -20,7 +21,7 @@ export class HomeComponent implements OnInit {
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
   chevronDownIcon: SafeHtml = {} as any;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer, private router: Router) {}
 
   ngOnInit() {
     this.chevronDownIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.chevronDown);
@@ -87,5 +88,21 @@ export class HomeComponent implements OnInit {
         block: 'start'
       });
     }
+  }
+
+  navigateToService(serviceIndex: number) {
+    // Navigate to services page and scroll to specific service
+    this.router.navigate(['/services']).then(() => {
+      // Wait for navigation to complete, then scroll to the specific service
+      setTimeout(() => {
+        const serviceElement = document.querySelector(`.service-detail:nth-child(${serviceIndex + 1})`);
+        if (serviceElement) {
+          serviceElement.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 100);
+    });
   }
 }
