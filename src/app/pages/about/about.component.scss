@@ -940,3 +940,91 @@
     font-size: 3rem;
   }
 }
+
+// Animation Styles
+.animate-on-load,
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &.fade-in-up {
+    transform: translateY(30px);
+  }
+  
+  &.slide-left {
+    transform: translateX(-30px);
+  }
+  
+  &.slide-right {
+    transform: translateX(30px);
+  }
+  
+  &.scale-in {
+    transform: scale(0.9);
+  }
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+// Staggered animation delays for multiple elements
+.about-card {
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+}
+
+.value-card {
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+}
+
+.stat-card {
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+}
+
+// Hero section staggered animations
+.hero-icon.animate-on-load { transition-delay: 0.2s; }
+.hero-title.animate-on-load { transition-delay: 0.4s; }
+.hero-subtitle.animate-on-load { transition-delay: 0.6s; }
+.hero-description.animate-on-load { transition-delay: 0.8s; }
+
+// Enhanced hover effects for animated elements
+.about-card.animate-in {
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 162, 255, 0.15);
+  }
+}
+
+.value-card.animate-in {
+  &:hover {
+    transform: translateY(-8px);
+  }
+}
+
+// Counter animation enhancements
+.stat-card.counter {
+  .stat-number {
+    transition: all 0.3s ease;
+    
+    // Add a subtle pulse effect during animation
+    &.counting {
+      animation: pulse 0.1s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.02); }
+}
