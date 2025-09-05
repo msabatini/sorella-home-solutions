@@ -6,6 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { AnimationService } from '../../services/animation.service';
+import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-contact',
@@ -17,7 +18,12 @@ import { AnimationService } from '../../services/animation.service';
 export class ContactComponent implements OnInit, OnDestroy {
   contactForm: FormGroup;
   isSubmitting = false;
-  submitSuccess = false;
+  formSubmitted = false;
+  
+  // Icon properties for contact info
+  phoneIcon: SafeHtml = {} as any;
+  emailIcon: SafeHtml = {} as any;
+  locationIcon: SafeHtml = {} as any;
 
   contactMethods: Array<{
     title: string;
@@ -29,12 +35,17 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   constructor(private fb: FormBuilder, private sanitizer: DomSanitizer, private animationService: AnimationService) {
     this.contactForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
-      service: [''],
+      serviceType: [''],
       message: ['', [Validators.required, Validators.minLength(10)]]
     });
+
+    // Initialize icons
+    this.phoneIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.phone);
+    this.emailIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.email);
+    this.locationIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.location);
 
     this.contactMethods = [
       {
@@ -158,41 +169,63 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.contactForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+    return !!(field && field.invalid && field.touched);
   }
 
-  getFieldError(fieldName: string): string {
+  getErrorMessage(fieldName: string): string {
     const field = this.contactForm.get(fieldName);
     if (field && field.errors) {
       if (field.errors['required']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+        return `${this.getFieldDisplayName(fieldName)} is required`;
       }
       if (field.errors['email']) {
         return 'Please enter a valid email address';
       }
       if (field.errors['minlength']) {
         const requiredLength = field.errors['minlength'].requiredLength;
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${requiredLength} characters`;
+        return `${this.getFieldDisplayName(fieldName)} must be at least ${requiredLength} characters`;
       }
     }
     return '';
   }
 
-  onSubmit(): void {
+  submitForm(): void {
     if (this.contactForm.valid) {
       this.isSubmitting = true;
+      this.formSubmitted = false;
       
       // Simulate form submission
       setTimeout(() => {
         this.isSubmitting = false;
-        this.submitSuccess = true;
+        this.formSubmitted = true;
         this.contactForm.reset();
+        
+        // Hide success message after 8 seconds
+        setTimeout(() => {
+          this.formSubmitted = false;
+        }, 8000);
       }, 2000);
     } else {
       // Mark all fields as touched to show validation errors
-      Object.keys(this.contactForm.controls).forEach(key => {
-        this.contactForm.get(key)?.markAsTouched();
-      });
+      this.markFormGroupTouched();
     }
+  }
+
+  private getFieldDisplayName(fieldName: string): string {
+    const displayNames: { [key: string]: string } = {
+      fullName: 'Full name',
+      email: 'Email address',
+      phone: 'Phone number',
+      serviceType: 'Service type',
+      message: 'Message'
+    };
+    return displayNames[fieldName] || fieldName;
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.contactForm.controls).forEach(key => {
+      const control = this.contactForm.get(key);
+      control?.markAsTouched();
+    });
   }
 }
