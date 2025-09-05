@@ -18,14 +18,15 @@
   <!-- Services Section -->
   <section id="services" class="services">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header animate-on-scroll">
         <h2 class="section-title">Our Services</h2>
         <p class="section-description">
           Professional home solutions tailored to your unique needs
         </p>
       </div>
       <div class="services-grid">
-        <div class="service-card" *ngFor="let service of services" (click)="scrollToSection(service.sectionId)">
+        <div class="service-card animate-on-scroll hover-lift" *ngFor="let service of services; let i = index" 
+             [class]="'delay-' + (i * 100 + 100)" (click)="scrollToSection(service.sectionId)">
           <div class="service-icon" [innerHTML]="service.icon"></div>
           <h3 class="service-title">{{ service.title }}</h3>
           <p class="service-description">{{ service.description }}</p>
@@ -40,7 +41,7 @@
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="introSection.icon"></div>
-        <div class="service-highlight-text">
+        <div class="service-highlight-text animate-on-scroll slide-left">
           <div class="service-highlight-header">
             <div class="service-highlight-icon" [innerHTML]="introSection.icon"></div>
             <h2 class="service-highlight-title">{{ introSection.title }}</h2>
@@ -58,7 +59,7 @@
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[0].icon"></div>
-        <div class="service-highlight-text">
+        <div class="service-highlight-text animate-on-scroll slide-right">
           <div class="service-highlight-header">
             <h2 class="service-highlight-title">Property Management</h2>
             <div class="service-highlight-icon" [innerHTML]="services[0].icon"></div>
@@ -83,7 +84,7 @@
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[1].icon"></div>
-        <div class="service-highlight-text">
+        <div class="service-highlight-text animate-on-scroll slide-left">
           <div class="service-highlight-header">
             <div class="service-highlight-icon" [innerHTML]="services[1].icon"></div>
             <h2 class="service-highlight-title">Project Management & Oversight</h2>
@@ -108,7 +109,7 @@
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[2].icon"></div>
-        <div class="service-highlight-text">
+        <div class="service-highlight-text animate-on-scroll slide-right">
           <div class="service-highlight-header">
             <h2 class="service-highlight-title">Move Management</h2>
             <div class="service-highlight-icon" [innerHTML]="services[2].icon"></div>
@@ -133,7 +134,7 @@
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[3].icon"></div>
-        <div class="service-highlight-text">
+        <div class="service-highlight-text animate-on-scroll slide-left">
           <div class="service-highlight-header">
             <div class="service-highlight-icon" [innerHTML]="services[3].icon"></div>
             <h2 class="service-highlight-title">Concierge Services</h2>
@@ -158,7 +159,7 @@
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[4].icon"></div>
-        <div class="service-highlight-text">
+        <div class="service-highlight-text animate-on-scroll slide-right">
           <div class="service-highlight-header">
             <h2 class="service-highlight-title">Corporate Relocation</h2>
             <div class="service-highlight-icon" [innerHTML]="services[4].icon"></div>
@@ -185,14 +186,14 @@
   <section class="cta-section">
     <div class="container">
       <div class="cta-content">
-        <h2 class="cta-title">Ready to Focus on What Truly Matters?</h2>
-        <p class="cta-description">
+        <h2 class="cta-title animate-on-scroll fade-in">Ready to Focus on What Truly Matters?</h2>
+        <p class="cta-description animate-on-scroll slide-up delay-200">
           Let Sorella take care of your home so you can invest your time in what's most important to you. 
           Experience the peace of mind that comes with professional home management.
         </p>
-        <div class="cta-stats">
+        <div class="cta-stats animate-on-scroll slide-up delay-400">
           <div class="stat">
-            <span class="stat-number">13M+</span>
+            <span class="stat-number counter" data-target="13" data-duration="2000">0</span><span class="stat-suffix">M+</span>
             <span class="stat-label">Sq Ft Managed</span>
           </div>
           <div class="stat">
@@ -200,11 +201,11 @@
             <span class="stat-label">Support Available</span>
           </div>
           <div class="stat">
-            <span class="stat-number">100%</span>
+            <span class="stat-number counter" data-target="100" data-duration="2000">0</span><span class="stat-suffix">%</span>
             <span class="stat-label">Peace of Mind</span>
           </div>
         </div>
-        <div class="cta-buttons">
+        <div class="cta-buttons animate-on-scroll scale-in delay-600">
           <button class="btn btn-primary btn-large">Get Started Today</button>
           <button class="btn btn-secondary btn-large">Schedule Consultation</button>
         </div>
@@ -215,7 +216,7 @@
   <!-- Contact Section -->
   <section id="contact" class="contact">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header animate-on-scroll">
         <h2 class="section-title">Let's Start Your Journey</h2>
         <p class="section-description">
           Ready to experience the peace of mind that comes with professional home management? 
@@ -223,12 +224,12 @@
         </p>
       </div>
       <div class="contact-content">
-        <div class="contact-info">
+        <div class="contact-info animate-on-scroll slide-left">
           <div class="contact-intro">
             <h3>Get Started Today</h3>
             <p>Connect with our team to discuss how Sorella can transform your home management experience.</p>
           </div>
-          <div class="contact-item">
+          <div class="contact-item animate-on-scroll delay-200">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
@@ -240,7 +241,7 @@
               <span class="contact-note">Available 24/7 for emergencies</span>
             </div>
           </div>
-          <div class="contact-item">
+          <div class="contact-item animate-on-scroll delay-400">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
@@ -252,7 +253,7 @@
               <span class="contact-note">We respond within 2 hours</span>
             </div>
           </div>
-          <div class="contact-item">
+          <div class="contact-item animate-on-scroll delay-600">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -265,7 +266,7 @@
             </div>
           </div>
         </div>
-        <app-contact-form></app-contact-form>
+        <app-contact-form class="animate-on-scroll slide-right delay-300"></app-contact-form>
       </div>
     </div>
   </section>

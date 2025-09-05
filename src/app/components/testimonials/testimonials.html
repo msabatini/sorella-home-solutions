@@ -1,13 +1,13 @@
 <section class="testimonials">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header animate-on-scroll">
       <h2 class="section-title">What Our Clients Say</h2>
       <p class="section-description">
         Don't just take our word for it - hear from our satisfied customers
       </p>
     </div>
     
-    <div class="testimonials-carousel">
+    <div class="testimonials-carousel animate-on-scroll delay-300">
       <div class="testimonial-container">
         <div class="testimonial-card" *ngFor="let testimonial of testimonials; let i = index" 
              [class.active]="i === currentTestimonial">
