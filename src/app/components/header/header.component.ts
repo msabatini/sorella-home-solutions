@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  isDropdownOpen = false;
 
   ngOnInit() {
     // Add smooth scrolling for navigation links
@@ -48,6 +49,12 @@ export class HeaderComponent implements OnInit {
         const navMenu = document.querySelector('.nav-menu');
         navMenu?.classList.toggle('active');
       }
+      
+      // Close mobile menu when clicking on nav links
+      if (target.matches('.nav-link, .dropdown-link')) {
+        const navMenu = document.querySelector('.nav-menu');
+        navMenu?.classList.remove('active');
+      }
     });
   }
 
@@ -78,5 +85,13 @@ export class HeaderComponent implements OnInit {
         ticking = true;
       }
     });
+  }
+
+  showDropdown() {
+    this.isDropdownOpen = true;
+  }
+
+  hideDropdown() {
+    this.isDropdownOpen = false;
   }
 }
