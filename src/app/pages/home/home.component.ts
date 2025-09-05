@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit {
   constructor(private sanitizer: DomSanitizer, private router: Router) {}
 
   ngOnInit() {
+    this.scrollToTop();
     this.chevronDownIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.chevronDown);
     
     this.introSection = {
@@ -103,6 +104,14 @@ export class HomeComponent implements OnInit {
           });
         }
       }, 100);
+    });
+  }
+
+  private scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
     });
   }
 }

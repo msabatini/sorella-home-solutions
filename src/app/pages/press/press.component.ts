@@ -32,6 +32,7 @@ export class PressComponent implements OnInit {
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
+    this.scrollToTop();
     this.setupScrollHeader();
     this.initializePressData();
     this.calculateAvailableYears();
@@ -48,6 +49,14 @@ export class PressComponent implements OnInit {
           header.classList.remove('scrolled');
         }
       }
+    });
+  }
+
+  private scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
     });
   }
 
