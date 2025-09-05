@@ -19,7 +19,8 @@ export class AnimationService {
           entry.target.classList.add('animate-in');
           
           // Handle counter animations
-          if (entry.target.classList.contains('counter')) {
+          if (entry.target.classList.contains('counter') && !entry.target.classList.contains('animated')) {
+            entry.target.classList.add('animated');
             this.animateCounter(entry.target as HTMLElement);
           }
         }
@@ -73,8 +74,14 @@ export class AnimationService {
     const suffix = element.getAttribute('data-suffix') || '';
     const duration = parseInt(element.getAttribute('data-duration') || '2000');
     
-    // Find the stat-number element inside the counter element
-    const numberElement = element.querySelector('.stat-number') as HTMLElement;
+    // Check if the element itself is the stat-number, or find it inside
+    let numberElement: HTMLElement;
+    if (element.classList.contains('stat-number')) {
+      numberElement = element;
+    } else {
+      numberElement = element.querySelector('.stat-number') as HTMLElement;
+    }
+    
     if (!numberElement) return;
     
     const increment = target / (duration / 16); // 60fps
