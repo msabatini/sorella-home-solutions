@@ -5,7 +5,7 @@
   <section id="home" class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1 class="hero-title">Seamless Home Solutions,<br>At Your Fingertips</h1>
+      <h1 class="hero-title">Seamless Home Solutions,<br>At Your Fingertips.</h1>
       <div class="hero-button">
         <button class="btn btn-outline" (click)="scrollToServices()">
           <span>Learn More</span>
@@ -25,7 +25,7 @@
         </p>
       </div>
       <div class="services-grid">
-        <div class="service-card" *ngFor="let service of services">
+        <div class="service-card" *ngFor="let service of services" (click)="scrollToSection(service.sectionId)">
           <div class="service-icon" [innerHTML]="service.icon"></div>
           <h3 class="service-title">{{ service.title }}</h3>
           <p class="service-description">{{ service.description }}</p>
