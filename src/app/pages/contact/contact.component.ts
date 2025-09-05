@@ -117,6 +117,7 @@ export class ContactComponent implements OnInit {
 
   ngOnInit(): void {
     this.setupScrollHeader();
+    this.scrollToTop();
   }
 
   private setupScrollHeader() {
@@ -129,6 +130,14 @@ export class ContactComponent implements OnInit {
           header.classList.remove('scrolled');
         }
       }
+    });
+  }
+
+  private scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
     });
   }
 

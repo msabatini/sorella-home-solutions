@@ -30,6 +30,7 @@ export class ServicesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.scrollToTop();
     this.setupScrollHeader();
     
     this.services = [
@@ -165,6 +166,14 @@ export class ServicesComponent implements OnInit {
           header.classList.remove('scrolled');
         }
       }
+    });
+  }
+
+  private scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
     });
   }
 }
