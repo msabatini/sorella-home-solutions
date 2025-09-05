@@ -207,6 +207,9 @@
   transform: translateX(-50%);
   border-radius: 2px;
   box-shadow: 0 0 20px rgba(0, 162, 255, 0.3);
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+  transition-delay: 0.3s;
   
   &::before {
     content: '';
@@ -240,6 +243,7 @@
   margin-bottom: 4rem;
   display: flex;
   align-items: center;
+  min-height: 120px; // Ensure minimum height for proper alignment
   
   &.left {
     justify-content: flex-end;
@@ -271,7 +275,8 @@
 .timeline-marker {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 60px;
   height: 60px;
   background: 
@@ -299,7 +304,7 @@
   }
   
   &:hover {
-    transform: translateX(-50%) scale(1.1);
+    transform: translate(-50%, -50%) scale(1.1);
     box-shadow: 
       0 12px 32px rgba(0, 162, 255, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -309,6 +314,8 @@
 .timeline-content {
   flex: 1;
   max-width: 45%;
+  display: flex;
+  align-items: center;
 }
 
 .timeline-card {
@@ -325,6 +332,7 @@
   overflow: hidden;
   transition: all 0.4s ease;
   cursor: pointer;
+  width: 100%;
   
   &::before {
     content: '';
@@ -713,4 +721,150 @@
     align-items: flex-start;
     gap: 0.75rem;
   }
+}
+
+// Animation Styles
+.animate-on-load,
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &.fade-in-up {
+    transform: translateY(30px);
+  }
+  
+  &.slide-left {
+    transform: translateX(-30px);
+  }
+  
+  &.slide-right {
+    transform: translateX(30px);
+  }
+  
+  &.scale-in {
+    transform: scale(0.9);
+  }
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+// Hero section staggered animations
+.hero-title.animate-on-load { transition-delay: 0.2s; }
+.hero-subtitle.animate-on-load { transition-delay: 0.4s; }
+.hero-stats.animate-on-load { transition-delay: 0.6s; }
+
+// Timeline item staggered animations
+.timeline-item {
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+  &:nth-child(5) { transition-delay: 0.5s; }
+  &:nth-child(6) { transition-delay: 0.6s; }
+  &:nth-child(7) { transition-delay: 0.7s; }
+  &:nth-child(8) { transition-delay: 0.8s; }
+}
+
+// Year filter button staggered animations
+.year-button {
+  transition-delay: 0.1s;
+  
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+  &:nth-child(5) { transition-delay: 0.5s; }
+}
+
+// Enhanced hover effects for animated elements
+.timeline-item.animate-in {
+  .timeline-card {
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 10px 30px rgba(0, 162, 255, 0.1);
+    }
+  }
+}
+
+.year-button.animate-in {
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Timeline line animation - add growing effect without interfering with existing pseudo-elements
+.timeline {
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 6px;
+    height: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(0, 162, 255, 0.2) 100%);
+    transform: translateX(-50%);
+    border-radius: 3px;
+    transition: height 2s ease-out;
+    transition-delay: 0.5s;
+    z-index: 2;
+    pointer-events: none;
+  }
+  
+  &.animate-in {
+    .timeline-line {
+      opacity: 1;
+    }
+    
+    &::before {
+      height: 100%;
+    }
+  }
+}
+
+// Timeline marker pulse animation
+.timeline-marker {
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 162, 255, 0.3);
+    animation: pulse-ring 2s infinite;
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+.timeline-item.animate-in {
+  .timeline-marker::before {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+// Stat items animation in hero
+.stat-item {
+  &:nth-child(1) { transition-delay: 0.7s; }
+  &:nth-child(2) { transition-delay: 0.8s; }
+  &:nth-child(3) { transition-delay: 0.9s; }
 }

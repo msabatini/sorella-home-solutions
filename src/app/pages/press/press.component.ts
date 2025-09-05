@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { Testimonials } from '../../components/testimonials/testimonials';
+import { AnimationService } from '../../services/animation.service';
 
 interface PressItem {
   id: number;
@@ -22,14 +23,17 @@ interface PressItem {
   templateUrl: './press.component.html',
   styleUrls: ['./press.component.scss']
 })
-export class PressComponent implements OnInit {
+export class PressComponent implements OnInit, OnDestroy {
   
   pressItems: PressItem[] = [];
   selectedYear: number | null = null;
   availableYears: number[] = [];
   filteredPressItems: PressItem[] = [];
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    private animationService: AnimationService
+  ) {}
 
   ngOnInit() {
     this.scrollToTop();
@@ -37,6 +41,16 @@ export class PressComponent implements OnInit {
     this.initializePressData();
     this.calculateAvailableYears();
     this.filterPressItems();
+    
+    // Initialize animations after a short delay
+    setTimeout(() => {
+      this.animationService.initScrollAnimations();
+      this.animationService.triggerPageLoadAnimations();
+    }, 100);
+  }
+
+  ngOnDestroy() {
+    this.animationService.destroy();
   }
 
   private setupScrollHeader() {

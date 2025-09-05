@@ -6,20 +6,20 @@
     <div class="hero-background"></div>
     <div class="hero-container">
       <div class="hero-content">
-        <h1 class="hero-title">Press & Recognition</h1>
-        <p class="hero-subtitle">
+        <h1 class="hero-title animate-on-load fade-in-up">Press & Recognition</h1>
+        <p class="hero-subtitle animate-on-load fade-in-up">
           Discover our journey, achievements, and the stories that define Sorella Home Solutions
         </p>
         <div class="hero-stats">
-          <div class="stat-item">
+          <div class="stat-item animate-on-load fade-in-up">
             <span class="stat-number">{{ pressItems.length }}+</span>
             <span class="stat-label">Press Features</span>
           </div>
-          <div class="stat-item">
+          <div class="stat-item animate-on-load fade-in-up">
             <span class="stat-number">{{ availableYears.length }}</span>
             <span class="stat-label">Years of Coverage</span>
           </div>
-          <div class="stat-item">
+          <div class="stat-item animate-on-load fade-in-up">
             <span class="stat-number">100%</span>
             <span class="stat-label">Positive Coverage</span>
           </div>
@@ -31,7 +31,7 @@
   <!-- Press Timeline Section -->
   <section class="press-timeline-section">
     <div class="timeline-container">
-      <div class="section-header">
+      <div class="section-header animate-on-scroll fade-in-up">
         <h2 class="section-title">Press Releases</h2>
         <p class="section-subtitle">
           Follow our journey through media coverage, awards, and industry recognition
@@ -39,7 +39,7 @@
       </div>
 
       <!-- Year Filter -->
-      <div class="year-filter">
+      <div class="year-filter animate-on-scroll fade-in-up">
         <button 
           class="year-button" 
           [class.active]="selectedYear === null"
@@ -56,12 +56,12 @@
       </div>
 
       <!-- Interactive Timeline -->
-      <div class="timeline">
+      <div class="timeline animate-on-scroll fade-in-up">
         <div class="timeline-line"></div>
         
         <div 
           *ngFor="let item of filteredPressItems; let i = index"
-          class="timeline-item"
+          class="timeline-item animate-on-scroll fade-in-up"
           [class.left]="i % 2 === 0"
           [class.right]="i % 2 === 1">
           
@@ -100,14 +100,14 @@
   </section>
 
   <!-- Testimonials Section -->
-  <section class="testimonials-section">
+  <section class="testimonials-section animate-on-scroll fade-in-up">
     <app-testimonials></app-testimonials>
   </section>
 
   <!-- Call to Action -->
   <section class="press-cta">
     <div class="cta-container">
-      <div class="cta-content">
+      <div class="cta-content animate-on-scroll fade-in-up">
         <h2 class="cta-title">Ready to Experience the Sorella Difference?</h2>
         <p class="cta-description">
           Join the growing number of homeowners who trust Sorella Home Solutions 
