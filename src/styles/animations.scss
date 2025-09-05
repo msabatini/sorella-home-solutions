@@ -1,0 +1,170 @@
+// Base animation styles
+.animate-on-scroll,
+.animate-on-load {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.animate-on-scroll.animate-in,
+.animate-on-load.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Fade in animation
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+.fade-in.animate-in {
+  opacity: 1;
+}
+
+// Slide up animation
+.slide-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+
+.slide-up.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Slide in from left
+.slide-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 0.8s ease-out;
+}
+
+.slide-left.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+// Slide in from right
+.slide-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 0.8s ease-out;
+}
+
+.slide-right.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+// Scale animation
+.scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.6s ease-out;
+}
+
+.scale-in.animate-in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+// Staggered delays for multiple elements
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+.delay-600 { transition-delay: 0.6s; }
+.delay-700 { transition-delay: 0.7s; }
+.delay-800 { transition-delay: 0.8s; }
+
+// Counter animations
+.counter {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+.counter.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Stats styling
+.stat-suffix {
+  display: inline;
+}
+
+// Testimonial animations
+.testimonial-card {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  transition: all 0.8s ease-out;
+}
+
+.testimonial-card.animate-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+// Contact form animations
+.contact-form {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease-out;
+}
+
+.contact-form.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Footer animations
+.footer-content {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.footer-content.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Hero animations
+.hero-title {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: heroTitleIn 1s ease-out 0.3s forwards;
+}
+
+.hero-button {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroButtonIn 0.8s ease-out 0.8s forwards;
+}
+
+@keyframes heroTitleIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroButtonIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Hover effects
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
