@@ -5,12 +5,12 @@
   <section class="about-hero">
     <div class="hero-container">
       <div class="hero-content">
-        <div class="hero-icon" [innerHTML]="focusIcon"></div>
-        <h1 class="hero-title">About Sorella Home Solutions</h1>
-        <p class="hero-subtitle">
+        <div class="hero-icon animate-on-load fade-in-up" [innerHTML]="focusIcon"></div>
+        <h1 class="hero-title animate-on-load fade-in-up">About Sorella Home Solutions</h1>
+        <p class="hero-subtitle animate-on-load fade-in-up">
           Focusing on what truly matters...
         </p>
-        <div class="hero-description">
+        <div class="hero-description animate-on-load fade-in-up">
           <p>
             At Sorella Home Solutions, we believe your time is your most valuable asset. 
             That's why we take the stress of home management off your plate—so you can 
@@ -25,7 +25,7 @@
   <section class="about-content">
     <div class="content-container">
       <div class="about-grid">
-        <div class="about-card" *ngFor="let section of aboutSections; let i = index">
+        <div class="about-card animate-on-scroll fade-in-up" *ngFor="let section of aboutSections; let i = index">
           <div class="card-number">{{ (i + 1).toString().padStart(2, '0') }}</div>
           <h3 class="card-title">{{ section.title }}</h3>
           <p class="card-content">{{ section.content }}</p>
@@ -38,7 +38,7 @@
   <!-- Values Section -->
   <section class="values-section">
     <div class="values-container">
-      <div class="section-header">
+      <div class="section-header animate-on-scroll fade-in-up">
         <h2 class="section-title">Our Core Values</h2>
         <p class="section-subtitle">
           The principles that guide everything we do
@@ -46,7 +46,7 @@
       </div>
       
       <div class="values-grid">
-        <div class="value-card" *ngFor="let value of values">
+        <div class="value-card animate-on-scroll fade-in-up" *ngFor="let value of values">
           <div class="value-icon">
             <div class="icon-placeholder">{{ value.icon.charAt(0).toUpperCase() }}</div>
           </div>
@@ -61,7 +61,7 @@
   <!-- Stats Section -->
   <section class="stats-section">
     <div class="stats-container">
-      <div class="section-header">
+      <div class="section-header animate-on-scroll fade-in-up">
         <h2 class="section-title">By the Numbers</h2>
         <p class="section-subtitle">
           Our track record speaks for itself
@@ -69,8 +69,11 @@
       </div>
       
       <div class="stats-grid">
-        <div class="stat-card" *ngFor="let stat of stats">
-          <div class="stat-number">{{ stat.number }}</div>
+        <div class="stat-card animate-on-scroll fade-in-up counter" *ngFor="let stat of stats" 
+             [attr.data-target]="stat.target" 
+             [attr.data-suffix]="stat.suffix"
+             [attr.data-duration]="2000">
+          <div class="stat-number">0{{ stat.suffix }}</div>
           <h3 class="stat-label">{{ stat.label }}</h3>
           <p class="stat-description">{{ stat.description }}</p>
         </div>
@@ -81,7 +84,7 @@
   <!-- Call to Action -->
   <section class="cta-section">
     <div class="cta-container">
-      <div class="cta-content">
+      <div class="cta-content animate-on-scroll fade-in-up">
         <h2 class="cta-title">Ready to Experience the Sorella Difference?</h2>
         <p class="cta-description">
           Let us handle the details so you can focus on what truly matters. 

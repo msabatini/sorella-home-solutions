@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
+import { AnimationService } from '../../services/animation.service';
 
 @Component({
   selector: 'app-about',
@@ -13,7 +14,7 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent implements OnInit, OnDestroy {
   
   focusIcon: SafeHtml = {} as any;
   
@@ -62,31 +63,52 @@ export class AboutComponent implements OnInit {
   stats = [
     {
       number: '13M+',
+      target: 13,
+      suffix: 'M+',
       label: 'Square Feet Managed',
       description: 'Real estate under our expert care'
     },
     {
       number: '24/7',
+      target: 24,
+      suffix: '/7',
       label: 'Concierge Support',
       description: 'Always available when you need us'
     },
     {
       number: '100%',
+      target: 100,
+      suffix: '%',
       label: 'Client Satisfaction',
       description: 'Committed to exceeding expectations'
     },
     {
       number: '15+',
+      target: 15,
+      suffix: '+',
       label: 'Years Experience',
       description: 'Industry expertise you can trust'
     }
   ];
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    private animationService: AnimationService
+  ) {}
 
   ngOnInit() {
     this.scrollToTop();
     this.focusIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.focusMatters);
+    
+    // Initialize animations after a short delay
+    setTimeout(() => {
+      this.animationService.initScrollAnimations();
+      this.animationService.triggerPageLoadAnimations();
+    }, 100);
+  }
+
+  ngOnDestroy() {
+    this.animationService.destroy();
   }
 
   private scrollToTop() {
