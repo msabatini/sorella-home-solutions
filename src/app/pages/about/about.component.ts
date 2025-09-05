@@ -85,6 +85,15 @@ export class AboutComponent implements OnInit {
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
+    this.scrollToTop();
     this.focusIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.focusMatters);
+  }
+
+  private scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
   }
 }
