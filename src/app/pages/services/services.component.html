@@ -1,0 +1,146 @@
+<app-header></app-header>
+
+<main class="services-page">
+  <!-- Hero Section -->
+  <section class="services-hero">
+    <div class="hero-background"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">Our Services</h1>
+        <p class="hero-subtitle">
+          Comprehensive home solutions designed to simplify your life and protect your most valuable investment
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">13M+</span>
+            <span class="stat-label">Sq Ft Managed</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Support</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Satisfaction</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Overview -->
+  <section class="services-overview">
+    <div class="overview-container">
+      <div class="overview-header">
+        <h2 class="section-title">Complete Home Solutions</h2>
+        <p class="section-subtitle">
+          From property management to concierge services, we provide comprehensive solutions 
+          that keep your home running smoothly while you focus on what matters most.
+        </p>
+      </div>
+      
+      <div class="services-grid">
+        <div class="service-overview-card" 
+             *ngFor="let service of services; let i = index" 
+             (click)="scrollToService(service.sectionId)"
+             [class.featured]="i === 0">
+          <div class="service-number">{{ (i + 1).toString().padStart(2, '0') }}</div>
+          <div class="service-icon-wrapper">
+            <div class="service-icon" [innerHTML]="service.icon"></div>
+          </div>
+          <h3 class="service-title">{{ service.title }}</h3>
+          <p class="service-description">{{ service.description }}</p>
+          <div class="service-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed Services -->
+  <section class="services-detailed">
+    <div class="detailed-container">
+      <div class="service-detail" 
+           *ngFor="let service of services; let i = index" 
+           [id]="service.sectionId"
+           [class.reverse]="i % 2 === 1">
+        
+        <div class="service-content">
+          <div class="service-header">
+            <div class="service-number-large">{{ (i + 1).toString().padStart(2, '0') }}</div>
+            <div class="service-icon-large" [innerHTML]="service.icon"></div>
+          </div>
+          
+          <div class="service-info">
+            <h2 class="service-title-large">{{ service.title }}</h2>
+            <p class="service-description-large">{{ service.description }}</p>
+            
+            <div class="service-features">
+              <h3 class="features-title">What's Included</h3>
+              <ul class="features-list">
+                <li *ngFor="let feature of service.features" class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ feature }}
+                </li>
+              </ul>
+            </div>
+            
+            <div class="service-benefits">
+              <h3 class="benefits-title">Key Benefits</h3>
+              <div class="benefits-grid">
+                <div class="benefit-item" *ngFor="let benefit of service.benefits">
+                  <div class="benefit-dot"></div>
+                  <span class="benefit-text">{{ benefit }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="service-visual">
+          <div class="visual-background"></div>
+          <div class="visual-icon" [innerHTML]="service.icon"></div>
+          <div class="visual-overlay"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="services-cta">
+    <div class="cta-container">
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Transform Your Home Experience?</h2>
+        <p class="cta-description">
+          Let us handle the complexities of home management while you focus on living your best life. 
+          Our expert team is ready to provide the personalized service you deserve.
+        </p>
+        <div class="cta-buttons">
+          <a href="#contact" class="cta-button primary">Get Started Today</a>
+          <a href="/about" class="cta-button secondary">Learn More About Us</a>
+        </div>
+      </div>
+      <div class="cta-visual">
+        <div class="cta-background"></div>
+        <div class="cta-stats">
+          <div class="cta-stat">
+            <span class="cta-stat-number">13M+</span>
+            <span class="cta-stat-label">Square Feet Managed</span>
+          </div>
+          <div class="cta-stat">
+            <span class="cta-stat-number">24/7</span>
+            <span class="cta-stat-label">Concierge Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
