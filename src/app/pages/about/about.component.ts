@@ -83,8 +83,8 @@ export class AboutComponent implements OnInit, OnDestroy {
       description: 'Committed to exceeding expectations'
     },
     {
-      number: '15+',
-      target: 15,
+      number: '20+',
+      target: 20,
       suffix: '+',
       label: 'Years Experience',
       description: 'Industry expertise you can trust'
