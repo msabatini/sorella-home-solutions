@@ -63,12 +63,30 @@
     border-radius: 50%;
   }
   
+  &.active {
+    .logo-icon {
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #00a2ff 0%, #0ea5e9 50%, #3b82f6 100%);
+        border-radius: 2px;
+        box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
+      }
+    }
+  }
+  
   .logo-icon {
     width: 90px;
     height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     
     img {
       width: 100%;
@@ -114,12 +132,18 @@
     left: 0;
     width: 0;
     height: 3px;
-    background: #00a2ff;
+    background: linear-gradient(90deg, #00a2ff 0%, #0ea5e9 50%, #3b82f6 100%);
     transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
   }
   
-  &:hover::after {
+  &:hover::after,
+  &.active::after {
     width: 100%;
+  }
+  
+  &.active {
+    // Keep text white, only show border indicator
   }
   
   &.dropdown-toggle {
@@ -360,12 +384,33 @@
     height: 90px;
     width: 120px;
     
+    &.active {
+      .logo-icon {
+        &::after {
+          width: 50px;
+          bottom: -8px;
+        }
+      }
+    }
+    
     .logo-icon {
       width: 80px;
       height: 80px;
       
       img {
         height: 60px;
+      }
+    }
+  }
+  
+  // Mobile active nav link styles
+  .nav-link {
+    &.active {
+      background: rgba(0, 162, 255, 0.1);
+      border-radius: 8px;
+      
+      &::after {
+        display: none; // Hide bottom border on mobile
       }
     }
   }
