@@ -889,12 +889,13 @@ section {
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #00a2ff 0%, #0066cc 100%);
-  border-radius: 15px;
+  border-radius: 99px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   flex-shrink: 0;
+  padding: .5rem;
   
   :deep(svg) {
     width: 30px;
