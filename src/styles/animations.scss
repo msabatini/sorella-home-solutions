@@ -97,14 +97,14 @@
   display: inline;
 }
 
-// Testimonial animations
-.testimonial-card {
+// Testimonial animations (only for general page animations, not carousel)
+.testimonial-card.page-content-fade {
   opacity: 0.1;
   transform: translateY(20px) scale(0.97);
   transition: all 0.8s ease-out;
 }
 
-.testimonial-card.animate-in {
+.testimonial-card.page-content-fade.animate-in {
   opacity: 1;
   transform: translateY(0) scale(1);
 }

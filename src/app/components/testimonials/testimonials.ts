@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface Testimonial {
@@ -15,45 +15,48 @@ export interface Testimonial {
   templateUrl: './testimonials.html',
   styleUrl: './testimonials.scss'
 })
-export class Testimonials implements OnInit {
+export class Testimonials implements OnInit, OnDestroy {
   currentTestimonial = 0;
+  private intervalId: any;
   
   testimonials: Testimonial[] = [
     {
-      name: 'Sarah Mitchell',
-      location: 'Beacon Hill',
+      name: 'M.G.',
+      location: 'Boston Property Owner',
       rating: 5,
-      text: 'Sorella has completely transformed how we manage our home. Their proactive maintenance approach caught issues before they became expensive problems, and their 24/7 support gives us incredible peace of mind. We can finally focus on what truly matters.',
-      service: 'Home Management'
+      text: 'When our condo building needed a new roof, Sorella stepped in and handled everything from start to finish. They gathered multiple quotes, coordinated the vendors, and oversaw the entire project. What could have been a stressful, time-consuming process for the owners turned into a seamless experience. The work was done quickly, the pricing was reasonable, and we never had to worry about the details. Sorella truly took the pressure off all of us.',
+      service: 'Property Management'
     },
     {
-      name: 'David Chen',
-      location: 'Back Bay',
+      name: 'M.A.',
+      location: 'Hingham Homeowner',
       rating: 5,
-      text: 'The project oversight for our kitchen renovation was flawless. Sorella coordinated everything—contractors, timelines, quality control—while we continued our busy lives. The attention to detail and professionalism exceeded all expectations.',
+      text: 'Thanks to Sorella, my backyard has been transformed into a gathering place for my family. They managed every detail of installing our new patio and fire pit, and the result is more than just beautiful—it\'s a space where I can make memories with my kids and grandkids. Evenings by the fire, roasting s\'mores, laughing together… it\'s everything I dreamed of and more. Sorella gave us more than a project—they gave us a place to enjoy life.',
       service: 'Project Management'
     },
     {
-      name: 'Jennifer Rodriguez',
-      location: 'Cambridge',
+      name: 'G.E.',
+      location: 'Hingham Homeowner',
       rating: 5,
-      text: 'Moving with three kids seemed impossible until Sorella stepped in. They handled every detail from packing to setup, making our transition seamless. Their team treated our belongings like their own. Absolutely exceptional service.',
+      text: 'Moving was such an emotional process for me, but Sorella turned what I expected to be overwhelming into something almost effortless. Their team handled everything—packing, purging, coordinating donations—and even got to the new house before the movers arrived to deep clean and prepare. By 8 p.m. on the night of the move, the kitchen was fully unpacked and organized, the bedrooms were set up, and the beds were made. Instead of feeling stressed, I felt at home. Sorella didn\'t just move my belongings—they gave me peace of mind during one of life\'s biggest transitions.',
       service: 'Move Management'
-    },
-    {
-      name: 'Robert Thompson',
-      location: 'Newton',
-      rating: 5,
-      text: 'The concierge services are a game-changer. From coordinating repairs to managing deliveries, Sorella handles everything with discretion and care. It\'s like having a trusted partner who anticipates our needs before we even ask.',
-      service: 'Concierge Services'
     }
   ];
 
   ngOnInit() {
+    // Ensure first testimonial is active
+    this.currentTestimonial = 0;
+    
     // Auto-rotate testimonials every 5 seconds
-    setInterval(() => {
+    this.intervalId = setInterval(() => {
       this.nextTestimonial();
     }, 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   nextTestimonial() {
@@ -61,13 +64,29 @@ export class Testimonials implements OnInit {
   }
 
   previousTestimonial() {
+    this.pauseAutoRotation();
     this.currentTestimonial = this.currentTestimonial === 0 
       ? this.testimonials.length - 1 
       : this.currentTestimonial - 1;
+    this.resumeAutoRotation();
   }
 
   goToTestimonial(index: number) {
+    this.pauseAutoRotation();
     this.currentTestimonial = index;
+    this.resumeAutoRotation();
+  }
+
+  private pauseAutoRotation() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  private resumeAutoRotation() {
+    this.intervalId = setInterval(() => {
+      this.nextTestimonial();
+    }, 5000);
   }
 
   getStars(rating: number): number[] {
