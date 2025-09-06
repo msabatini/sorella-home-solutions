@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -9,8 +10,13 @@ import { RouterModule } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   isDropdownOpen = false;
+  currentRoute = '';
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
+    // Track current route for active navigation
+    this.trackCurrentRoute();
     // Add smooth scrolling for navigation links
     this.setupSmoothScrolling();
     // Setup mobile menu toggle
@@ -93,5 +99,31 @@ export class HeaderComponent implements OnInit {
 
   hideDropdown() {
     this.isDropdownOpen = false;
+  }
+
+  private trackCurrentRoute() {
+    // Set initial route
+    this.currentRoute = this.router.url;
+    
+    // Listen for route changes
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentRoute = event.url;
+      });
+  }
+
+  isActiveRoute(route: string): boolean {
+    // Handle home route
+    if (route === '/' && this.currentRoute === '/') {
+      return true;
+    }
+    
+    // Handle other routes (including fragments)
+    if (route !== '/' && this.currentRoute.startsWith(route)) {
+      return true;
+    }
+    
+    return false;
   }
 }
