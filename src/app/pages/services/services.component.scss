@@ -440,7 +440,56 @@
   font-size: 1.2rem;
   color: #64748b;
   line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.service-detailed-content {
   margin-bottom: 3rem;
+  
+  .detailed-description {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+  }
+}
+
+.service-quote {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: 
+    linear-gradient(135deg, rgba(0, 162, 255, 0.05) 0%, rgba(0, 162, 255, 0.02) 100%),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.8) 0%, transparent 60%);
+  border-left: 4px solid #00a2ff;
+  border-radius: 0 12px 12px 0;
+  position: relative;
+  
+  &::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    font-size: 4rem;
+    color: rgba(0, 162, 255, 0.2);
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  
+  .quote-text {
+    font-size: 1.2rem;
+    color: #334155;
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+  }
+  
+  .quote-author {
+    font-size: 1rem;
+    color: #00a2ff;
+    font-weight: 600;
+    font-style: normal;
+  }
 }
 
 .service-features {
@@ -462,7 +511,7 @@
 
 .feature-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   padding: 0.75rem 0;
   font-size: 1rem;
@@ -471,6 +520,11 @@
   .feature-icon {
     color: #00a2ff;
     flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+  
+  .feature-text {
+    line-height: 1.6;
   }
 }
 
@@ -509,6 +563,22 @@
   font-size: 0.95rem;
   color: #64748b;
   font-weight: 500;
+}
+
+.service-closing {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 162, 255, 0.1);
+  
+  .closing-text {
+    font-size: 1.1rem;
+    color: #334155;
+    line-height: 1.7;
+    font-style: italic;
+    margin: 0;
+    text-align: center;
+    font-weight: 500;
+  }
 }
 
 .service-visual {
@@ -858,6 +928,37 @@
     svg {
       width: 100%;
       height: 100%;
+    }
+  }
+  
+  .service-quote {
+    padding: 1.5rem;
+    margin: 2rem 0;
+    
+    &::before {
+      font-size: 3rem;
+      top: -5px;
+      left: 10px;
+    }
+    
+    .quote-text {
+      font-size: 1.1rem;
+    }
+    
+    .quote-author {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .service-detailed-content {
+    .detailed-description {
+      font-size: 1rem;
+    }
+  }
+  
+  .service-closing {
+    .closing-text {
+      font-size: 1rem;
     }
   }
   
