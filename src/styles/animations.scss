@@ -1,9 +1,9 @@
 // Base animation styles
 .animate-on-scroll,
 .animate-on-load {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease-out;
+  opacity: 0.1;
+  transform: translateY(20px);
+  transition: all 0.5s ease-out;
 }
 
 .animate-on-scroll.animate-in,
@@ -14,8 +14,8 @@
 
 // Fade in animation
 .fade-in {
-  opacity: 0;
-  transition: opacity 0.6s ease-out;
+  opacity: 0.2;
+  transition: opacity 0.4s ease-out;
 }
 
 .fade-in.animate-in {
@@ -24,8 +24,8 @@
 
 // Slide up animation
 .slide-up {
-  opacity: 0;
-  transform: translateY(50px);
+  opacity: 0.1;
+  transform: translateY(30px);
   transition: all 0.8s ease-out;
 }
 
@@ -36,8 +36,8 @@
 
 // Slide in from left
 .slide-left {
-  opacity: 0;
-  transform: translateX(-50px);
+  opacity: 0.1;
+  transform: translateX(-30px);
   transition: all 0.8s ease-out;
 }
 
@@ -48,8 +48,8 @@
 
 // Slide in from right
 .slide-right {
-  opacity: 0;
-  transform: translateX(50px);
+  opacity: 0.1;
+  transform: translateX(30px);
   transition: all 0.8s ease-out;
 }
 
@@ -60,8 +60,8 @@
 
 // Scale animation
 .scale-in {
-  opacity: 0;
-  transform: scale(0.8);
+  opacity: 0.2;
+  transform: scale(0.9);
   transition: all 0.6s ease-out;
 }
 
@@ -82,8 +82,8 @@
 
 // Counter animations
 .counter {
-  opacity: 0;
-  transform: translateY(20px);
+  opacity: 0.1;
+  transform: translateY(15px);
   transition: all 0.6s ease-out;
 }
 
@@ -99,8 +99,8 @@
 
 // Testimonial animations
 .testimonial-card {
-  opacity: 0;
-  transform: translateY(30px) scale(0.95);
+  opacity: 0.1;
+  transform: translateY(20px) scale(0.97);
   transition: all 0.8s ease-out;
 }
 
@@ -111,8 +111,8 @@
 
 // Contact form animations
 .contact-form {
-  opacity: 0;
-  transform: translateY(40px);
+  opacity: 0.1;
+  transform: translateY(25px);
   transition: all 0.8s ease-out;
 }
 
@@ -123,8 +123,8 @@
 
 // Footer animations
 .footer-content {
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 0.1;
+  transform: translateY(20px);
   transition: all 0.6s ease-out;
 }
 
@@ -135,18 +135,22 @@
 
 // Hero animations
 .hero-title {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: heroTitleIn 1s ease-out 0.3s forwards;
+  opacity: 0.2;
+  transform: translateY(20px);
+  animation: heroTitleIn 0.6s ease-out 0.2s forwards;
 }
 
 .hero-button {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: heroButtonIn 0.8s ease-out 0.8s forwards;
+  opacity: 0.1;
+  transform: translateY(15px);
+  animation: heroButtonIn 0.5s ease-out 0.5s forwards;
 }
 
 @keyframes heroTitleIn {
+  from {
+    opacity: 0.2;
+    transform: translateY(20px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -154,11 +158,55 @@
 }
 
 @keyframes heroButtonIn {
+  from {
+    opacity: 0.1;
+    transform: translateY(15px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+// Page-level fade-in animation
+.page-fade-in {
+  opacity: 0.3;
+  animation: pageLoadFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes pageLoadFadeIn {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Page content staggered fade-in
+.page-content-fade {
+  opacity: 0.2;
+  transform: translateY(10px);
+  animation: pageContentFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes pageContentFadeIn {
+  from {
+    opacity: 0.2;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Staggered page sections
+.page-section-1 { animation-delay: 0.05s; }
+.page-section-2 { animation-delay: 0.1s; }
+.page-section-3 { animation-delay: 0.15s; }
+.page-section-4 { animation-delay: 0.2s; }
+.page-section-5 { animation-delay: 0.25s; }
 
 // Hover effects
 .hover-lift {
