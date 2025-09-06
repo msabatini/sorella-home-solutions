@@ -90,6 +90,207 @@
   }
 }
 
+// Founder Story Section
+.founder-story-section {
+  padding: 8rem 0;
+  background: 
+    linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 30%, #f8fafc 70%, #f0f4f8 100%),
+    radial-gradient(circle at 25% 75%, rgba(71, 85, 105, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, rgba(100, 116, 139, 0.06) 0%, transparent 50%);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(45deg, transparent 40%, rgba(71, 85, 105, 0.03) 50%, transparent 60%),
+      linear-gradient(-45deg, transparent 40%, rgba(100, 116, 139, 0.02) 50%, transparent 60%);
+    pointer-events: none;
+  }
+}
+
+.story-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.founder-story-section .section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 2;
+}
+
+.founder-story-section .section-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #0e2340;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #0e2340 0%, #1e3a5f 50%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.founder-story-section .section-subtitle {
+  font-size: 1.3rem;
+  color: #00a2ff;
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.story-content {
+  position: relative;
+}
+
+.founder-image {
+  float: left;
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 3rem 2rem 0;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(71, 85, 105, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(71, 85, 105, 0.15);
+  transition: all 0.5s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+      0 25px 70px rgba(0, 0, 0, 0.2),
+      0 12px 30px rgba(71, 85, 105, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border-color: rgba(71, 85, 105, 0.25);
+  }
+}
+
+.story-text {
+  line-height: 1.8;
+  
+  p {
+    font-size: 1.1rem;
+    color: #334155;
+    margin-bottom: 1.5rem;
+    
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+  
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem 2rem;
+    margin: 2.5rem 0;
+    clear: both;
+  }
+  
+  .service-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      .service-icon {
+        transform: translateY(-3px);
+        background: 
+          linear-gradient(135deg, rgba(0, 162, 255, 0.18) 0%, rgba(0, 162, 255, 0.12) 100%),
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.5) 0%, transparent 60%);
+        border-color: rgba(0, 162, 255, 0.25);
+        box-shadow: 0 8px 20px rgba(0, 162, 255, 0.2);
+        
+        svg {
+          color: #0ea5e9;
+          transform: scale(1.05);
+        }
+      }
+      
+      .service-content h4 {
+        color: #0e2340;
+      }
+    }
+  }
+  
+  .service-icon {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: 
+      linear-gradient(135deg, rgba(0, 162, 255, 0.12) 0%, rgba(0, 162, 255, 0.08) 100%),
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 162, 255, 0.15);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 162, 255, 0.1);
+    
+    svg {
+      width: 32px;
+      height: 32px;
+      color: #00a2ff;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+    }
+  }
+  
+  .service-content {
+    flex: 1;
+    
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #334155;
+      margin: 0 0 0.25rem 0;
+      line-height: 1.3;
+      transition: all 0.3s ease;
+    }
+    
+    p {
+      font-size: 0.875rem;
+      color: #64748b;
+      line-height: 1.4;
+      margin: 0;
+      font-style: italic;
+    }
+  }
+  
+  .story-signature {
+    font-size: 1.2rem;
+    color: #0e2340;
+    font-weight: 400;
+    text-align: right;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    position: relative;
+    font-family: 'Georgia', serif;
+    
+    em {
+      color: #00a2ff;
+      font-style: italic;
+      font-weight: 500;
+    }
+  }
+}
+
 // About Content Section
 .about-content {
   padding: 8rem 0;
@@ -875,6 +1076,78 @@
     font-size: 1.1rem;
   }
   
+  // Founder Story responsive styles
+  .founder-story-section {
+    padding: 5rem 0;
+    
+    .section-header {
+      margin-bottom: 3rem;
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+    }
+    
+    .section-subtitle {
+      font-size: 1.1rem;
+    }
+  }
+  
+  .founder-image {
+    float: none;
+    display: block;
+    width: 100%;
+    max-width: 250px;
+    height: 250px;
+    margin: 0 auto 2rem auto;
+  }
+  
+  .story-text {
+    text-align: left;
+    
+    p {
+      font-size: 1rem;
+    }
+    
+    .services-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .service-item {
+      gap: 0.75rem;
+      padding: 0.25rem 0;
+    }
+    
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+    
+    .service-content {
+      h4 {
+        font-size: 0.95rem;
+      }
+      
+      p {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .story-signature {
+      font-size: 1.1rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      text-align: center;
+    }
+  }
+  
   .about-content,
   .values-section,
   .stats-section,
@@ -928,6 +1201,20 @@
   
   .section-title {
     font-size: 1.8rem;
+  }
+  
+  .founder-story-section {
+    .section-title {
+      font-size: 2rem;
+    }
+    
+    .section-subtitle {
+      font-size: 1rem;
+    }
+    
+    .section-header {
+      margin-bottom: 2rem;
+    }
   }
   
   .cta-title {
