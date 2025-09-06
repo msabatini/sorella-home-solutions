@@ -78,14 +78,26 @@
             <h2 class="service-title-large">{{ service.title }}</h2>
             <p class="service-description-large">{{ service.description }}</p>
             
+            <div class="service-detailed-content" *ngIf="service.detailedDescription">
+              <p class="detailed-description">{{ service.detailedDescription }}</p>
+            </div>
+            
+            <div class="service-quote" *ngIf="service.quote">
+              <blockquote class="quote-text">"{{ service.quote.text }}"</blockquote>
+              <cite class="quote-author">— {{ service.quote.author }}</cite>
+            </div>
+            
             <div class="service-features">
-              <h3 class="features-title">What's Included</h3>
+              <h3 class="features-title" *ngIf="service.detailedDescription; else defaultTitle">Our {{ service.title }} Services Include:</h3>
+              <ng-template #defaultTitle>
+                <h3 class="features-title">What's Included</h3>
+              </ng-template>
               <ul class="features-list">
                 <li *ngFor="let feature of service.features" class="feature-item">
                   <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  {{ feature }}
+                  <span class="feature-text">{{ feature }}</span>
                 </li>
               </ul>
             </div>
@@ -98,6 +110,25 @@
                   <span class="benefit-text">{{ benefit }}</span>
                 </div>
               </div>
+            </div>
+            
+            <div class="service-closing" *ngIf="service.detailedDescription">
+              <p class="closing-text" *ngIf="service.sectionId === 'property-management'">
+                With meticulous attention to detail and confidential, concierge-level service, our mission is simple: 
+                to give you more time to enjoy your home, while we take care of the rest.
+              </p>
+              <p class="closing-text" *ngIf="service.sectionId === 'project-management'">
+                With Sorella's meticulous oversight, your projects move forward seamlessly—on time, on budget, and to your exact specifications.
+              </p>
+              <p class="closing-text" *ngIf="service.sectionId === 'move-management'">
+                With Sorella, your move is more than a checklist—it's a stress-free, well-managed transition designed around your needs.
+              </p>
+              <p class="closing-text" *ngIf="service.sectionId === 'concierge-services'">
+                With Sorella's Concierge Services, your home is always in expert hands, leaving you free to focus on what matters most.
+              </p>
+              <p class="closing-text" *ngIf="service.sectionId === 'corporate-relocation'">
+                At Sorella, we combine professional efficiency with personalized attention to deliver a relocation experience that is discreet, seamless, and stress-free.
+              </p>
             </div>
           </div>
         </div>
