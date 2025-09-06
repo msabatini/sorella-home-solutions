@@ -1,8 +1,8 @@
 <app-header></app-header>
 
-<main class="contact-page">
+<main class="contact-page page-fade-in">
   <!-- Hero Section -->
-  <section class="contact-hero">
+  <section class="contact-hero page-content-fade page-section-1">
     <div class="hero-background"></div>
     <div class="hero-container">
       <div class="hero-content">
@@ -29,7 +29,7 @@
   </section>
 
   <!-- Intro Section -->
-  <section class="contact-intro">
+  <section class="contact-intro page-content-fade page-section-2">
     <div class="intro-container">
       <div class="intro-content">
         <div class="intro-icon-wrapper">
@@ -60,7 +60,7 @@
   </section>
 
   <!-- Contact Methods Section -->
-  <section class="contact-methods-section">
+  <section class="contact-methods-section page-content-fade page-section-3">
     <div class="methods-container">
       <div class="section-header">
         <h2 class="section-title">Multiple Ways to Connect</h2>
@@ -70,7 +70,9 @@
       </div>
       
       <div class="contact-methods-grid">
-        <div class="contact-method-card" *ngFor="let method of contactMethods">
+        <div class="contact-method-card page-content-fade" 
+             *ngFor="let method of contactMethods; let i = index"
+             [style.animation-delay]="(0.2 + i * 0.05) + 's'">
           <div class="method-icon-wrapper">
             <div class="method-icon" [innerHTML]="method.icon"></div>
           </div>
@@ -88,7 +90,7 @@
   </section>
 
   <!-- Contact Form Section -->
-  <section id="contact" class="contact-section">
+  <section id="contact" class="contact-section page-content-fade page-section-4">
     <div class="container">
       <div class="contact-header animate-on-scroll">
         <h2>Ready to Transform Your Home Management?</h2>

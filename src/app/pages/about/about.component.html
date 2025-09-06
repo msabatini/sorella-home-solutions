@@ -1,8 +1,8 @@
 <app-header></app-header>
 
-<main class="about-page">
+<main class="about-page page-fade-in">
   <!-- Hero Section -->
-  <section class="about-hero">
+  <section class="about-hero page-content-fade page-section-1">
     <div class="hero-container">
       <div class="hero-content">
         <div class="hero-icon animate-on-load fade-in-up" [innerHTML]="focusIcon"></div>
@@ -22,7 +22,7 @@
   </section>
 
   <!-- Founder Story Section -->
-  <section class="founder-story-section">
+  <section class="founder-story-section page-content-fade page-section-2">
     <div class="story-container">
       <div class="section-header animate-on-scroll fade-in-up">
         <h2 class="section-title">Meet Our Founder</h2>
@@ -132,7 +132,7 @@
   </section>
 
   <!-- About Sections -->
-  <section class="about-content">
+  <section class="about-content page-content-fade page-section-3">
     <div class="content-container">
       <div class="about-grid">
         <div class="about-card animate-on-scroll fade-in-up" *ngFor="let section of aboutSections; let i = index">
@@ -146,7 +146,7 @@
   </section>
 
   <!-- Values Section -->
-  <section class="values-section">
+  <section class="values-section page-content-fade page-section-4">
     <div class="values-container">
       <div class="section-header animate-on-scroll fade-in-up">
         <h2 class="section-title">Our Core Values</h2>

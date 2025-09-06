@@ -1,8 +1,8 @@
 <app-header></app-header>
 
-<main class="services-page">
+<main class="services-page page-fade-in">
   <!-- Hero Section -->
-  <section class="services-hero">
+  <section class="services-hero page-content-fade page-section-1">
     <div class="hero-background"></div>
     <div class="hero-container">
       <div class="hero-content">
@@ -29,7 +29,7 @@
   </section>
 
   <!-- Services Overview -->
-  <section class="services-overview">
+  <section class="services-overview page-content-fade page-section-2">
     <div class="overview-container">
       <div class="overview-header">
         <h2 class="section-title">Complete Home Solutions</h2>
@@ -40,10 +40,11 @@
       </div>
       
       <div class="services-grid">
-        <div class="service-overview-card" 
+        <div class="service-overview-card page-content-fade" 
              *ngFor="let service of services; let i = index" 
              (click)="scrollToService(service.sectionId)"
-             [class.featured]="i === 0">
+             [class.featured]="i === 0"
+             [style.animation-delay]="(0.15 + i * 0.05) + 's'">
           <div class="service-number">{{ (i + 1).toString().padStart(2, '0') }}</div>
           <div class="service-icon-wrapper">
             <div class="service-icon" [innerHTML]="service.icon"></div>
@@ -61,12 +62,13 @@
   </section>
 
   <!-- Detailed Services -->
-  <section class="services-detailed">
+  <section class="services-detailed page-content-fade page-section-3">
     <div class="detailed-container">
-      <div class="service-detail" 
+      <div class="service-detail page-content-fade" 
            *ngFor="let service of services; let i = index" 
            [id]="service.sectionId"
-           [class.reverse]="i % 2 === 1">
+           [class.reverse]="i % 2 === 1"
+           [style.animation-delay]="(0.25 + i * 0.1) + 's'">
         
         <div class="service-content">
           <div class="service-header">
@@ -143,7 +145,7 @@
   </section>
 
   <!-- Call to Action -->
-  <section class="services-cta">
+  <section class="services-cta page-content-fade page-section-4">
     <div class="cta-container">
       <div class="cta-content">
         <h2 class="cta-title">Ready to Transform Your Home Experience?</h2>
