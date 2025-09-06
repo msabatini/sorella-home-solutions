@@ -120,6 +120,7 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   position: relative;
+  padding: .5rem 0;
   
   &:hover {
     color: rgba(255, 255, 255, 0.8);
@@ -150,6 +151,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0 0 .5rem;
     
     .dropdown-arrow {
       transition: transform 0.3s ease;
