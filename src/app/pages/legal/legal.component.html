@@ -1,0 +1,757 @@
+<app-header></app-header>
+
+<main class="legal-page page-fade-in">
+  <!-- Hero Section -->
+  <section class="legal-hero page-content-fade page-section-1">
+    <div class="hero-background"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">Legal Information</h1>
+        <p class="hero-subtitle">
+          Transparency and trust are fundamental to our service. Review our policies to understand how we protect your privacy and ensure the highest standards of service.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Legal Content -->
+  <section class="legal-content page-content-fade page-section-2">
+    <div class="content-container">
+      
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'privacy'"
+          (click)="setActiveTab('privacy')">
+          <span class="tab-icon privacy-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 7C13.1 7 14 7.9 14 9C14 10.1 13.1 11 12 11C10.9 11 10 10.1 10 9C10 7.9 10.9 7 12 7ZM12 17C10.33 17 8.94 16.16 8.2 14.9C8.46 13.62 10.33 13 12 13C13.67 13 15.54 13.62 15.8 14.9C15.06 16.16 13.67 17 12 17Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Privacy Policy
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'terms'"
+          (click)="setActiveTab('terms')">
+          <span class="tab-icon terms-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20ZM8 12V14H16V12H8ZM8 16V18H13V16H8Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Terms of Service
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'cookies'"
+          (click)="setActiveTab('cookies')">
+          <span class="tab-icon cookies-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2ZM12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4ZM8 8C8.55 8 9 8.45 9 9C9 9.55 8.55 10 8 10C7.45 10 7 9.55 7 9C7 8.45 7.45 8 8 8ZM16 8C16.55 8 17 8.45 17 9C17 9.55 16.55 10 16 10C15.45 10 15 9.55 15 9C15 8.45 15.45 8 16 8ZM10 12C10.55 12 11 12.45 11 13C11 13.55 10.55 14 10 14C9.45 14 9 13.55 9 13C9 12.45 9.45 12 10 12ZM14 12C14.55 12 15 12.45 15 13C15 13.55 14.55 14 14 14C13.45 14 13 13.55 13 13C13 12.45 13.45 12 14 12ZM8 15C8.55 15 9 15.45 9 16C9 16.55 8.55 17 8 17C7.45 17 7 16.55 7 16C7 15.45 7.45 15 8 15ZM16 15C16.55 15 17 15.45 17 16C17 16.55 16.55 17 16 17C15.45 17 15 16.55 15 16C15 15.45 15.45 15 16 15Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Cookie Policy
+        </button>
+      </div>
+
+      <!-- Privacy Policy Tab -->
+      <div class="tab-content" [class.active]="activeTab === 'privacy'" id="privacy-policy">
+        <div class="policy-header">
+          <h2>Privacy Policy</h2>
+          <p class="last-updated">Last Updated: December 2024</p>
+        </div>
+
+        <div class="policy-content">
+          <section class="policy-section">
+            <h3>1. Introduction</h3>
+            <p>
+              At Sorella Home Solutions ("Sorella," "we," "us," or "our"), we are committed to protecting your privacy and maintaining the confidentiality of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our residential property management, concierge services, and related home solutions.
+            </p>
+            <p>
+              Given the intimate nature of our services—managing your home, coordinating personal requests, and accessing your property—we understand that privacy and discretion are paramount. This policy reflects our commitment to maintaining the highest standards of confidentiality.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>2. Information We Collect</h3>
+            
+            <h4>2.1 Personal Information</h4>
+            <ul>
+              <li><strong>Contact Information:</strong> Name, address, phone numbers, email addresses</li>
+              <li><strong>Property Information:</strong> Property addresses, access codes, security information, property specifications</li>
+              <li><strong>Financial Information:</strong> Billing information, payment methods, service agreements</li>
+              <li><strong>Emergency Contacts:</strong> Names and contact information for designated emergency contacts</li>
+              <li><strong>Service Preferences:</strong> Scheduling preferences, service customizations, special instructions</li>
+            </ul>
+
+            <h4>2.2 Property Access Information</h4>
+            <ul>
+              <li>Security codes, key locations, and access procedures</li>
+              <li>Alarm system information and emergency protocols</li>
+              <li>Property layout details relevant to service delivery</li>
+              <li>Vendor access requirements and restrictions</li>
+            </ul>
+
+            <h4>2.3 Service-Related Information</h4>
+            <ul>
+              <li>Service requests and communications</li>
+              <li>Property condition reports and maintenance records</li>
+              <li>Vendor interactions and service coordination details</li>
+              <li>Photos and documentation related to property services</li>
+            </ul>
+
+            <h4>2.4 Technical Information</h4>
+            <ul>
+              <li>Website usage data and analytics</li>
+              <li>Device information and IP addresses</li>
+              <li>Communication logs and timestamps</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>3. How We Use Your Information</h3>
+            
+            <h4>3.1 Service Delivery</h4>
+            <ul>
+              <li>Providing property management and concierge services</li>
+              <li>Coordinating maintenance, repairs, and vendor services</li>
+              <li>Managing move coordination and relocation services</li>
+              <li>Handling emergency situations and urgent requests</li>
+            </ul>
+
+            <h4>3.2 Communication</h4>
+            <ul>
+              <li>Providing service updates and property reports</li>
+              <li>Coordinating appointments and service schedules</li>
+              <li>Responding to inquiries and service requests</li>
+              <li>Sending important notices and policy updates</li>
+            </ul>
+
+            <h4>3.3 Business Operations</h4>
+            <ul>
+              <li>Processing payments and managing accounts</li>
+              <li>Improving our services and developing new offerings</li>
+              <li>Maintaining records for legal and regulatory compliance</li>
+              <li>Analyzing service performance and client satisfaction</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>4. Information Sharing and Disclosure</h3>
+            
+            <h4>4.1 Service Providers</h4>
+            <p>
+              We may share necessary information with trusted vendors and contractors who provide services to your property, including:
+            </p>
+            <ul>
+              <li>Maintenance and repair professionals</li>
+              <li>Cleaning and landscaping services</li>
+              <li>Security and monitoring services</li>
+              <li>Delivery and logistics providers</li>
+            </ul>
+            <p>All service providers are bound by confidentiality agreements and are authorized to use your information only as necessary to provide their services.</p>
+
+            <h4>4.2 Legal Requirements</h4>
+            <p>We may disclose your information when required by law, court order, or government regulation, or when we believe disclosure is necessary to:</p>
+            <ul>
+              <li>Comply with legal obligations</li>
+              <li>Protect our rights and property</li>
+              <li>Ensure the safety of our clients, employees, or the public</li>
+              <li>Investigate potential violations of our terms of service</li>
+            </ul>
+
+            <h4>4.3 Business Transfers</h4>
+            <p>In the event of a merger, acquisition, or sale of assets, your information may be transferred as part of the business transaction, subject to the same privacy protections.</p>
+          </section>
+
+          <section class="policy-section">
+            <h3>5. Data Security</h3>
+            <p>
+              We implement comprehensive security measures to protect your personal information:
+            </p>
+            <ul>
+              <li><strong>Physical Security:</strong> Secure storage of physical documents and restricted access to sensitive information</li>
+              <li><strong>Digital Security:</strong> Encryption of sensitive data, secure communication channels, and regular security audits</li>
+              <li><strong>Employee Training:</strong> All staff members receive confidentiality training and sign non-disclosure agreements</li>
+              <li><strong>Access Controls:</strong> Information is accessible only to employees who need it to provide services</li>
+              <li><strong>Regular Updates:</strong> Security protocols are regularly reviewed and updated to address emerging threats</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>6. Your Rights and Choices</h3>
+            
+            <h4>6.1 Access and Correction</h4>
+            <p>You have the right to access, review, and correct your personal information. Contact us to request access to your data or to make corrections.</p>
+
+            <h4>6.2 Data Portability</h4>
+            <p>You may request a copy of your personal information in a structured, commonly used format.</p>
+
+            <h4>6.3 Deletion</h4>
+            <p>You may request deletion of your personal information, subject to legal and contractual obligations to retain certain records.</p>
+
+            <h4>6.4 Communication Preferences</h4>
+            <p>You can opt out of non-essential communications while maintaining service-related notifications necessary for our operations.</p>
+          </section>
+
+          <section class="policy-section">
+            <h3>7. Data Retention</h3>
+            <p>
+              We retain your information for as long as necessary to provide services and comply with legal obligations:
+            </p>
+            <ul>
+              <li><strong>Active Service Period:</strong> All information necessary for service delivery</li>
+              <li><strong>Post-Service:</strong> Financial records and service history as required by law (typically 7 years)</li>
+              <li><strong>Property Access Information:</strong> Securely destroyed upon service termination unless otherwise required</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>8. Children's Privacy</h3>
+            <p>
+              Our services are not directed to individuals under 18 years of age. We do not knowingly collect personal information from children under 18. If we become aware that we have collected such information, we will take steps to delete it promptly.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>9. Changes to This Policy</h3>
+            <p>
+              We may update this Privacy Policy periodically to reflect changes in our practices or legal requirements. We will notify you of material changes through email or prominent notice on our website. Your continued use of our services after such notification constitutes acceptance of the updated policy.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>10. Contact Information</h3>
+            <p>
+              If you have questions about this Privacy Policy or our privacy practices, please contact us:
+            </p>
+            <div class="contact-info">
+              <p><strong>Sorella Home Solutions</strong></p>
+              <p>Email: privacy@sorellahomesolutions.com</p>
+              <p>Phone: (617) 555-0123</p>
+              <p>Address: [Business Address]</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Terms of Service Tab -->
+      <div class="tab-content" [class.active]="activeTab === 'terms'" id="terms-of-service">
+        <div class="policy-header">
+          <h2>Terms of Service</h2>
+          <p class="last-updated">Last Updated: December 2024</p>
+        </div>
+
+        <div class="policy-content">
+          <section class="policy-section">
+            <h3>1. Agreement to Terms</h3>
+            <p>
+              These Terms of Service ("Terms") constitute a legally binding agreement between you ("Client," "you," or "your") and Sorella Home Solutions ("Sorella," "we," "us," or "our") regarding your use of our residential property management, concierge services, and related home solutions.
+            </p>
+            <p>
+              By engaging our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use our services.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>2. Services Description</h3>
+            
+            <h4>2.1 Property Management Services</h4>
+            <ul>
+              <li>Routine maintenance coordination and oversight</li>
+              <li>Emergency response and urgent repair coordination</li>
+              <li>Vendor management and quality assurance</li>
+              <li>Property inspections and condition reporting</li>
+              <li>Preventive maintenance scheduling</li>
+            </ul>
+
+            <h4>2.2 Concierge Services</h4>
+            <ul>
+              <li>Personal assistance and lifestyle support</li>
+              <li>Appointment scheduling and coordination</li>
+              <li>Vendor sourcing and service arrangement</li>
+              <li>Special event planning and coordination</li>
+              <li>Travel and accommodation arrangements</li>
+            </ul>
+
+            <h4>2.3 Move Management Services</h4>
+            <ul>
+              <li>Relocation planning and coordination</li>
+              <li>Moving company selection and oversight</li>
+              <li>Utility setup and transfer coordination</li>
+              <li>Address change management</li>
+              <li>Settling-in services and local orientation</li>
+            </ul>
+
+            <h4>2.4 Project Management Services</h4>
+            <ul>
+              <li>Home improvement project oversight</li>
+              <li>Contractor selection and management</li>
+              <li>Timeline and budget monitoring</li>
+              <li>Quality control and progress reporting</li>
+              <li>Final inspection and completion verification</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>3. Client Responsibilities</h3>
+            
+            <h4>3.1 Property Access</h4>
+            <ul>
+              <li>Provide safe and legal access to your property</li>
+              <li>Maintain current access codes, keys, and security information</li>
+              <li>Notify us of any changes to access procedures or security systems</li>
+              <li>Ensure compliance with building rules and homeowner association requirements</li>
+            </ul>
+
+            <h4>3.2 Communication</h4>
+            <ul>
+              <li>Provide accurate and current contact information</li>
+              <li>Respond promptly to requests for information or authorization</li>
+              <li>Communicate preferences, restrictions, and special requirements clearly</li>
+              <li>Notify us of any changes in circumstances that may affect service delivery</li>
+            </ul>
+
+            <h4>3.3 Payment</h4>
+            <ul>
+              <li>Pay all fees according to the agreed schedule</li>
+              <li>Provide valid payment information and maintain current billing details</li>
+              <li>Reimburse approved expenses incurred on your behalf</li>
+              <li>Review and approve service estimates exceeding pre-authorized limits</li>
+            </ul>
+
+            <h4>3.4 Legal Compliance</h4>
+            <ul>
+              <li>Ensure all requested services comply with applicable laws and regulations</li>
+              <li>Maintain appropriate insurance coverage for your property</li>
+              <li>Provide necessary permits and approvals for work performed</li>
+              <li>Comply with local ordinances and community guidelines</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>4. Service Standards and Limitations</h3>
+            
+            <h4>4.1 Service Hours</h4>
+            <p>
+              Standard business hours are Monday through Friday, 8:00 AM to 6:00 PM EST. Emergency services are available 24/7 for urgent situations affecting property safety or security.
+            </p>
+
+            <h4>4.2 Response Times</h4>
+            <ul>
+              <li><strong>Emergency situations:</strong> Immediate response (within 1 hour)</li>
+              <li><strong>Urgent requests:</strong> Same business day response</li>
+              <li><strong>Routine requests:</strong> Response within 24-48 hours</li>
+              <li><strong>Scheduled services:</strong> As agreed upon in advance</li>
+            </ul>
+
+            <h4>4.3 Service Limitations</h4>
+            <p>We do not provide:</p>
+            <ul>
+              <li>Legal, medical, or financial advice</li>
+              <li>Services requiring professional licenses we do not hold</li>
+              <li>Services that violate laws, regulations, or ethical standards</li>
+              <li>Personal care or childcare services</li>
+              <li>Services outside our geographic service area without prior arrangement</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>5. Fees and Payment Terms</h3>
+            
+            <h4>5.1 Service Fees</h4>
+            <p>
+              Fees are established in your individual service agreement and may include:
+            </p>
+            <ul>
+              <li>Monthly management fees</li>
+              <li>Project-based fees</li>
+              <li>Hourly rates for specific services</li>
+              <li>Emergency service premiums</li>
+            </ul>
+
+            <h4>5.2 Expense Reimbursement</h4>
+            <p>
+              You are responsible for reimbursing approved expenses incurred on your behalf, including:
+            </p>
+            <ul>
+              <li>Vendor services and materials</li>
+              <li>Emergency repairs and services</li>
+              <li>Travel expenses for out-of-area services</li>
+              <li>Permits, fees, and regulatory costs</li>
+            </ul>
+
+            <h4>5.3 Payment Terms</h4>
+            <ul>
+              <li>Monthly fees are due in advance</li>
+              <li>Expense reimbursements are due within 30 days of invoice</li>
+              <li>Late payments may incur interest charges</li>
+              <li>Services may be suspended for accounts more than 60 days overdue</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>6. Liability and Insurance</h3>
+            
+            <h4>6.1 Our Liability</h4>
+            <p>
+              Sorella maintains comprehensive general liability and professional liability insurance. Our liability is limited to direct damages caused by our negligence or breach of contract, up to the limits of our insurance coverage.
+            </p>
+
+            <h4>6.2 Client Insurance</h4>
+            <p>
+              You are required to maintain appropriate homeowner's or property insurance. We recommend reviewing your coverage with your insurance provider to ensure adequate protection for services we provide.
+            </p>
+
+            <h4>6.3 Third-Party Services</h4>
+            <p>
+              We coordinate with licensed, insured vendors and contractors. However, we are not liable for the acts or omissions of third-party service providers beyond our reasonable oversight and coordination duties.
+            </p>
+
+            <h4>6.4 Limitation of Liability</h4>
+            <p>
+              Our total liability for any claim shall not exceed the total fees paid by you in the 12 months preceding the incident. We are not liable for indirect, consequential, or punitive damages.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>7. Confidentiality and Privacy</h3>
+            <p>
+              We maintain strict confidentiality regarding your personal information, property details, and service arrangements. All employees and contractors sign confidentiality agreements. We will not disclose your information except as necessary to provide services or as required by law.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>8. Term and Termination</h3>
+            
+            <h4>8.1 Service Term</h4>
+            <p>
+              Services begin upon execution of a service agreement and continue until terminated by either party according to these terms.
+            </p>
+
+            <h4>8.2 Termination by Client</h4>
+            <p>
+              You may terminate services with 30 days written notice. You remain responsible for fees and expenses incurred through the termination date.
+            </p>
+
+            <h4>8.3 Termination by Sorella</h4>
+            <p>
+              We may terminate services with 30 days notice or immediately for:
+            </p>
+            <ul>
+              <li>Non-payment of fees or expenses</li>
+              <li>Breach of these terms</li>
+              <li>Unsafe or illegal conditions</li>
+              <li>Abusive or threatening behavior toward our staff</li>
+            </ul>
+
+            <h4>8.4 Post-Termination</h4>
+            <p>
+              Upon termination, we will return property access materials and provide final accounting. Confidentiality obligations continue indefinitely.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>9. Dispute Resolution</h3>
+            
+            <h4>9.1 Good Faith Resolution</h4>
+            <p>
+              We are committed to resolving any concerns promptly and fairly. Please contact us immediately if you have any issues with our services.
+            </p>
+
+            <h4>9.2 Mediation</h4>
+            <p>
+              If direct resolution is not possible, disputes will be resolved through binding mediation in Massachusetts under the rules of the American Arbitration Association.
+            </p>
+
+            <h4>9.3 Governing Law</h4>
+            <p>
+              These Terms are governed by Massachusetts law, without regard to conflict of law principles.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>10. General Provisions</h3>
+            
+            <h4>10.1 Entire Agreement</h4>
+            <p>
+              These Terms, together with your service agreement and our Privacy Policy, constitute the entire agreement between the parties.
+            </p>
+
+            <h4>10.2 Modifications</h4>
+            <p>
+              We may update these Terms periodically. Material changes will be communicated with 30 days notice. Continued use of services constitutes acceptance of updated terms.
+            </p>
+
+            <h4>10.3 Severability</h4>
+            <p>
+              If any provision of these Terms is found unenforceable, the remaining provisions will continue in full force and effect.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>11. Contact Information</h3>
+            <p>
+              For questions about these Terms or our services, please contact us:
+            </p>
+            <div class="contact-info">
+              <p><strong>Sorella Home Solutions</strong></p>
+              <p>Email: legal@sorellahomesolutions.com</p>
+              <p>Phone: (617) 555-0123</p>
+              <p>Address: [Business Address]</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Cookie Policy Tab -->
+      <div class="tab-content" [class.active]="activeTab === 'cookies'" id="cookie-policy">
+        <div class="policy-header">
+          <h2>Cookie Policy</h2>
+          <p class="last-updated">Last Updated: December 2024</p>
+        </div>
+
+        <div class="policy-content">
+          <section class="policy-section">
+            <h3>1. What Are Cookies</h3>
+            <p>
+              Cookies are small text files that are stored on your device (computer, tablet, or mobile) when you visit our website. They help us provide you with a better browsing experience by remembering your preferences and improving our website's functionality.
+            </p>
+            <p>
+              This Cookie Policy explains how Sorella Home Solutions ("we," "us," or "our") uses cookies and similar technologies on our website and how you can manage your cookie preferences.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>2. Types of Cookies We Use</h3>
+            
+            <h4>2.1 Essential Cookies</h4>
+            <p>
+              These cookies are necessary for our website to function properly and cannot be disabled. They enable basic functions like page navigation, access to secure areas, and form submissions.
+            </p>
+            <ul>
+              <li><strong>Session cookies:</strong> Temporary cookies that expire when you close your browser</li>
+              <li><strong>Security cookies:</strong> Help protect against fraudulent activity and maintain security</li>
+              <li><strong>Load balancing cookies:</strong> Ensure optimal website performance</li>
+            </ul>
+
+            <h4>2.2 Performance and Analytics Cookies</h4>
+            <p>
+              These cookies help us understand how visitors interact with our website by collecting anonymous information about page visits, traffic sources, and user behavior.
+            </p>
+            <ul>
+              <li><strong>Google Analytics:</strong> Tracks website usage and performance metrics</li>
+              <li><strong>Page load analytics:</strong> Monitors website speed and performance</li>
+              <li><strong>Error tracking:</strong> Helps us identify and fix technical issues</li>
+            </ul>
+
+            <h4>2.3 Functional Cookies</h4>
+            <p>
+              These cookies enhance your browsing experience by remembering your preferences and providing personalized features.
+            </p>
+            <ul>
+              <li><strong>Preference cookies:</strong> Remember your settings and choices</li>
+              <li><strong>Language cookies:</strong> Store your preferred language settings</li>
+              <li><strong>Accessibility cookies:</strong> Remember accessibility preferences</li>
+            </ul>
+
+            <h4>2.4 Marketing and Advertising Cookies</h4>
+            <p>
+              These cookies are used to deliver relevant advertisements and measure the effectiveness of our marketing campaigns.
+            </p>
+            <ul>
+              <li><strong>Targeting cookies:</strong> Create profiles based on browsing behavior</li>
+              <li><strong>Social media cookies:</strong> Enable social media sharing and integration</li>
+              <li><strong>Conversion tracking:</strong> Measure the effectiveness of our advertising</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>3. Third-Party Cookies</h3>
+            <p>
+              Our website may contain content from third-party services that set their own cookies. These include:
+            </p>
+            
+            <h4>3.1 Google Services</h4>
+            <ul>
+              <li><strong>Google Analytics:</strong> Website traffic analysis and reporting</li>
+              <li><strong>Google Maps:</strong> Interactive maps and location services</li>
+              <li><strong>Google Fonts:</strong> Web font delivery and optimization</li>
+            </ul>
+
+            <h4>3.2 Social Media Platforms</h4>
+            <ul>
+              <li><strong>LinkedIn:</strong> Professional networking and business content</li>
+              <li><strong>Facebook:</strong> Social sharing and business page integration</li>
+              <li><strong>Twitter:</strong> Social media sharing and updates</li>
+            </ul>
+
+            <h4>3.3 Communication Tools</h4>
+            <ul>
+              <li><strong>Contact forms:</strong> Secure form submission and spam protection</li>
+              <li><strong>Live chat:</strong> Customer support and inquiry management</li>
+              <li><strong>Email marketing:</strong> Newsletter and communication tracking</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>4. How We Use Cookies</h3>
+            
+            <h4>4.1 Website Functionality</h4>
+            <ul>
+              <li>Maintain your session while browsing our website</li>
+              <li>Remember your preferences and settings</li>
+              <li>Provide secure access to contact forms and client portals</li>
+              <li>Ensure optimal website performance and loading speed</li>
+            </ul>
+
+            <h4>4.2 Analytics and Improvement</h4>
+            <ul>
+              <li>Understand how visitors use our website</li>
+              <li>Identify popular content and services</li>
+              <li>Monitor website performance and identify issues</li>
+              <li>Improve user experience and website design</li>
+            </ul>
+
+            <h4>4.3 Marketing and Communication</h4>
+            <ul>
+              <li>Deliver relevant content and service information</li>
+              <li>Measure the effectiveness of our marketing efforts</li>
+              <li>Provide personalized experiences based on interests</li>
+              <li>Enable social media sharing and integration</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>5. Cookie Duration</h3>
+            
+            <h4>5.1 Session Cookies</h4>
+            <p>
+              These temporary cookies are deleted when you close your browser. They are essential for basic website functionality during your visit.
+            </p>
+
+            <h4>5.2 Persistent Cookies</h4>
+            <p>
+              These cookies remain on your device for a specified period or until you delete them. Duration varies by cookie type:
+            </p>
+            <ul>
+              <li><strong>Preference cookies:</strong> Up to 1 year</li>
+              <li><strong>Analytics cookies:</strong> Up to 2 years</li>
+              <li><strong>Marketing cookies:</strong> Up to 1 year</li>
+              <li><strong>Security cookies:</strong> Up to 6 months</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>6. Managing Your Cookie Preferences</h3>
+            
+            <h4>6.1 Browser Settings</h4>
+            <p>
+              Most web browsers allow you to control cookies through their settings. You can:
+            </p>
+            <ul>
+              <li>View cookies stored on your device</li>
+              <li>Delete existing cookies</li>
+              <li>Block cookies from specific websites</li>
+              <li>Block all cookies (may affect website functionality)</li>
+              <li>Set preferences for different types of cookies</li>
+            </ul>
+
+            <h4>6.2 Browser-Specific Instructions</h4>
+            <ul>
+              <li><strong>Chrome:</strong> Settings > Privacy and Security > Cookies and other site data</li>
+              <li><strong>Firefox:</strong> Settings > Privacy & Security > Cookies and Site Data</li>
+              <li><strong>Safari:</strong> Preferences > Privacy > Manage Website Data</li>
+              <li><strong>Edge:</strong> Settings > Cookies and site permissions > Cookies and site data</li>
+            </ul>
+
+            <h4>6.3 Opt-Out Tools</h4>
+            <p>
+              You can opt out of specific tracking services:
+            </p>
+            <ul>
+              <li><strong>Google Analytics:</strong> <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out Browser Add-on</a></li>
+              <li><strong>Digital Advertising Alliance:</strong> <a href="http://optout.aboutads.info/" target="_blank">Consumer Choice Tool</a></li>
+              <li><strong>Network Advertising Initiative:</strong> <a href="http://optout.networkadvertising.org/" target="_blank">Opt-out Tool</a></li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>7. Impact of Disabling Cookies</h3>
+            <p>
+              While you can browse our website with cookies disabled, some functionality may be limited:
+            </p>
+            
+            <h4>7.1 Essential Functions</h4>
+            <ul>
+              <li>Contact forms may not work properly</li>
+              <li>Website preferences will not be saved</li>
+              <li>Security features may be compromised</li>
+              <li>Session information will not be maintained</li>
+            </ul>
+
+            <h4>7.2 Enhanced Features</h4>
+            <ul>
+              <li>Personalized content will not be available</li>
+              <li>Website performance may be slower</li>
+              <li>Social media integration will be limited</li>
+              <li>Analytics and improvement efforts will be affected</li>
+            </ul>
+          </section>
+
+          <section class="policy-section">
+            <h3>8. Mobile Devices and Apps</h3>
+            <p>
+              If you access our website through a mobile device or app, similar tracking technologies may be used:
+            </p>
+            <ul>
+              <li><strong>Mobile cookies:</strong> Similar to web cookies but for mobile browsers</li>
+              <li><strong>Local storage:</strong> Data stored locally on your device</li>
+              <li><strong>Device identifiers:</strong> Unique identifiers for analytics and functionality</li>
+            </ul>
+            <p>
+              You can manage these through your device settings or browser preferences.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>9. Updates to This Policy</h3>
+            <p>
+              We may update this Cookie Policy periodically to reflect changes in our practices, technology, or legal requirements. We will notify you of material changes by:
+            </p>
+            <ul>
+              <li>Posting the updated policy on our website</li>
+              <li>Updating the "Last Updated" date</li>
+              <li>Sending email notifications for significant changes</li>
+              <li>Displaying prominent notices on our website</li>
+            </ul>
+            <p>
+              Your continued use of our website after such updates constitutes acceptance of the revised policy.
+            </p>
+          </section>
+
+          <section class="policy-section">
+            <h3>10. Contact Information</h3>
+            <p>
+              If you have questions about our use of cookies or this Cookie Policy, please contact us:
+            </p>
+            <div class="contact-info">
+              <p><strong>Sorella Home Solutions</strong></p>
+              <p>Email: privacy@sorellahomesolutions.com</p>
+              <p>Phone: (617) 555-0123</p>
+              <p>Address: [Business Address]</p>
+            </div>
+            <p>
+              We are committed to addressing your concerns and helping you understand how we use cookies to improve your experience with our services.
+            </p>
+          </section>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
