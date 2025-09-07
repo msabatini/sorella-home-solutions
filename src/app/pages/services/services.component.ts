@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
@@ -33,6 +33,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
+    private router: Router,
     private animationService: AnimationService
   ) {}
 
@@ -204,6 +205,21 @@ export class ServicesComponent implements OnInit, OnDestroy {
       top: 0,
       left: 0,
       behavior: 'instant'
+    });
+  }
+
+  navigateToContact() {
+    this.router.navigate(['/contact']).then(() => {
+      // Wait for navigation to complete, then scroll to the contact form
+      setTimeout(() => {
+        const contactForm = document.querySelector('.contact-form-container');
+        if (contactForm) {
+          contactForm.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 100);
     });
   }
 
