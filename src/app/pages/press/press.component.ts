@@ -39,7 +39,10 @@ export class PressComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.scrollToTop();
-    this.setupScrollHeader();
+    
+    // Header scroll behavior is now handled by the header component
+    
+    this.setupParallaxEffect();
     this.initializePressData();
     this.calculateAvailableYears();
     this.filterPressItems();
@@ -55,17 +58,43 @@ export class PressComponent implements OnInit, OnDestroy {
     this.animationService.destroy();
   }
 
-  private setupScrollHeader() {
-    window.addEventListener('scroll', () => {
-      const header = document.querySelector('.header');
-      if (header) {
-        if (window.scrollY > 100) {
-          header.classList.add('scrolled');
-        } else {
-          header.classList.remove('scrolled');
-        }
+
+
+  private setupParallaxEffect() {
+    const heroSection = document.querySelector('.press-hero') as HTMLElement;
+    if (!heroSection) return;
+
+    const updateParallax = () => {
+      const scrolled = window.pageYOffset;
+      const heroHeight = heroSection.offsetHeight;
+      const windowHeight = window.innerHeight;
+      
+      // Only apply parallax when hero is visible
+      if (scrolled < heroHeight + windowHeight) {
+        const parallaxSpeed = 0.3;
+        const yPos = scrolled * parallaxSpeed;
+        // Apply transform to the pseudo-element via CSS custom property
+        heroSection.style.setProperty('--parallax-y', `${yPos}px`);
       }
-    });
+    };
+
+    // Use requestAnimationFrame for smooth performance
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Wait for CSS animations to complete before starting parallax
+    setTimeout(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      updateParallax(); // Initial call
+    }, 500);
   }
 
   private scrollToTop() {
