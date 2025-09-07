@@ -197,7 +197,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       
       // Only apply parallax when hero is visible
       if (scrolled < heroHeight + windowHeight) {
-        const parallaxSpeed = 0.3;
+        const parallaxSpeed = 0.2;
         const yPos = scrolled * parallaxSpeed;
         // Apply transform to the pseudo-element via CSS custom property
         heroSection.style.setProperty('--parallax-y', `${yPos}px`);
