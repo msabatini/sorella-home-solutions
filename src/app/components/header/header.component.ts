@@ -16,6 +16,7 @@ export class HeaderComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
+    console.log('Header component ngOnInit called');
     // Track current route for active navigation
     this.trackCurrentRoute();
     // Add smooth scrolling for navigation links
@@ -24,6 +25,7 @@ export class HeaderComponent implements OnInit {
     this.setupMobileMenu();
     // Setup header background on scroll
     this.setupScrollHeader();
+    console.log('Header component initialization complete');
   }
 
   private setupSmoothScrolling() {
@@ -67,22 +69,37 @@ export class HeaderComponent implements OnInit {
     
     const updateHeader = () => {
       const header = document.querySelector('.header') as HTMLElement;
-      const heroSection = document.querySelector('.hero, .about-hero') as HTMLElement;
+      const heroSection = document.querySelector('.hero, .about-hero, .services-hero, .press-hero, .contact-hero') as HTMLElement;
+      
+      console.log('Header scroll debug:', {
+        currentUrl: window.location.pathname,
+        heroFound: !!heroSection,
+        heroClass: heroSection?.className,
+        heroHeight: heroSection?.offsetHeight,
+        scrollY: window.scrollY,
+        shouldTrigger: heroSection ? window.scrollY > heroSection.offsetHeight : false
+      });
       
       if (header && heroSection) {
         const heroHeight = heroSection.offsetHeight;
         const scrollPosition = window.scrollY;
         
-        // Add background when scrolled past 80% of hero section
-        if (scrollPosition > heroHeight * 0.8) {
+        // Add background when scrolled past 80% of the hero section
+        const triggerPoint = heroHeight * 0.8;
+        if (scrollPosition > triggerPoint) {
           header.classList.add('scrolled');
+          console.log('Added scrolled class at scroll:', scrollPosition, 'trigger point:', triggerPoint);
         } else {
           header.classList.remove('scrolled');
+          console.log('Removed scrolled class at scroll:', scrollPosition, 'trigger point:', triggerPoint);
         }
+      } else {
+        console.log('Missing elements - header:', !!header, 'hero:', !!heroSection);
       }
       ticking = false;
     };
 
+    console.log('Setting up header scroll listener');
     window.addEventListener('scroll', () => {
       if (!ticking) {
         requestAnimationFrame(updateHeader);
