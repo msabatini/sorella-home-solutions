@@ -73,8 +73,8 @@ export class HeaderComponent implements OnInit {
         const heroHeight = heroSection.offsetHeight;
         const scrollPosition = window.scrollY;
         
-        // Add background when scrolled past 80% of the hero section
-        const triggerPoint = heroHeight * 0.8;
+        // Add background when scrolled past a small amount (before reaching hero content)
+        const triggerPoint = 100;
         if (scrollPosition > triggerPoint) {
           header.classList.add('scrolled');
         } else {
