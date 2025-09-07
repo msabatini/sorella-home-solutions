@@ -53,10 +53,10 @@ main {
   &::before {
     content: '';
     position: absolute;
-    top: -50%;
+    top: -20%;
     left: 0;
     right: 0;
-    bottom: -50%;
+    bottom: -20%;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                 url('/SHS-main-hero-temporary.jpg');
     background-size: cover;
