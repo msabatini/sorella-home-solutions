@@ -1517,3 +1517,186 @@
     transform: translateY(-1px);
   }
 }
+
+// Social Media Section
+.social-media-section {
+  padding: 6rem 0;
+  background: 
+    linear-gradient(135deg, #0e2340 0%, #1a365d 50%, #2d4a6b 100%),
+    radial-gradient(circle at 25% 75%, rgba(0, 162, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(45deg, transparent 40%, rgba(0, 162, 255, 0.08) 50%, transparent 60%),
+      linear-gradient(-45deg, transparent 40%, rgba(59, 130, 246, 0.06) 50%, transparent 60%);
+    pointer-events: none;
+  }
+}
+
+.social-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.social-content {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  text-align: left;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+}
+
+.social-icon-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-icon {
+  width: 120px;
+  height: 120px;
+  color: #60a5fa;
+  
+  @media (max-width: 768px) {
+    width: 96px;
+    height: 96px;
+  }
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.social-text {
+  flex: 1;
+  max-width: 600px;
+}
+
+.social-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.social-description {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+}
+
+.social-handle-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.handle-container {
+  display: inline-flex;
+  align-items: baseline;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%),
+    radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, transparent 70%);
+  padding: 1.2rem 2rem;
+  border-radius: 16px;
+  border: 2px solid rgba(0, 162, 255, 0.15);
+  box-shadow: 
+    0 12px 40px rgba(0, 162, 255, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 162, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: rgba(0, 162, 255, 0.25);
+    box-shadow: 
+      0 20px 60px rgba(0, 162, 255, 0.12),
+      0 8px 24px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    
+    &::before {
+      left: 100%;
+    }
+    
+    .at-symbol {
+      transform: scale(1.1);
+      color: #0066cc;
+    }
+    
+    .handle-name {
+      color: #0066cc;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1rem 1.5rem;
+  }
+}
+
+.at-symbol {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00a2ff;
+  margin-right: 0.2rem;
+  transition: all 0.3s ease;
+  font-family: 'Georgia', serif;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.handle-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0e2340;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.02em;
+  transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+}
