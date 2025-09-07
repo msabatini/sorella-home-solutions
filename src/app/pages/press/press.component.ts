@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -32,6 +33,7 @@ export class PressComponent implements OnInit, OnDestroy {
 
   constructor(
     private sanitizer: DomSanitizer,
+    private router: Router,
     private animationService: AnimationService
   ) {}
 
@@ -71,6 +73,37 @@ export class PressComponent implements OnInit, OnDestroy {
       top: 0,
       left: 0,
       behavior: 'instant'
+    });
+  }
+
+  navigateToContact(type: 'general' | 'consultation' = 'general') {
+    this.router.navigate(['/contact']).then(() => {
+      // Wait for navigation to complete, then scroll to the contact form and pre-populate
+      setTimeout(() => {
+        const contactForm = document.querySelector('.contact-form-container');
+        if (contactForm) {
+          contactForm.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+        
+        // Pre-populate form based on button clicked
+        setTimeout(() => {
+          // We need to access the contact form component to pre-populate
+          // This will be handled by the contact component's form pre-population logic
+          if (type === 'consultation') {
+            // Trigger consultation pre-population
+            const event = new CustomEvent('prePopulateConsultation', {
+              detail: {
+                serviceType: 'consultation',
+                message: 'I would like to schedule a consultation to discuss my home management needs.'
+              }
+            });
+            window.dispatchEvent(event);
+          }
+        }, 600); // Wait for scroll to complete
+      }, 100);
     });
   }
 

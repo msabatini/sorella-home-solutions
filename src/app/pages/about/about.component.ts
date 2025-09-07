@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -93,7 +94,8 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   constructor(
     private sanitizer: DomSanitizer,
-    private animationService: AnimationService
+    private animationService: AnimationService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -117,5 +119,24 @@ export class AboutComponent implements OnInit, OnDestroy {
       left: 0,
       behavior: 'instant'
     });
+  }
+
+  navigateToContact() {
+    this.router.navigate(['/contact']).then(() => {
+      // Wait for navigation to complete, then scroll to the contact form
+      setTimeout(() => {
+        const contactForm = document.querySelector('.contact-form-container');
+        if (contactForm) {
+          contactForm.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 100);
+    });
+  }
+
+  navigateToServices() {
+    this.router.navigate(['/services']);
   }
 }

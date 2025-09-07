@@ -121,6 +121,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  scrollToContact(type: 'general' | 'consultation' = 'general') {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+      
+      // Pre-populate form based on button clicked
+      setTimeout(() => {
+        if (type === 'consultation') {
+          this.contactForm.patchValue({
+            serviceType: 'consultation',
+            message: 'I would like to schedule a consultation to discuss my home management needs.'
+          });
+        }
+      }, 500); // Small delay to ensure smooth scroll completes
+    }
+  }
+
   navigateToService(serviceIndex: number) {
     // Navigate to services page and scroll to specific service
     this.router.navigate(['/services']).then(() => {

@@ -131,6 +131,16 @@ export class ContactComponent implements OnInit, OnDestroy {
     this.setupScrollHeader();
     this.scrollToTop();
     
+    // Listen for form pre-population events
+    window.addEventListener('prePopulateConsultation', (event: any) => {
+      if (event.detail) {
+        this.contactForm.patchValue({
+          serviceType: event.detail.serviceType,
+          message: event.detail.message
+        });
+      }
+    });
+    
     // Initialize animations
     setTimeout(() => {
       this.animationService.initScrollAnimations();
