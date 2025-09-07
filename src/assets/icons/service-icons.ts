@@ -60,21 +60,31 @@ export const ServiceIcons = {
   
   // Contact Section Icons
   phone: `<svg viewBox="0 0 100 100" fill="currentColor">
-    <path d="M25 15C20 15 15 20 15 25V75C15 80 20 85 25 85H75C80 85 85 80 85 75V25C85 20 80 15 75 15H25Z" fill="none" stroke="currentColor" stroke-width="3.5"/>
-    <path d="M35 35C35 30 40 25 45 25H55C60 25 65 30 65 35V45C65 50 60 55 55 55H45C40 55 35 50 35 45V35Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
-    <line x1="30" y1="65" x2="70" y2="65" stroke="currentColor" stroke-width="2.5"/>
-    <line x1="30" y1="72" x2="70" y2="72" stroke="currentColor" stroke-width="2.5"/>
+    <rect x="30" y="15" width="40" height="70" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+    <rect x="35" y="25" width="30" height="45" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <circle cx="50" cy="78" r="3"/>
+    <line x1="42" y1="20" x2="58" y2="20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
   </svg>`,
   
   email: `<svg viewBox="0 0 100 100" fill="currentColor">
-    <rect x="15" y="25" width="70" height="50" fill="none" stroke="currentColor" stroke-width="3.5"/>
-    <path d="M15 25L50 50L85 25" fill="none" stroke="currentColor" stroke-width="3"/>
-    <line x1="15" y1="65" x2="35" y2="50" stroke="currentColor" stroke-width="2.5"/>
-    <line x1="85" y1="65" x2="65" y2="50" stroke="currentColor" stroke-width="2.5"/>
+    <rect x="15" y="25" width="70" height="50" rx="5" fill="none" stroke="currentColor" stroke-width="3"/>
+    <path d="M15 25L50 50L85 25" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="75" cy="35" r="3"/>
   </svg>`,
   
   location: `<svg viewBox="0 0 100 100" fill="currentColor">
-    <path d="M50 15C35 15 25 25 25 40C25 60 50 85 50 85S75 60 75 40C75 25 65 15 50 15Z" fill="none" stroke="currentColor" stroke-width="3.5"/>
+    <path d="M50 15C35 15 25 25 25 40C25 60 50 85 50 85S75 60 75 40C75 25 65 15 50 15Z" fill="none" stroke="currentColor" stroke-width="3"/>
     <circle cx="50" cy="40" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <circle cx="50" cy="40" r="3"/>
+  </svg>`,
+  
+  clock: `<svg viewBox="0 0 100 100" fill="currentColor">
+    <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="3"/>
+    <path d="M50 25V50L65 60" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="50" cy="20" r="2.5"/>
+    <circle cx="80" cy="50" r="2.5"/>
+    <circle cx="50" cy="80" r="2.5"/>
+    <circle cx="20" cy="50" r="2.5"/>
+    <circle cx="50" cy="50" r="3"/>
   </svg>`
 };
