@@ -25,6 +25,7 @@ export class LegalComponent implements OnInit, OnDestroy {
     this.scrollToTop();
     this.animationService.initScrollAnimations();
     this.setupScrollHeader();
+    this.setupParallaxEffect();
     
     // Handle fragment navigation
     this.route.fragment.subscribe(fragment => {
@@ -70,6 +71,43 @@ export class LegalComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private setupParallaxEffect() {
+    const heroSection = document.querySelector('.legal-hero') as HTMLElement;
+    if (!heroSection) return;
+
+    const updateParallax = () => {
+      const scrolled = window.pageYOffset;
+      const heroHeight = heroSection.offsetHeight;
+      const windowHeight = window.innerHeight;
+      
+      // Only apply parallax when hero is visible
+      if (scrolled < heroHeight + windowHeight) {
+        const parallaxSpeed = 0.3;
+        const yPos = scrolled * parallaxSpeed;
+        // Apply transform to the pseudo-element via CSS custom property
+        heroSection.style.setProperty('--parallax-y', `${yPos}px`);
+      }
+    };
+
+    // Use requestAnimationFrame for smooth performance
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Wait for CSS animations to complete before starting parallax
+    setTimeout(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      updateParallax(); // Initial call
+    }, 500);
   }
 
   setActiveTab(tab: string) {
