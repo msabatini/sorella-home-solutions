@@ -180,10 +180,58 @@
   padding-top: 2rem;
   text-align: center;
   
+  .footer-legal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    
+    .legal-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      
+      a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          color: #00a2ff;
+          text-decoration: underline;
+        }
+      }
+      
+      .separator {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.8rem;
+      }
+    }
+  }
+  
   p {
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
     margin: 0;
     font-weight: 400;
+  }
+}
+
+// Mobile styles for footer
+@media screen and (max-width: 768px) {
+  .footer-bottom {
+    .footer-legal {
+      .legal-links {
+        flex-direction: column;
+        gap: 0.5rem;
+        
+        .separator {
+          display: none;
+        }
+      }
+    }
   }
 }
