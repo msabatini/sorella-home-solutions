@@ -12,13 +12,26 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-image: url('/SHS-contact-page-hero.jpg');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  --parallax-y: 0px;
   
   &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    right: 0;
+    bottom: -50%;
+    background-image: url('/SHS-contact-page-hero.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: -1;
+    will-change: transform;
+    transform: translateY(var(--parallax-y));
+  }
+  
+  &::after {
     content: '';
     position: absolute;
     top: 0;
