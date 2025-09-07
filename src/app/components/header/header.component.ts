@@ -10,6 +10,7 @@ import { filter } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit {
   isDropdownOpen = false;
+  isMobileMenuOpen = false;
   currentRoute = '';
 
   constructor(private router: Router) {}
@@ -51,13 +52,10 @@ export class HeaderComponent implements OnInit {
   private setupMobileMenu() {
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      if (target.closest('#mobile-menu')) {
-        const navMenu = document.querySelector('.nav-menu');
-        navMenu?.classList.toggle('active');
-      }
       
       // Close mobile menu when clicking on nav links
       if (target.matches('.nav-link, .dropdown-link')) {
+        this.isMobileMenuOpen = false;
         const navMenu = document.querySelector('.nav-menu');
         navMenu?.classList.remove('active');
       }
@@ -99,6 +97,16 @@ export class HeaderComponent implements OnInit {
 
   hideDropdown() {
     this.isDropdownOpen = false;
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    const navMenu = document.querySelector('.nav-menu');
+    if (this.isMobileMenuOpen) {
+      navMenu?.classList.add('active');
+    } else {
+      navMenu?.classList.remove('active');
+    }
   }
 
   private trackCurrentRoute() {

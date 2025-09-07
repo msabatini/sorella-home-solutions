@@ -33,10 +33,13 @@
           <a routerLink="/contact" class="nav-link" [class.active]="isActiveRoute('/contact')">Contact</a>
         </li>
       </ul>
-      <div class="nav-toggle" id="mobile-menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
+      <div class="nav-toggle" 
+           [class.active]="isMobileMenuOpen" 
+           (click)="toggleMobileMenu()" 
+           id="mobile-menu">
+        <span class="bar bar1"></span>
+        <span class="bar bar2"></span>
+        <span class="bar bar3"></span>
       </div>
     </div>
   </nav>
