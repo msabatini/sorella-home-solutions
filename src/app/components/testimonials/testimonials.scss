@@ -94,6 +94,15 @@
     transform: translateX(0);
     z-index: 2;
     pointer-events: auto;
+    
+    &:hover {
+      .testimonial-content {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(0, 162, 255, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 25px 50px rgba(0, 162, 255, 0.15);
+      }
+    }
   }
 }
 
@@ -110,12 +119,6 @@
   border: 2px solid rgba(0, 162, 255, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: rgba(0, 162, 255, 0.4);
-    transform: translateY(-5px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-  }
   
   @media (max-width: 768px) {
     padding: 2.5rem 2rem;
