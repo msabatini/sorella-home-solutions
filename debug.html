@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Angular App Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>Angular Application Debug</h1>
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        // Test 1: Check if Angular dev server is running
+        addResult('Testing Angular dev server...', 'info');
+        
+        fetch('http://localhost:4200/')
+            .then(response => response.text())
+            .then(html => {
+                if (html.includes('<app-root>')) {
+                    addResult('✅ Angular dev server is serving HTML', 'success');
+                    
+                    // Test 2: Check if main.js is loading
+                    if (html.includes('main.js')) {
+                        addResult('✅ main.js script tag found in HTML', 'success');
+                        
+                        // Test 3: Try to load main.js directly
+                        return fetch('http://localhost:4200/main.js');
+                    } else {
+                        addResult('❌ main.js script tag not found', 'error');
+                    }
+                } else {
+                    addResult('❌ app-root not found in HTML', 'error');
+                }
+            })
+            .then(response => {
+                if (response && response.ok) {
+                    addResult('✅ main.js file is accessible', 'success');
+                    
+                    // Test 4: Check if the Angular app is actually rendering
+                    setTimeout(() => {
+                        fetch('http://localhost:4200/')
+                            .then(response => response.text())
+                            .then(html => {
+                                // Create a temporary iframe to test if Angular renders
+                                const iframe = document.createElement('iframe');
+                                iframe.src = 'http://localhost:4200/';
+                                iframe.style.width = '1px';
+                                iframe.style.height = '1px';
+                                iframe.style.opacity = '0';
+                                document.body.appendChild(iframe);
+                                
+                                setTimeout(() => {
+                                    try {
+                                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                        const appRoot = iframeDoc.querySelector('app-root');
+                                        
+                                        if (appRoot && appRoot.innerHTML.trim() !== '') {
+                                            addResult('✅ Angular app is rendering content', 'success');
+                                        } else {
+                                            addResult('❌ Angular app is not rendering - app-root is empty', 'error');
+                                            addResult('💡 This suggests a JavaScript runtime error', 'info');
+                                        }
+                                    } catch (e) {
+                                        addResult('❌ Cannot access iframe content (CORS): ' + e.message, 'error');
+                                        addResult('💡 Try opening http://localhost:4200/ directly in browser', 'info');
+                                    }
+                                    
+                                    document.body.removeChild(iframe);
+                                }, 3000);
+                            });
+                    }, 1000);
+                } else if (response) {
+                    addResult('❌ main.js returned error: ' + response.status, 'error');
+                }
+            })
+            .catch(error => {
+                addResult('❌ Error testing Angular app: ' + error.message, 'error');
+                addResult('💡 Make sure ng serve is running on port 4200', 'info');
+            });
+    </script>
+</body>
+</html>
