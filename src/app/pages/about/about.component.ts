@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -7,6 +7,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
 import { AnimationService } from '../../services/animation.service';
+import { CounterAnimationService } from '../../services/counter-animation.service';
 
 @Component({
   selector: 'app-about',
@@ -15,7 +16,7 @@ import { AnimationService } from '../../services/animation.service';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit, OnDestroy {
+export class AboutComponent implements OnInit, OnDestroy, AfterViewInit {
   
   focusIcon: SafeHtml = {} as any;
   
@@ -95,7 +96,8 @@ export class AboutComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
     private animationService: AnimationService,
-    private router: Router
+    private router: Router,
+    private counterService: CounterAnimationService
   ) {}
 
   ngOnInit() {
@@ -113,6 +115,30 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.animationService.destroy();
+  }
+
+  ngAfterViewInit() {
+    // Initialize counter animations after view is ready
+    setTimeout(() => {
+      this.initializeCounters();
+    }, 1000); // Delay to allow page animations to settle
+  }
+
+  private initializeCounters() {
+    // Get all stat number elements
+    const statElements = document.querySelectorAll('.stats-section .stat-number');
+    
+    // Animate each stat counter based on the stats array
+    this.stats.forEach((stat, index) => {
+      const element = statElements[index] as HTMLElement;
+      if (element) {
+        this.counterService.startCounterOnVisible(element, {
+          target: stat.target,
+          duration: 2500,
+          suffix: stat.suffix
+        }, 0.3); // Lower threshold for earlier trigger
+      }
+    });
   }
 
   private scrollToTop() {

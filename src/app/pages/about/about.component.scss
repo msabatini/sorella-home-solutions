@@ -880,6 +880,35 @@
     opacity: 0;
     transition: opacity 0.5s ease;
   }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #00a2ff, transparent);
+    transition: width 0.8s ease;
+  }
+  
+  &.animating {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #00a2ff 0%, #3b82f6 50%, #1d4ed8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    &::before {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+    
+    &::after {
+      width: 100%;
+    }
+  }
 }
 
 .stat-label {
