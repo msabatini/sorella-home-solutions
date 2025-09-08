@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -7,6 +7,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { Testimonials } from '../../components/testimonials/testimonials';
 import { AnimationService } from '../../services/animation.service';
+import { CounterAnimationService } from '../../services/counter-animation.service';
 
 interface PressItem {
   id: number;
@@ -24,7 +25,7 @@ interface PressItem {
   templateUrl: './press.component.html',
   styleUrls: ['./press.component.scss']
 })
-export class PressComponent implements OnInit, OnDestroy {
+export class PressComponent implements OnInit, OnDestroy, AfterViewInit {
   
   pressItems: PressItem[] = [];
   selectedYear: number | null = null;
@@ -34,7 +35,8 @@ export class PressComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
-    private animationService: AnimationService
+    private animationService: AnimationService,
+    private counterService: CounterAnimationService
   ) {}
 
   ngOnInit() {
@@ -58,7 +60,48 @@ export class PressComponent implements OnInit, OnDestroy {
     this.animationService.destroy();
   }
 
+  ngAfterViewInit() {
+    // Initialize counter animations after view is ready
+    setTimeout(() => {
+      this.initializeCounters();
+    }, 1000); // Delay to allow page animations to settle
+  }
 
+  private initializeCounters() {
+    // Get all stat number elements
+    const statElements = document.querySelectorAll('.hero-stats .stat-number');
+    
+    if (statElements.length >= 3) {
+      // Press Features counter (dynamic based on pressItems length)
+      const pressCountElement = statElements[0] as HTMLElement;
+      if (pressCountElement) {
+        this.counterService.startCounterOnVisible(pressCountElement, {
+          target: this.pressItems.length,
+          duration: 2000,
+          suffix: '+'
+        });
+      }
+
+      // Years of Coverage counter (dynamic based on availableYears length)
+      const yearsCountElement = statElements[1] as HTMLElement;
+      if (yearsCountElement) {
+        this.counterService.startCounterOnVisible(yearsCountElement, {
+          target: this.availableYears.length,
+          duration: 2000
+        });
+      }
+
+      // Positive Coverage counter (100%)
+      const positiveCountElement = statElements[2] as HTMLElement;
+      if (positiveCountElement) {
+        this.counterService.startCounterOnVisible(positiveCountElement, {
+          target: 100,
+          duration: 2000,
+          suffix: '%'
+        });
+      }
+    }
+  }
 
   private setupParallaxEffect() {
     const heroSection = document.querySelector('.press-hero') as HTMLElement;
