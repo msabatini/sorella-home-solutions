@@ -10,7 +10,9 @@
     <div class="testimonials-carousel animate-on-scroll delay-300">
       <div class="testimonial-container">
         <div class="testimonial-card" *ngFor="let testimonial of testimonials; let i = index" 
-             [class.active]="i === currentTestimonial">
+             [class.active]="i === currentTestimonial"
+             (mouseenter)="onCardHover()"
+             (mouseleave)="onCardLeave()">
           <div class="testimonial-content">
             <div class="quote-icon">
               <svg viewBox="0 0 24 24" fill="currentColor">
