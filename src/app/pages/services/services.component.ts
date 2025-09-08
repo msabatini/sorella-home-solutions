@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
 import { AnimationService } from '../../services/animation.service';
+import { CounterAnimationService } from '../../services/counter-animation.service';
 
 @Component({
   selector: 'app-services',
@@ -14,7 +15,7 @@ import { AnimationService } from '../../services/animation.service';
   templateUrl: './services.component.html',
   styleUrls: ['./services.component.scss']
 })
-export class ServicesComponent implements OnInit, OnDestroy {
+export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
   
   services: Array<{
     title: string;
@@ -34,7 +35,8 @@ export class ServicesComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private router: Router,
-    private animationService: AnimationService
+    private animationService: AnimationService,
+    private counterService: CounterAnimationService
   ) {}
 
   ngOnInit() {
@@ -254,5 +256,49 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.animationService.destroy();
+  }
+
+  ngAfterViewInit() {
+    // Initialize counter animations after view is ready
+    setTimeout(() => {
+      this.initializeCounters();
+    }, 1000); // Delay to allow page animations to settle
+  }
+
+  private initializeCounters() {
+    // Get all stat number elements
+    const statElements = document.querySelectorAll('.hero-stats .stat-number');
+    
+    if (statElements.length >= 3) {
+      // 13M+ Square Feet Managed counter
+      const sqFtElement = statElements[0] as HTMLElement;
+      if (sqFtElement) {
+        this.counterService.startCounterOnVisible(sqFtElement, {
+          target: 13,
+          duration: 2500,
+          suffix: 'M+'
+        });
+      }
+
+      // 24/7 Support counter
+      const supportElement = statElements[1] as HTMLElement;
+      if (supportElement) {
+        this.counterService.startCounterOnVisible(supportElement, {
+          target: 24,
+          duration: 2000,
+          suffix: '/7'
+        });
+      }
+
+      // 100% Satisfaction counter
+      const satisfactionElement = statElements[2] as HTMLElement;
+      if (satisfactionElement) {
+        this.counterService.startCounterOnVisible(satisfactionElement, {
+          target: 100,
+          duration: 2200,
+          suffix: '%'
+        });
+      }
+    }
   }
 }
