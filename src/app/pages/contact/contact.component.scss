@@ -1452,6 +1452,25 @@
       flex-shrink: 0;
     }
   }
+
+  .error-alert {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(244, 67, 54, 0.1) 100%);
+    border: 2px solid rgba(244, 67, 54, 0.4);
+    color: #f44336;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 500;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+  }
   
   .submit-btn {
     width: 100%;
