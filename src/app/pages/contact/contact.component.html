@@ -101,7 +101,7 @@
         <!-- Contact Information -->
         <div class="contact-info animate-on-scroll slide-left">
           <div class="info-card">
-            <div class="info-icon">📞</div>
+            <div class="info-icon" [innerHTML]="getIconSvg('phone')"></div>
             <div class="info-content">
               <h3>Call Us</h3>
               <p>(617) 555-HOME</p>
@@ -110,7 +110,7 @@
           </div>
 
           <div class="info-card">
-            <div class="info-icon">✉️</div>
+            <div class="info-icon" [innerHTML]="getIconSvg('email')"></div>
             <div class="info-content">
               <h3>Email Us</h3>
               <p>hello@sorellahomesolutions.com</p>
@@ -119,7 +119,7 @@
           </div>
 
           <div class="info-card">
-            <div class="info-icon">📍</div>
+            <div class="info-icon" [innerHTML]="getIconSvg('location')"></div>
             <div class="info-content">
               <h3>Service Area</h3>
               <p>Greater Boston Metro</p>
