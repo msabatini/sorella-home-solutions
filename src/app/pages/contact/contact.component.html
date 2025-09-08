@@ -74,7 +74,7 @@
              *ngFor="let method of contactMethods; let i = index"
              [style.animation-delay]="(0.2 + i * 0.05) + 's'">
           <div class="method-icon-wrapper">
-            <div class="method-icon">{{ getIconEmoji(method.icon) }}</div>
+            <div class="method-icon" [innerHTML]="getIconSvg(method.icon)"></div>
           </div>
           <h3 class="method-title">{{ method.title }}</h3>
           <div class="method-value" *ngIf="method.link; else noLink">
