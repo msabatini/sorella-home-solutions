@@ -112,6 +112,29 @@
     color: #00a2ff;
     margin-bottom: 0.5rem;
     text-shadow: 0 0 20px rgba(0, 162, 255, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00a2ff, transparent);
+      transition: width 0.6s ease;
+    }
+    
+    &.animating {
+      transform: scale(1.05);
+      text-shadow: 0 0 30px rgba(0, 162, 255, 0.5);
+      
+      &::after {
+        width: 100%;
+      }
+    }
   }
   
   .stat-label {
