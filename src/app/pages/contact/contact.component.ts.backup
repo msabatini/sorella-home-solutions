@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { AnimationService } from '../../services/animation.service';
 import { ContactService, ContactFormData } from '../../services/contact.service';
+import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, HeaderComponent, FooterComponent, BackToTopComponent],
-  providers: [ContactService],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
@@ -21,40 +22,24 @@ export class ContactComponent implements OnInit, OnDestroy {
   formSubmitted = false;
   submitError = false;
   errorMessage = '';
+  
+  // Icon properties for contact info
+  phoneIcon: SafeHtml = {} as any;
+  emailIcon: SafeHtml = {} as any;
+  locationIcon: SafeHtml = {} as any;
+  clockIcon: SafeHtml = {} as any;
 
-  contactMethods = [
-    {
-      title: 'Phone',
-      value: '(617) 555-0123',
-      link: 'tel:+16175550123',
-      description: 'Call us during business hours for immediate assistance',
-      icon: 'phone'
-    },
-    {
-      title: 'Email',
-      value: 'hello@sorellahomesolutions.com',
-      link: 'mailto:hello@sorellahomesolutions.com',
-      description: 'Send us a message anytime',
-      icon: 'email'
-    },
-    {
-      title: 'Location',
-      value: 'Greater Boston Area',
-      link: null,
-      description: 'Serving Massachusetts',
-      icon: 'location'
-    },
-    {
-      title: 'Business Hours',
-      value: 'Mon - Fri: 8AM - 6PM',
-      link: null,
-      description: 'Weekend consultations available',
-      icon: 'clock'
-    }
-  ];
+  contactMethods: Array<{
+    title: string;
+    value: string;
+    link: string | null;
+    description: string;
+    icon: SafeHtml;
+  }> = [];
 
   constructor(
     private fb: FormBuilder, 
+    private sanitizer: DomSanitizer, 
     private animationService: AnimationService,
     private contactService: ContactService
   ) {
@@ -65,6 +50,43 @@ export class ContactComponent implements OnInit, OnDestroy {
       serviceType: [''],
       message: ['', [Validators.required, Validators.minLength(10)]]
     });
+
+    // Initialize icons
+    this.phoneIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.phone);
+    this.emailIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.email);
+    this.locationIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.location);
+    this.clockIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.clock);
+
+    this.contactMethods = [
+      {
+        title: 'Phone',
+        value: '(617) 555-0123',
+        link: 'tel:+16175550123',
+        description: 'Call us during business hours for immediate assistance',
+        icon: this.phoneIcon
+      },
+      {
+        title: 'Email',
+        value: 'hello@sorellahomesolutions.com',
+        link: 'mailto:hello@sorellahomesolutions.com',
+        description: 'Send us a message anytime',
+        icon: this.emailIcon
+      },
+      {
+        title: 'Location',
+        value: 'Greater Boston Area',
+        link: null,
+        description: 'Serving Massachusetts',
+        icon: this.locationIcon
+      },
+      {
+        title: 'Business Hours',
+        value: 'Mon - Fri: 8AM - 6PM',
+        link: null,
+        description: 'Weekend consultations available',
+        icon: this.clockIcon
+      }
+    ];
   }
 
   ngOnInit(): void {
@@ -72,7 +94,10 @@ export class ContactComponent implements OnInit, OnDestroy {
     
     // Header scroll behavior is now handled by the header component
     
-    this.setupParallaxEffect();
+    // Delay DOM-dependent operations until after view init
+    setTimeout(() => {
+      this.setupParallaxEffect();
+    }, 200);
     
     // Listen for form pre-population events
     window.addEventListener('prePopulateConsultation', (event: any) => {
@@ -88,7 +113,7 @@ export class ContactComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.animationService.initScrollAnimations();
       this.animationService.triggerPageLoadAnimations();
-    }, 100);
+    }, 300);
   }
 
   ngOnDestroy(): void {
@@ -99,7 +124,10 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   private setupParallaxEffect() {
     const heroSection = document.querySelector('.contact-hero') as HTMLElement;
-    if (!heroSection) return;
+    if (!heroSection) {
+      console.log('Hero section not found, skipping parallax setup');
+      return;
+    }
 
     const updateParallax = () => {
       const scrolled = window.pageYOffset;
@@ -142,16 +170,8 @@ export class ContactComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
-  getIconEmoji(iconType: string): string {
-    const iconMap: { [key: string]: string } = {
-      'phone': '📞',
-      'email': '✉️',
-      'location': '📍',
-      'clock': '🕐'
-    };
-    return iconMap[iconType] || '📋';
+  getSafeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -184,28 +204,33 @@ export class ContactComponent implements OnInit, OnDestroy {
       this.errorMessage = '';
       
       const formData: ContactFormData = {
-        fullName: this.contactForm.value.fullName,
-        email: this.contactForm.value.email,
-        phone: this.contactForm.value.phone || undefined,
-        serviceType: this.contactForm.value.serviceType || undefined,
-        message: this.contactForm.value.message
+        fullName: this.contactForm.get('fullName')?.value,
+        email: this.contactForm.get('email')?.value,
+        phone: this.contactForm.get('phone')?.value || undefined,
+        serviceType: this.contactForm.get('serviceType')?.value || undefined,
+        message: this.contactForm.get('message')?.value
       };
-      
+
       this.contactService.submitContactForm(formData).subscribe({
         next: (response) => {
           this.isSubmitting = false;
-          this.formSubmitted = true;
-          this.contactForm.reset();
-          
-          // Hide success message after 8 seconds
-          setTimeout(() => {
-            this.formSubmitted = false;
-          }, 8000);
+          if (response.success) {
+            this.formSubmitted = true;
+            this.contactForm.reset();
+            
+            // Hide success message after 8 seconds
+            setTimeout(() => {
+              this.formSubmitted = false;
+            }, 8000);
+          } else {
+            this.submitError = true;
+            this.errorMessage = response.message;
+          }
         },
         error: (error) => {
           this.isSubmitting = false;
           this.submitError = true;
-          this.errorMessage = error.message || 'An error occurred. Please try again.';
+          this.errorMessage = error.message || 'An unexpected error occurred. Please try again.';
           
           // Hide error message after 10 seconds
           setTimeout(() => {
