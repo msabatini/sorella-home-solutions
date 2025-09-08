@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { AnimationService } from '../../services/animation.service';
 import { ContactService, ContactFormData } from '../../services/contact.service';
+import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-contact',
@@ -56,7 +58,8 @@ export class ContactComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder, 
     private animationService: AnimationService,
-    private contactService: ContactService
+    private contactService: ContactService,
+    private sanitizer: DomSanitizer
   ) {
     this.contactForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
@@ -144,14 +147,9 @@ export class ContactComponent implements OnInit, OnDestroy {
 
 
 
-  getIconEmoji(iconType: string): string {
-    const iconMap: { [key: string]: string } = {
-      'phone': '📞',
-      'email': '✉️',
-      'location': '📍',
-      'clock': '🕐'
-    };
-    return iconMap[iconType] || '📋';
+  getIconSvg(iconType: string): SafeHtml {
+    const iconSvg = ServiceIcons[iconType as keyof typeof ServiceIcons] || ServiceIcons.phone;
+    return this.sanitizer.bypassSecurityTrustHtml(iconSvg);
   }
 
   isFieldInvalid(fieldName: string): boolean {
