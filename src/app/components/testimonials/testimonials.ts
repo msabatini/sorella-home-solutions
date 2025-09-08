@@ -18,6 +18,7 @@ export interface Testimonial {
 export class Testimonials implements OnInit, OnDestroy {
   currentTestimonial = 0;
   private intervalId: any;
+  private isHovered = false;
   
   testimonials: Testimonial[] = [
     {
@@ -84,12 +85,25 @@ export class Testimonials implements OnInit, OnDestroy {
   }
 
   private resumeAutoRotation() {
-    this.intervalId = setInterval(() => {
-      this.nextTestimonial();
-    }, 5000);
+    // Only resume if not currently hovered
+    if (!this.isHovered) {
+      this.intervalId = setInterval(() => {
+        this.nextTestimonial();
+      }, 5000);
+    }
   }
 
   getStars(rating: number): number[] {
     return Array(rating).fill(0);
+  }
+
+  onCardHover() {
+    this.isHovered = true;
+    this.pauseAutoRotation();
+  }
+
+  onCardLeave() {
+    this.isHovered = false;
+    this.resumeAutoRotation();
   }
 }
