@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -6,6 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { AnimationService } from '../../services/animation.service';
+import { CounterAnimationService } from '../../services/counter-animation.service';
 import { ContactService, ContactFormData } from '../../services/contact.service';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
 
@@ -17,7 +18,7 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit, OnDestroy {
+export class ContactComponent implements OnInit, OnDestroy, AfterViewInit {
   contactForm: FormGroup;
   isSubmitting = false;
   formSubmitted = false;
@@ -58,6 +59,7 @@ export class ContactComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder, 
     private animationService: AnimationService,
+    private counterService: CounterAnimationService,
     private contactService: ContactService,
     private sanitizer: DomSanitizer
   ) {
@@ -98,7 +100,50 @@ export class ContactComponent implements OnInit, OnDestroy {
     this.animationService.destroy();
   }
 
+  ngAfterViewInit() {
+    // Initialize counter animations after view is ready
+    setTimeout(() => {
+      this.initializeCounters();
+    }, 1000); // Delay to allow page animations to settle
+  }
 
+  private initializeCounters() {
+    // Get all stat number elements
+    const statElements = document.querySelectorAll('.hero-stats .stat-number');
+    
+    if (statElements.length >= 3) {
+      // 24/7 Emergency Support counter
+      const emergencyElement = statElements[0] as HTMLElement;
+      if (emergencyElement) {
+        this.counterService.startCounterOnVisible(emergencyElement, {
+          target: 24,
+          duration: 2000,
+          suffix: '/7'
+        });
+      }
+
+      // Response Time counter (< 2hrs)
+      const responseElement = statElements[1] as HTMLElement;
+      if (responseElement) {
+        this.counterService.startCounterOnVisible(responseElement, {
+          target: 2,
+          duration: 1800,
+          prefix: '< ',
+          suffix: 'hrs'
+        });
+      }
+
+      // Satisfaction Rate counter (100%)
+      const satisfactionElement = statElements[2] as HTMLElement;
+      if (satisfactionElement) {
+        this.counterService.startCounterOnVisible(satisfactionElement, {
+          target: 100,
+          duration: 2200,
+          suffix: '%'
+        });
+      }
+    }
+  }
 
   private setupParallaxEffect() {
     const heroSection = document.querySelector('.contact-hero') as HTMLElement;
