@@ -59,9 +59,27 @@ export class AnimationService {
    */
   triggerPageLoadAnimations() {
     setTimeout(() => {
-      const loadElements = document.querySelectorAll('.animate-on-load');
-      loadElements.forEach(element => {
-        element.classList.add('animate-in');
+      // Handle hero section elements with staggered timing
+      const heroSections = document.querySelectorAll('.press-hero, .services-hero, .contact-hero, .about-hero');
+      const processedElements = new Set<Element>();
+      
+      heroSections.forEach(heroSection => {
+        const heroElements = heroSection.querySelectorAll('.animate-on-load');
+        heroElements.forEach((element, index) => {
+          processedElements.add(element);
+          const delay = index * 150; // 150ms between each hero element
+          setTimeout(() => {
+            element.classList.add('animate-in');
+          }, delay);
+        });
+      });
+
+      // Handle other non-hero animate-on-load elements immediately
+      const allElements = document.querySelectorAll('.animate-on-load');
+      allElements.forEach(element => {
+        if (!processedElements.has(element)) {
+          element.classList.add('animate-in');
+        }
       });
     }, 100);
   }
