@@ -48,23 +48,62 @@ main {
   position: relative;
   text-align: center;
   overflow: hidden;
-  --parallax-y: 0px;
+}
+
+// Hero Video Styles
+.hero-video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: -20%;
-    left: 0;
-    right: 0;
-    bottom: -20%;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                url('/SHS-main-hero-temporary.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    z-index: -1;
-    will-change: transform;
-    transform: translateY(var(--parallax-y));
+  // Allow video to be clicked for manual play
+  pointer-events: auto;
+  cursor: pointer;
+  
+  // Show video when it's loaded
+  &.loaded {
+    opacity: 1;
+  }
+}
+
+// Fallback background image
+.hero-fallback-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+              url('/SHS-main-hero-temporary.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: -1;
+  opacity: 0 !important; // Force hide by default
+  transition: opacity 0.5s ease-in-out;
+  
+  // Show when video is not loaded (class.show is bound to !videoLoaded)
+  &.show {
+    opacity: 1 !important;
   }
 }
 
@@ -91,6 +130,7 @@ main {
     margin-bottom: 3rem;
     line-height: 1.2;
     letter-spacing: .025rem;
+    text-shadow: 1px 1px 42px black;
   }
 }
 
@@ -104,7 +144,7 @@ main {
     border: 2px solid #0e2340;
     padding: 16px 30px;
     font-size: 1.25rem;
-    font-weight: 500;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1px;
     border-radius: .5rem;
@@ -1090,6 +1130,35 @@ section {
 
 // Responsive Design
 @media (max-width: 768px) {
+  // Hero mobile styles
+  .hero {
+    .hero-content {
+      padding: 0 15px;
+      
+      .hero-title {
+        font-size: 2.8rem;
+        margin-bottom: 2rem;
+        line-height: 1.1;
+      }
+    }
+    
+    .hero-button .btn-outline {
+      padding: 14px 24px;
+      font-size: 1.1rem;
+    }
+  }
+  
+  // Video mobile optimizations
+  .hero-video {
+    // On mobile, prioritize performance over perfect centering
+    object-position: center center;
+  }
+  
+  // Fallback background adjustments for mobile
+  .hero-fallback-bg {
+    background-attachment: scroll; // Fixed attachment can cause issues on mobile
+  }
+  
   .hero-container {
     grid-template-columns: 1fr;
     text-align: center;
@@ -1231,6 +1300,24 @@ section {
 @media (max-width: 480px) {
   .container {
     padding: 0 15px;
+  }
+  
+  // Very small mobile hero adjustments
+  .hero {
+    .hero-content .hero-title {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .hero-button .btn-outline {
+      padding: 12px 20px;
+      font-size: 1rem;
+      
+      .chevron-icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
   }
   
   .hero-content .hero-title {

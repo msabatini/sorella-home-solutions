@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
@@ -11,4 +11,15 @@ import { RouterModule } from '@angular/router';
 })
 export class FooterComponent {
 
+  constructor(private router: Router) {}
+
+
+
+  callPhone() {
+    window.location.href = 'tel:+16175554663'; // (617) 555-HOME
+  }
+
+  sendEmail() {
+    window.location.href = 'mailto:hello@sorellahomesolutions.com';
+  }
 }

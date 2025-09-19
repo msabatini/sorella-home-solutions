@@ -4,18 +4,18 @@
       <div class="footer-section delay-100">
         <h4>Our Services</h4>
         <ul>
-          <li><a href="#services">Home Management</a></li>
-          <li><a href="#services">Project Management & Oversight</a></li>
-          <li><a href="#services">Move Management</a></li>
-          <li><a href="#services">Concierge Services</a></li>
-          <li><a href="#services">Corporate Relocation</a></li>
+          <li><a routerLink="/services" fragment="property-management" style="cursor: pointer;">Property Management</a></li>
+          <li><a routerLink="/services" fragment="project-management" style="cursor: pointer;">Project Management & Oversight</a></li>
+          <li><a routerLink="/services" fragment="move-management" style="cursor: pointer;">Move Management</a></li>
+          <li><a routerLink="/services" fragment="concierge-services" style="cursor: pointer;">Concierge Services</a></li>
+          <li><a routerLink="/services" fragment="corporate-relocation" style="cursor: pointer;">Corporate Relocation</a></li>
         </ul>
       </div>
       <div class="footer-section delay-200">
         <h4>Get In Touch</h4>
         <ul>
-          <li><strong>Call:</strong> (617) 555-HOME</li>
-          <li><strong>Email:</strong> hello@sorellahomesolutions.com</li>
+          <li><strong>Call:</strong> <a (click)="callPhone()" style="cursor: pointer; color: #00a2ff; text-decoration: none;">(617) 555-HOME</a></li>
+          <li><strong>Email:</strong> <a (click)="sendEmail()" style="cursor: pointer; color: #00a2ff; text-decoration: none;">hello@sorellahomesolutions.com</a></li>
           <li><strong>Service Area:</strong> Boston Metro Area</li>
           <li><strong>Emergency Support:</strong> Available 24/7</li>
         </ul>

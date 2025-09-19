@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,7 +16,9 @@ import { AnimationService } from '../../services/animation.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+  
+  @ViewChild('heroVideo', { static: false }) heroVideo!: ElementRef<HTMLVideoElement>;
   
   services: Array<{title: string, icon: SafeHtml, description: string, sectionId: string}> = [];
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
@@ -31,6 +33,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   contactForm!: FormGroup;
   isSubmitting = false;
   formSubmitted = false;
+  
+  // Video properties
+  videoLoaded = false; // Start with false so fallback shows initially
+  isMobile = false;
+  currentVideoSrc = '/home-page-hero-video3-optimized.mp4'; // Default to desktop version
 
   constructor(
     private sanitizer: DomSanitizer, 
@@ -43,6 +50,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.scrollToTop();
     this.setupScrollHeader();
     this.setupParallaxEffect();
+    this.detectMobile();
+    this.setVideoSource();
     this.chevronDownIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.chevronDown);
     
     // Initialize contact icons
@@ -159,8 +168,190 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    // Ensure video is properly initialized after view is ready
+    setTimeout(() => {
+      this.initializeVideo();
+    }, 100);
+  }
+
+  private initializeVideo() {
+    if (!this.heroVideo?.nativeElement) {
+      console.warn('Hero video element not found');
+      return;
+    }
+
+    const video = this.heroVideo.nativeElement;
+    
+    // Make sure the video source is set
+    if (video.src !== this.currentVideoSrc) {
+      video.src = this.currentVideoSrc;
+    }
+    
+    // Add event listeners
+    video.addEventListener('loadeddata', () => {
+      console.log('Video loadeddata event fired');
+      this.onVideoLoaded();
+      setTimeout(() => this.attemptVideoPlay(video), 100);
+    });
+    
+    video.addEventListener('canplay', () => {
+      console.log('Video canplay event fired');
+      setTimeout(() => this.attemptVideoPlay(video), 100);
+    });
+    
+    video.addEventListener('canplaythrough', () => {
+      console.log('Video canplaythrough event fired');
+      setTimeout(() => this.attemptVideoPlay(video), 100);
+    });
+    
+    video.addEventListener('error', (e) => {
+      console.error('Video error:', e);
+      this.onVideoError();
+    });
+    
+    // Handle page visibility changes (when user switches tabs)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && this.videoLoaded && video.paused) {
+        console.log('Page became visible, attempting to restart video');
+        this.attemptVideoPlay(video);
+      }
+    });
+    
+    // Force load the video
+    video.load();
+    
+    // Also try to play immediately after a short delay
+    setTimeout(() => {
+      console.log('Attempting immediate play after load');
+      this.attemptVideoPlay(video);
+    }, 500);
+    
+    // Final check: if video isn't playing after 3 seconds, ensure fallback is shown
+    setTimeout(() => {
+      this.checkVideoPlaybackStatus(video);
+    }, 3000);
+  }
+
   ngOnDestroy() {
     this.animationService.destroy();
+  }
+
+  // Video-related methods
+  onVideoLoaded() {
+    this.videoLoaded = true;
+    console.log('Hero video loaded successfully');
+  }
+
+  onVideoError() {
+    this.videoLoaded = false;
+    console.warn('Hero video failed to load, showing fallback background');
+  }
+
+  onVideoClick(event: Event) {
+    const video = event.target as HTMLVideoElement;
+    console.log('Video clicked, attempting to play');
+    this.attemptVideoPlay(video);
+  }
+
+  private attemptVideoPlay(video: HTMLVideoElement) {
+    console.log('Attempting to play video. Paused:', video.paused, 'ReadyState:', video.readyState);
+    
+    if (video.paused) {
+      // Ensure video properties are set correctly
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      
+      const playPromise = video.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('✅ Video is playing successfully');
+          })
+          .catch(error => {
+            console.log('❌ Autoplay was prevented:', error.name, error.message);
+            // Try to play with user interaction
+            this.setupVideoPlayOnInteraction(video);
+          });
+      } else {
+        console.log('⚠️ Play promise is undefined');
+      }
+    } else {
+      console.log('✅ Video is already playing');
+    }
+  }
+
+  private setupVideoPlayOnInteraction(video: HTMLVideoElement) {
+    const playOnInteraction = () => {
+      // Ensure video is still muted and has correct attributes
+      video.muted = true;
+      video.loop = true;
+      
+      video.play().then(() => {
+        console.log('✅ Video started playing after user interaction');
+        // Remove the event listeners once video starts playing
+        document.removeEventListener('click', playOnInteraction);
+        document.removeEventListener('touchstart', playOnInteraction);
+        document.removeEventListener('keydown', playOnInteraction);
+        document.removeEventListener('scroll', playOnInteraction);
+      }).catch(error => {
+        console.log('❌ Video play failed even after interaction:', error);
+        // If video still fails, show fallback background
+        this.videoLoaded = false;
+      });
+    };
+
+    // Add event listeners for user interaction
+    document.addEventListener('click', playOnInteraction, { once: true });
+    document.addEventListener('touchstart', playOnInteraction, { once: true });
+    document.addEventListener('keydown', playOnInteraction, { once: true });
+    document.addEventListener('scroll', playOnInteraction, { once: true });
+    
+    console.log('🎬 Video will start playing on user interaction (click, touch, key, or scroll)');
+  }
+
+  private checkVideoPlaybackStatus(video: HTMLVideoElement) {
+    if (this.videoLoaded && video.paused) {
+      console.log('⚠️ Video loaded but not playing after 3 seconds - setting up interaction handlers');
+      this.setupVideoPlayOnInteraction(video);
+    } else if (this.videoLoaded && !video.paused) {
+      console.log('✅ Video is loaded and playing successfully');
+    } else if (!this.videoLoaded) {
+      console.log('ℹ️ Video not loaded - fallback background should be visible');
+    }
+  }
+
+  private detectMobile() {
+    this.isMobile = window.innerWidth <= 767;
+    
+    // Listen for window resize to update mobile detection
+    window.addEventListener('resize', () => {
+      const wasMobile = this.isMobile;
+      this.isMobile = window.innerWidth <= 767;
+      
+      // If mobile state changed, update video source
+      if (wasMobile !== this.isMobile) {
+        this.setVideoSource();
+      }
+    });
+  }
+
+  private setVideoSource() {
+    const newSrc = this.isMobile ? '/home-page-hero-video3-720p.mp4' : '/home-page-hero-video3-optimized.mp4';
+    
+    if (this.currentVideoSrc !== newSrc) {
+      this.currentVideoSrc = newSrc;
+      console.log(`Setting video source: ${this.isMobile ? 'mobile (720p)' : 'desktop (1080p)'} - ${newSrc}`);
+      
+      // If video element exists and is initialized, reload it
+      if (this.heroVideo?.nativeElement) {
+        const video = this.heroVideo.nativeElement;
+        video.src = this.currentVideoSrc;
+        video.load();
+      }
+    }
   }
 
   private scrollToTop() {
