@@ -56,10 +56,10 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         title: 'Property Management',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.propertyManagement),
-        description: 'Proactive, reliable care designed to protect your investment and give you peace of mind—all year long.',
+        description: 'Expert home care that gives you back your time while protecting your most important investment',
         detailedDescription: 'Your home is one of your most valuable assets. At Sorella Home Solutions, our Property Management services provide proactive, reliable care designed to protect your investment and give you peace of mind—all year long. Whether it\'s your primary residence, a second home, or a rental property, our team ensures that every detail is managed with precision and discretion. From routine maintenance to seasonal preparation, we take a hands-on, preventative approach that keeps small issues from becoming costly repairs. For homeowners who travel frequently, we provide full oversight of the property in your absence—so you can rest easy knowing your home is cared for as if it were our own.',
         quote: {
-          text: 'We don\'t just react when something goes wrong—we anticipate needs and address them before they become problems. That\'s the Sorella difference.',
+          text: 'We blend proactive preparation with reactive response. That\'s the Sorella difference.',
           author: 'Megan Calabrese, Founder'
         },
         features: [
