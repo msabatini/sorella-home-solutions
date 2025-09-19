@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         title: 'Project Management & Oversight',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
-        description: 'Strategic planning and execution of complex projects',
+        description: 'Strategic planning and execution of projects of all scopes and sizes.',
         sectionId: 'project-management'
       },
       {
