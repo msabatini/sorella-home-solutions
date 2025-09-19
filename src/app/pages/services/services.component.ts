@@ -26,7 +26,7 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
       text: string;
       author: string;
     };
-    features: string[];
+    features: Array<string | { text: string; subFeatures?: string[] }>;
     benefits: string[];
     sectionId: string;
   }> = [];
@@ -63,12 +63,11 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
           author: 'Megan Calabrese, Founder'
         },
         features: [
-          'Preventative Maintenance – Regular upkeep such as changing air filters, cleaning gutters, and monitoring major systems',
-          'Seasonal Preparation – Ensuring your home is ready for summer, winter, or storm season with proactive inspections and adjustments',
-          'Property Oversight While Traveling – Scheduled check-ins, mail collection, and vendor supervision while you\'re away',
-          'Vendor Coordination – Oversight of landscaping, housekeeping, pool service, and other trusted vendors',
-          'Emergency Response – Immediate support for urgent home issues, with 24/7 concierge access to vetted professionals',
-          'Rental Property Care – Reliable oversight and maintenance of investment properties to maximize value and tenant satisfaction'
+          'Proactive Preventative Maintenance Plans',
+          'Seasonal Home Care Routine Inspections Storm Preparedness',
+          'Vendor Coordination and Management Through Trusted Service Partners',
+          'Emergency Repairs and Rapid Response Services – Immediate support/24/7 coverage',
+          'Investment Property Care – Reliable oversight, maximize value and tenant satisfaction'
         ],
         benefits: [
           'Protect your investment',
@@ -82,18 +81,21 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         title: 'Project Management & Oversight',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
-        description: 'We take the stress out of managing renovations, repairs, and upgrades by overseeing every detail with professionalism and precision.',
-        detailedDescription: 'Every home project—big or small—requires time, coordination, and expertise. At Sorella Home Solutions, we take the stress out of managing renovations, repairs, and upgrades by overseeing every detail with professionalism and precision. From refreshing a single room to coordinating a major home renovation, our role is to be your trusted advocate and project lead. We liaise with contractors, manage timelines, and ensure that the work meets our exacting standards—so you don\'t have to.',
+        description: 'We know the home project, regardless of size require time, coordination and expertise.',
+        detailedDescription: 'At Sorella, we aim to be the trusted partner for homeowners who what their projects managed with the same care and precision as their homes are lived in. We deliver a high tech; high touch approach utilizing digital platforms for real time project tracking, and transparent communication and updates tailored to each client, ensuring seamless execution, impeccable attention to detail, and stress-free experiences.',
         quote: {
           text: 'We know how overwhelming home projects can feel. Our job is to make sure the process is smooth, efficient, and successful—delivering results that exceed expectations.',
           author: 'Megan Calabrese, Founder'
         },
         features: [
-          'Renovation Oversight – From kitchens and baths to full-scale remodels, we manage contractors, budgets, and timelines',
-          'Repairs & Upgrades – Coordinating one-time projects such as roof repairs, HVAC replacement, or appliance installation',
-          'Vendor Coordination – Sourcing and managing trusted professionals, ensuring all work is performed to the highest standards',
-          'Quality Assurance – Frequent site check-ins and detailed updates to keep projects on track and clients informed',
-          'Budget & Timeline Management – Monitoring costs and schedules to protect your investment and avoid surprises'
+          { text: 'Renovation Oversight – From kitchens and baths to full-scale remodels, we manage contractors, budgets, and timelines' },
+          { text: 'Repairs & Upgrades – Coordinating one-time projects such as roof repairs, HVAC replacement, or appliance installation' },
+          { text: 'Vendor Coordination – Sourcing and managing trusted professionals, ensuring all work is performed to the highest standards' },
+          { text: 'Quality Assurance – Frequent site check-ins and detailed updates to keep projects on track and clients informed' },
+          { text: 'Budget & Timeline Management – Monitoring costs and schedules to protect your investment and avoid surprises' },
+          { text: 'Full-Cycle Project Management –' },
+          { text: 'Homeowner Representation –' },
+          { text: 'Vendor and Contractor Management –' }
         ],
         benefits: [
           'On-time completion',

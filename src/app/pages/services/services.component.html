@@ -94,12 +94,122 @@
               <ng-template #defaultTitle>
                 <h3 class="features-title">What's Included</h3>
               </ng-template>
-              <ul class="features-list">
+              
+              <!-- Special template for Project Management & Oversight -->
+              <ul class="features-list" *ngIf="service.sectionId === 'project-management'">
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Renovation Oversight – From kitchens and baths to full-scale remodels, we manage contractors, budgets, and timelines</div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Repairs & Upgrades – Coordinating one-time projects such as roof repairs, HVAC replacement, or appliance installation</div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Vendor Coordination – Sourcing and managing trusted professionals, ensuring all work is performed to the highest standards</div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Quality Assurance – Frequent site check-ins and detailed updates to keep projects on track and clients informed</div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Budget & Timeline Management – Monitoring costs and schedules to protect your investment and avoid surprises</div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Full-Cycle Project Management –</div>
+                      <div class="custom-sub-features">
+                        <div class="custom-sub-feature" style="display: block;">Budgeting, cost tracking and reporting</div>
+                        <div class="custom-sub-feature" style="display: block;">Strategic planning for short and long term improvements</div>
+                        <div class="custom-sub-feature" style="display: block;">Assess opportunities for sustainability energy efficiency improvements</div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Homeowner Representation –</div>
+                      <div class="custom-sub-features">
+                        <div class="custom-sub-feature" style="display: block;">Point of contact between vendors and clients</div>
+                        <div class="custom-sub-feature" style="display: block;">Quality control and inspections</div>
+                        <div class="custom-sub-feature" style="display: block;">Advocacy for client's best interests</div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="feature-item">
+                  <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">Vendor and Contractor Management –</div>
+                      <div class="custom-sub-features">
+                        <div class="custom-sub-feature" style="display: block;">Vetting and onboarding all service trades</div>
+                        <div class="custom-sub-feature" style="display: block;">Securing proper insurance, lien waivers and contracts</div>
+                        <div class="custom-sub-feature" style="display: block;">Coordinating schedules and milestones</div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              
+              <!-- Default template for all other services -->
+              <ul class="features-list" *ngIf="service.sectionId !== 'project-management'">
                 <li *ngFor="let feature of service.features" class="feature-item">
                   <svg class="feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  <span class="feature-text">{{ feature }}</span>
+                  <div class="feature-text">
+                    <div class="feature-content-block">
+                      <div class="feature-main-text">{{ typeof feature === 'string' ? feature : feature.text }}</div>
+                      <ul class="sub-features-list" *ngIf="typeof feature === 'object' && feature.subFeatures">
+                        <li *ngFor="let subFeature of feature.subFeatures" class="sub-feature-item">
+                          <div class="sub-feature-text">{{ subFeature }}</div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </li>
               </ul>
             </div>
