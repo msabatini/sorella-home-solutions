@@ -100,7 +100,7 @@
     font-size: 1.2rem;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.85);
-    max-width: 700px;
+    max-width: 770px;
     margin: 0 auto;
   }
 }
@@ -1326,7 +1326,7 @@
 .hero-icon.animate-on-load { transition-delay: 0.2s; }
 .hero-title.animate-on-load { transition-delay: 0.4s; }
 .hero-subtitle.animate-on-load { transition-delay: 0.6s; }
-.hero-description.animate-on-load { transition-delay: 0.8s; }
+.hero-description.animate-on-load { transition-delay: 0.45s; }
 
 // Enhanced hover effects for animated elements
 .about-card.animate-in {
