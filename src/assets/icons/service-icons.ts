@@ -55,7 +55,7 @@ export const ServiceIcons = {
   </svg>`,
   
   chevronDown: `<svg viewBox="0 0 100 100" fill="currentColor">
-    <path d="M25 35L50 60L75 35" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M25 35L50 60L75 35" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`,
   
   // Contact Section Icons

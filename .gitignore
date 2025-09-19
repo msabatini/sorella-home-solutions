@@ -44,3 +44,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Large video files (deployed to S3)
+*.mp4
+*.MP4
+*.mov
+*.MOV
+*.avi
+*.AVI

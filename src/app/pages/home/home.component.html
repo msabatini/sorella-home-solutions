@@ -3,6 +3,25 @@
 <main class="page-fade-in">
   <!-- Hero Section -->
   <section id="home" class="hero page-content-fade page-section-1">
+    <!-- Video Background -->
+    <div class="hero-video-container">
+      <video 
+        #heroVideo
+        class="hero-video"
+        [class.loaded]="videoLoaded"
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        (loadeddata)="onVideoLoaded()"
+        (error)="onVideoError()"
+        (click)="onVideoClick($event)"
+        [src]="currentVideoSrc">
+        Your browser does not support the video tag.
+      </video>
+      <!-- Fallback background image for when video fails to load -->
+      <div class="hero-fallback-bg" [class.show]="!videoLoaded"></div>
+    </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1 class="hero-title">Seamless Home Solutions,<br>At Your Fingertips.</h1>
