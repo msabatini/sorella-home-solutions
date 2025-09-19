@@ -374,6 +374,23 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           header.classList.remove('scrolled');
         }
       }
+    };
+
+    // Wait for CSS animations to complete before starting parallax
+    setTimeout(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      updateParallax(); // Initial call
+    }, 500);
+  }
+
+  // Contact form methods
+  private setupContactForm() {
+    this.contactForm = this.fb.group({
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: [''],
+      serviceType: [''],
+      message: ['', [Validators.required, Validators.minLength(10)]]
     });
   }
 

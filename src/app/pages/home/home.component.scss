@@ -414,6 +414,10 @@ section {
     .service-description {
       color: #475569;
     }
+  }
+  
+  .service-highlight-description {
+    margin-bottom: 2rem;
     
     .service-dot {
       background: linear-gradient(135deg, #00a2ff 0%, #0ea5e9 100%);
@@ -643,6 +647,7 @@ section {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   color: #0e2340;
   text-align: center;
+
   position: relative;
   overflow: hidden;
   
