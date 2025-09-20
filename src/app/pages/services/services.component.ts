@@ -22,6 +22,7 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
     icon: SafeHtml;
     description: string;
     detailedDescription?: string;
+    detailedDescription2?: string;
     quote?: {
       text: string;
       author: string;
@@ -82,7 +83,8 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
         title: 'Project Management & Oversight',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
         description: 'We know the home project, regardless of size require time, coordination and expertise.',
-        detailedDescription: 'At Sorella, we aim to be the trusted partner for homeowners who what their projects managed with the same care and precision as their homes are lived in. We deliver a high tech; high touch approach utilizing digital platforms for real time project tracking, and transparent communication and updates tailored to each client, ensuring seamless execution, impeccable attention to detail, and stress-free experiences.',
+        detailedDescription: 'At Sorella, we aim to be the trusted partner for homeowners who what their projects managed with the same care and precision as their homes are lived in.',
+        detailedDescription2: 'We deliver a high tech, high touch approach utilizing digital platforms for real time project tracking, and transparent communication and updates tailored to each client, ensuring seamless execution, impeccable attention to detail, and stress-free experiences.',
         quote: {
           text: 'We know how overwhelming home projects can feel. Our job is to make sure the process is smooth, efficient, and successful—delivering results that exceed expectations.',
           author: 'Megan Calabrese, Founder'
@@ -98,11 +100,11 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
           { text: 'Vendor and Contractor Management –' }
         ],
         benefits: [
-          'On-time completion',
-          'Budget protection',
+          'Budget Management',
           'Quality assurance',
           'Stress-free experience',
-          'Trusted advocacy'
+          'High Touch Approach',
+          'Trusted Vendor Network'
         ],
         sectionId: 'project-management'
       },
