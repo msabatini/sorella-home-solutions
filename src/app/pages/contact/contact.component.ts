@@ -264,7 +264,7 @@ export class ContactComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getFieldDisplayName(fieldName: string): string {
-    const displayNames: { [key: string]: string } = {
+    const displayNames: Record<string, string> = {
       fullName: 'Full name',
       email: 'Email address',
       phone: 'Phone number',

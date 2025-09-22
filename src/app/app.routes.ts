@@ -1,17 +1,29 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { AboutComponent } from './pages/about/about.component';
-import { ServicesComponent } from './pages/services/services.component';
-import { PressComponent } from './pages/press/press.component';
-import { ContactComponent } from './pages/contact/contact.component';
-import { LegalComponent } from './pages/legal/legal.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'services', component: ServicesComponent },
-  { path: 'press', component: PressComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'legal', component: LegalComponent },
+  { 
+    path: '', 
+    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
+  },
+  { 
+    path: 'about', 
+    loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
+  },
+  { 
+    path: 'services', 
+    loadComponent: () => import('./pages/services/services.component').then(m => m.ServicesComponent)
+  },
+  { 
+    path: 'press', 
+    loadComponent: () => import('./pages/press/press.component').then(m => m.PressComponent)
+  },
+  { 
+    path: 'contact', 
+    loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent)
+  },
+  { 
+    path: 'legal', 
+    loadComponent: () => import('./pages/legal/legal.component').then(m => m.LegalComponent)
+  },
   { path: '**', redirectTo: '' }
 ];

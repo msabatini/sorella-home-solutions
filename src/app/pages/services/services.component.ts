@@ -17,7 +17,7 @@ import { CounterAnimationService } from '../../services/counter-animation.servic
 })
 export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
   
-  services: Array<{
+  services: {
     title: string;
     icon: SafeHtml;
     description: string;
@@ -27,10 +27,10 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
       text: string;
       author: string;
     };
-    features: Array<string | { text: string; subFeatures?: string[] }>;
+    features: (string | { text: string; subFeatures?: string[] })[];
     benefits: string[];
     sectionId: string;
-  }> = [];
+  }[] = [];
 
   constructor(
     private sanitizer: DomSanitizer,

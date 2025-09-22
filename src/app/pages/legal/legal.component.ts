@@ -14,7 +14,7 @@ import { AnimationService } from '../../services/animation.service';
   styleUrls: ['./legal.component.scss']
 })
 export class LegalComponent implements OnInit, OnDestroy {
-  activeTab: string = 'privacy';
+  activeTab = 'privacy';
 
   constructor(
     private animationService: AnimationService,
@@ -31,7 +31,7 @@ export class LegalComponent implements OnInit, OnDestroy {
     this.route.fragment.subscribe(fragment => {
       if (fragment) {
         // Map fragments to tab names
-        const fragmentToTab: { [key: string]: string } = {
+        const fragmentToTab: Record<string, string> = {
           'privacy-policy': 'privacy',
           'terms-of-service': 'terms',
           'cookie-policy': 'cookies'

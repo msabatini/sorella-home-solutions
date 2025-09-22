@@ -55,7 +55,7 @@ export class CounterAnimationService {
         const currentValue = startValue + (target - startValue) * easedProgress;
         
         // Format the number
-        let formattedValue = this.formatNumber(currentValue, decimals, separator);
+        const formattedValue = this.formatNumber(currentValue, decimals, separator);
         
         // Add prefix and suffix
         const displayValue = `${prefix}${formattedValue}${suffix}`;
@@ -90,7 +90,7 @@ export class CounterAnimationService {
    * @param options - Intersection observer options
    */
   animateCountersOnScroll(
-    elements: Array<{ element: HTMLElement; config: CounterConfig }>,
+    elements: { element: HTMLElement; config: CounterConfig }[],
     options: IntersectionObserverInit = { threshold: 0.5 }
   ): void {
     const observer = new IntersectionObserver((entries) => {
@@ -138,7 +138,7 @@ export class CounterAnimationService {
    * @param config - Counter configuration
    * @param threshold - Intersection threshold (0-1)
    */
-  startCounterOnVisible(element: HTMLElement, config: CounterConfig, threshold: number = 0.5): void {
+  startCounterOnVisible(element: HTMLElement, config: CounterConfig, threshold = 0.5): void {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
