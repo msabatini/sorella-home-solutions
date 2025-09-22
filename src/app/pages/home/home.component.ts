@@ -112,6 +112,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
   }
 
+  scrollToIntro() {
+    const introSection = document.getElementById('intro');
+    if (introSection) {
+      introSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
+
   scrollToServices() {
     const servicesSection = document.getElementById('services');
     if (servicesSection) {

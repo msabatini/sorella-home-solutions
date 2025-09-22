@@ -26,7 +26,7 @@
     <div class="hero-content">
       <h1 class="hero-title">Sorella Home Solutions<br><span class="hero-tagline">With Sorella, consider it done.</span></h1>
       <div class="hero-button">
-        <button class="btn btn-outline" (click)="scrollToServices()">
+        <button class="btn btn-outline" (click)="scrollToIntro()">
           <span>Learn More</span>
           <div class="chevron-icon" [innerHTML]="chevronDownIcon"></div>
         </button>
@@ -34,8 +34,26 @@
     </div>
   </section>
 
+  <!-- Intro Section -->
+  <section id="intro" class="service-highlight service-highlight-left service-highlight-bg intro-section page-content-fade page-section-2">
+    <div class="container">
+      <div class="service-highlight-content">
+        <div class="service-highlight-background-icon" [innerHTML]="introSection.icon"></div>
+        <div class="service-highlight-text animate-on-scroll slide-left">
+          <div class="service-highlight-header">
+            <div class="service-highlight-icon" [innerHTML]="introSection.icon"></div>
+            <h2 class="service-highlight-title">{{ introSection.title }}</h2>
+          </div>
+          <p class="service-highlight-description" *ngFor="let paragraph of introSection.paragraphs">
+            {{ paragraph }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Services Section -->
-  <section id="services" class="services page-content-fade page-section-2">
+  <section id="services" class="services page-content-fade page-section-3">
     <div class="container">
       <div class="section-header animate-on-scroll">
         <h2 class="section-title">Our Services</h2>
@@ -50,24 +68,6 @@
           <h3 class="service-title">{{ service.title }}</h3>
           <p class="service-description">{{ service.description }}</p>
           <div class="service-dot"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Intro Section -->
-  <section class="service-highlight service-highlight-left service-highlight-bg intro-section page-content-fade page-section-3">
-    <div class="container">
-      <div class="service-highlight-content">
-        <div class="service-highlight-background-icon" [innerHTML]="introSection.icon"></div>
-        <div class="service-highlight-text animate-on-scroll slide-left">
-          <div class="service-highlight-header">
-            <div class="service-highlight-icon" [innerHTML]="introSection.icon"></div>
-            <h2 class="service-highlight-title">{{ introSection.title }}</h2>
-          </div>
-          <p class="service-highlight-description" *ngFor="let paragraph of introSection.paragraphs">
-            {{ paragraph }}
-          </p>
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@
   </section>
 
   <!-- Project Management & Oversight Highlight Section -->
-  <section id="project-management" class="service-highlight service-highlight-left service-highlight-bg">
+  <section id="project-management" class="service-highlight service-highlight-left service-highlight-bg page-content-fade page-section-5">
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[1].icon"></div>
@@ -124,7 +124,7 @@
   </section>
 
   <!-- Move Management Highlight Section -->
-  <section id="move-management" class="service-highlight">
+  <section id="move-management" class="service-highlight page-content-fade page-section-6">
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[2].icon"></div>
@@ -149,7 +149,7 @@
   </section>
 
   <!-- Concierge Services Highlight Section -->
-  <section id="concierge-services" class="service-highlight service-highlight-left service-highlight-bg">
+  <section id="concierge-services" class="service-highlight service-highlight-left service-highlight-bg page-content-fade page-section-7">
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[3].icon"></div>
@@ -174,7 +174,7 @@
   </section>
 
   <!-- Corporate Relocation Highlight Section -->
-  <section id="corporate-relocation" class="service-highlight">
+  <section id="corporate-relocation" class="service-highlight page-content-fade page-section-8">
     <div class="container">
       <div class="service-highlight-content">
         <div class="service-highlight-background-icon" [innerHTML]="services[4].icon"></div>
