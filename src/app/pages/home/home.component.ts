@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   
   @ViewChild('heroVideo', { static: false }) heroVideo!: ElementRef<HTMLVideoElement>;
   
-  services: Array<{title: string, icon: SafeHtml, description: string, sectionId: string}> = [];
+  services: {title: string, icon: SafeHtml, description: string, sectionId: string}[] = [];
   introSection: {title: string, icon: SafeHtml, paragraphs: string[]} = {} as any;
   chevronDownIcon: SafeHtml = {} as any;
   
@@ -487,7 +487,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getFieldDisplayName(fieldName: string): string {
-    const displayNames: { [key: string]: string } = {
+    const displayNames: Record<string, string> = {
       fullName: 'Full name',
       email: 'Email address',
       phone: 'Phone number',
