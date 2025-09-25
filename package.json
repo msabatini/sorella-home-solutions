@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
-    "prebuild": "npm run lint",
+    "prebuild:lint": "npm run lint",
     "analyze": "ng build --stats-json && npx webpack-bundle-analyzer dist/sorella-home-solutions/stats.json"
   },
   "prettier": {

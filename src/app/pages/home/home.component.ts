@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   // Video properties
   videoLoaded = false; // Start with false so fallback shows initially
   isMobile = false;
-  currentVideoSrc = '/home-page-hero-video3-optimized.mp4'; // Default to desktop version
+  currentVideoSrc = '/home-page-hero-video4-web-compressed.mp4'; // New hi-res optimized video
 
   constructor(
     private sanitizer: DomSanitizer, 
@@ -349,11 +349,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setVideoSource() {
-    const newSrc = this.isMobile ? '/home-page-hero-video3-720p.mp4' : '/home-page-hero-video3-optimized.mp4';
+    // Using new hi-res optimized video - same video for both mobile and desktop
+    const newSrc = '/home-page-hero-video4-web-compressed.mp4';
     
     if (this.currentVideoSrc !== newSrc) {
       this.currentVideoSrc = newSrc;
-      console.log(`Setting video source: ${this.isMobile ? 'mobile (720p)' : 'desktop (1080p)'} - ${newSrc}`);
+      console.log(`Setting video source: hi-res optimized video - ${newSrc}`);
       
       // If video element exists and is initialized, reload it
       if (this.heroVideo?.nativeElement) {
