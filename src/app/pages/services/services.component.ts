@@ -65,10 +65,10 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         features: [
           'Proactive Preventative Maintenance Plans',
-          'Seasonal Home Care Routine Inspections Storm Preparedness',
+          'Seasonal Home Care, Routine Inspections and Storm Preparedness',
           'Vendor Coordination and Management Through Trusted Service Partners',
-          'Emergency Repairs and Rapid Response Services – Immediate support/24/7 coverage',
-          'Investment Property Care – Reliable oversight, maximize value and tenant satisfaction'
+          'Emergency Repairs and Rapid Response Services – Immediate Support/24/7 Coverage',
+          'Investment Property Care – Reliable Oversight, Maximize Value and Tenant Satisfaction'
         ],
         benefits: [
           'Protect your investment',
@@ -82,9 +82,9 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         title: 'Project Management & Oversight',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
-        description: 'We know the home project, regardless of size require time, coordination and expertise.',
+        description: 'Regardless of size, we know home projects require time, coordination and expertise.',
         detailedDescription: 'At Sorella, we aim to be the trusted partner for homeowners who what their projects managed with the same care and precision as their homes are lived in.',
-        detailedDescription2: 'We deliver a high tech, high touch approach utilizing digital platforms for real time project tracking, and transparent communication and updates tailored to each client, ensuring seamless execution, impeccable attention to detail, and stress-free experiences.',
+        detailedDescription2: 'We deliver a high-tech, high-touch approach that leverages digital platforms for real-timeproject tracking and transparent communication, providing tailored updates for each clientwhile ensuring seamless execution, meticulous attention to detail, and a stress-freeexperience.',
         quote: {
           text: 'We know how overwhelming home projects can feel. Our job is to make sure the process is smooth, efficient, and successful—delivering results that exceed expectations.',
           author: 'Megan Calabrese, Founder'
@@ -100,11 +100,11 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
           { text: 'Vendor and Contractor Management –' }
         ],
         benefits: [
-          'Budget Management',
+          'Budget management',
           'Quality assurance',
           'Stress-free experience',
-          'High Touch Approach',
-          'Trusted Vendor Network'
+          'High touch approach',
+          'Trusted vendor network'
         ],
         sectionId: 'project-management'
       },

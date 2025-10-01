@@ -16,7 +16,7 @@ export class FooterComponent {
 
 
   callPhone() {
-    window.location.href = 'tel:+16175554663'; // (617) 555-HOME
+    window.location.href = 'tel:+16175554663'; // (781) 228-1235
   }
 
   sendEmail() {
