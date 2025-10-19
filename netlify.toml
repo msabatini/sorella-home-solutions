@@ -13,6 +13,12 @@
   to = "/manifest.json"
   status = 200
 
+# Serve video files directly
+[[redirects]]
+  from = "/*.mp4"
+  to = "/:splat.mp4"
+  status = 200
+
 # Catch-all for SPA routing (after static assets)
 [[redirects]]
   from = "/*"
