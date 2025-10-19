@@ -52,3 +52,9 @@ Thumbs.db
 *.MOV
 *.avi
 *.AVI
+server/.env
+
+# Debug/test files
+debug.html
+debug-contact.html
+test-video-stability.js

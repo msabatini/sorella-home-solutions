@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit {
     
     const updateHeader = () => {
       const header = document.querySelector('.header') as HTMLElement;
-      const heroSection = document.querySelector('.hero, .about-hero, .services-hero, .press-hero, .contact-hero, .legal-hero') as HTMLElement;
+      const heroSection = document.querySelector('.hero, .about-hero, .services-hero, .press-hero, .contact-hero, .legal-hero, .blog-hero') as HTMLElement;
       
       if (header && heroSection) {
         const heroHeight = heroSection.offsetHeight;
