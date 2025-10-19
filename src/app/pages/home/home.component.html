@@ -12,11 +12,11 @@
         muted 
         loop 
         playsinline
-        preload="auto"
+        preload="metadata"
         (loadeddata)="onVideoLoaded()"
         (error)="onVideoError()"
         (click)="onVideoClick($event)"
-        [src]="currentVideoSrc">
+        src="/home-page-hero-video4-web-compressed.mp4">
         Your browser does not support the video tag.
       </video>
       <!-- Fallback background image for when video fails to load -->
