@@ -1,0 +1,11 @@
+# Static assets - serve as-is
+/*.mp4 /:splat.mp4 200!
+/*.jpg /:splat.jpg 200!
+/*.png /:splat.png 200!
+/*.svg /:splat.svg 200!
+/*.css /:splat.css 200!
+/*.js /:splat.js 200!
+/services-img/* /services-img/:splat 200!
+
+# SPA catch-all
+/* /index.html 200
