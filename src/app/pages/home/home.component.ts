@@ -193,32 +193,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const video = this.heroVideo.nativeElement;
     
-    // Make sure the video source is set
-    if (video.src !== this.currentVideoSrc) {
-      video.src = this.currentVideoSrc;
-    }
+    console.log('Initializing video element. Current src:', video.src, 'Expected src:', this.currentVideoSrc);
     
-    // Add event listeners
-    video.addEventListener('loadeddata', () => {
-      console.log('Video loadeddata event fired');
-      this.onVideoLoaded();
-      setTimeout(() => this.attemptVideoPlay(video), 100);
-    });
-    
-    video.addEventListener('canplay', () => {
-      console.log('Video canplay event fired');
-      setTimeout(() => this.attemptVideoPlay(video), 100);
-    });
-    
-    video.addEventListener('canplaythrough', () => {
-      console.log('Video canplaythrough event fired');
-      setTimeout(() => this.attemptVideoPlay(video), 100);
-    });
-    
-    video.addEventListener('error', (e) => {
-      console.error('Video error:', e);
-      this.onVideoError();
-    });
+    // Don't override src if already set by Angular binding
+    // The HTML binding [src]="currentVideoSrc" is the primary mechanism
     
     // Handle page visibility changes (when user switches tabs)
     document.addEventListener('visibilitychange', () => {
@@ -228,12 +206,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     
-    // Force load the video
-    video.load();
-    
-    // Also try to play immediately after a short delay
+    // Try to play after a short delay to allow initial buffering
     setTimeout(() => {
-      console.log('Attempting immediate play after load');
+      console.log('Attempting initial play after initialization');
       this.attemptVideoPlay(video);
     }, 500);
     
@@ -253,9 +228,33 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('Hero video loaded successfully');
   }
 
-  onVideoError() {
+  onVideoError(event?: Event) {
     this.videoLoaded = false;
-    console.warn('Hero video failed to load, showing fallback background');
+    const video = this.heroVideo?.nativeElement as HTMLVideoElement;
+    
+    if (video) {
+      const errorCode = video.error?.code;
+      const errorMessage = video.error?.message;
+      let errorType = 'Unknown error';
+      
+      switch (errorCode) {
+        case 1: errorType = 'MEDIA_ERR_ABORTED - Video loading was aborted'; break;
+        case 2: errorType = 'MEDIA_ERR_NETWORK - Network error'; break;
+        case 3: errorType = 'MEDIA_ERR_DECODE - Video decoding failed'; break;
+        case 4: errorType = 'MEDIA_ERR_SRC_NOT_SUPPORTED - Video format not supported'; break;
+      }
+      
+      console.warn('Hero video failed to load:', {
+        errorType,
+        errorMessage,
+        src: video.src,
+        currentTime: video.currentTime,
+        readyState: video.readyState,
+        networkState: video.networkState
+      });
+    } else {
+      console.warn('Hero video failed to load, showing fallback background');
+    }
   }
 
   onVideoClick(event: Event) {

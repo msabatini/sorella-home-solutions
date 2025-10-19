@@ -2,8 +2,44 @@
   publish = "dist/sorella-home-solutions/browser"
   command = "npm run build"
 
+# Explicitly allow static assets to be served (prevents SPA redirect)
+[[redirects]]
+  from = "/*.mp4"
+  to = "/:splat.mp4"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.jpg"
+  to = "/:splat.jpg"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.png"
+  to = "/:splat.png"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.svg"
+  to = "/:splat.svg"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.css"
+  to = "/:splat.css"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.js"
+  to = "/:splat.js"
+  status = 200
+  force = true
+
 # SPA routing - serve index.html for all routes
-# Netlify will automatically serve static files that exist before applying this rule
 [[redirects]]
   from = "/*"
   to = "/index.html"
