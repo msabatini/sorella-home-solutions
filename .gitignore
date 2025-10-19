@@ -52,3 +52,4 @@ Thumbs.db
 *.MOV
 *.avi
 *.AVI
+server/.env
