@@ -2,7 +2,17 @@
   publish = "dist/sorella-home-solutions/browser"
   command = "npm run build"
 
-# Explicitly allow static assets to be served (prevents SPA redirect)
+# Disable function routing for static assets
+[functions]
+  directory = "netlify/functions"
+
+# Static assets - must be served directly, NOT through functions
+[[redirects]]
+  from = "/home-page-hero-video4-web-compressed.mp4"
+  to = "/home-page-hero-video4-web-compressed.mp4"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*.mp4"
   to = "/:splat.mp4"
@@ -36,6 +46,18 @@
 [[redirects]]
   from = "/*.js"
   to = "/:splat.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.ico"
+  to = "/:splat.ico"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/services-img/*"
+  to = "/services-img/:splat"
   status = 200
   force = true
 
