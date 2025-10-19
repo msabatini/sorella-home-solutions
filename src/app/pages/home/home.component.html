@@ -9,10 +9,10 @@
         #heroVideo
         class="hero-video"
         [class.loaded]="videoLoaded"
-        autoplay 
         muted 
         loop 
         playsinline
+        preload="auto"
         (loadeddata)="onVideoLoaded()"
         (error)="onVideoError()"
         (click)="onVideoClick($event)"
