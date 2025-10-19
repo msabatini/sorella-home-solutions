@@ -2,24 +2,8 @@
   publish = "dist/sorella-home-solutions/browser"
   command = "npm run build"
 
-# Exclude static assets from SPA redirect
-[[redirects]]
-  from = "/favicon.ico"
-  to = "/favicon.ico"
-  status = 200
-
-[[redirects]]
-  from = "/manifest.json"
-  to = "/manifest.json"
-  status = 200
-
-# Serve video files directly
-[[redirects]]
-  from = "/*.mp4"
-  to = "/:splat.mp4"
-  status = 200
-
-# Catch-all for SPA routing (after static assets)
+# SPA routing - serve index.html for all routes
+# Netlify will automatically serve static files that exist before applying this rule
 [[redirects]]
   from = "/*"
   to = "/index.html"
