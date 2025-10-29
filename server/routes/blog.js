@@ -140,6 +140,186 @@ router.get('/:id/related', async (req, res) => {
   }
 });
 
+// ============ ADMIN ENDPOINTS (must come before /:idOrSlug catch-all) ============
+
+// Get all blog posts for admin (including unpublished)
+router.get('/admin/all', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 100, search } = req.query;
+    const skip = (page - 1) * limit;
+
+    let query = {}; // No published filter - get all posts
+
+    // Search in title, subtitle, and intro
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { subtitle: { $regex: search, $options: 'i' } },
+        { introText: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const total = await BlogPost.countDocuments(query);
+    const posts = await BlogPost.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json({
+      success: true,
+      data: posts,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching all blog posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blog posts'
+    });
+  }
+});
+
+// ============ ADMIN COMMENT MANAGEMENT ENDPOINTS (must come before /:idOrSlug catch-all) ============
+
+// Get all comments (admin only)
+router.get('/admin/comments/all', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 50 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const total = await Comment.countDocuments({});
+    const comments = await Comment.find({})
+      .populate('blogPostId', 'title')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Map to include blogPostTitle for convenience
+    const enrichedComments = comments.map(comment => ({
+      ...comment.toObject(),
+      blogPostTitle: comment.blogPostId?.title || 'Deleted Post'
+    }));
+
+    res.json({
+      success: true,
+      data: enrichedComments,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching all comments:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching comments'
+    });
+  }
+});
+
+// Approve comment (admin only)
+router.put('/admin/comments/:id/approve', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comment.findByIdAndUpdate(
+      id,
+      { approved: true },
+      { new: true }
+    );
+
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Comment approved',
+      data: comment
+    });
+
+  } catch (error) {
+    console.error('Error approving comment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error approving comment'
+    });
+  }
+});
+
+// Reject comment (admin only)
+router.put('/admin/comments/:id/reject', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comment.findByIdAndUpdate(
+      id,
+      { approved: false },
+      { new: true }
+    );
+
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Comment rejected',
+      data: comment
+    });
+
+  } catch (error) {
+    console.error('Error rejecting comment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error rejecting comment'
+    });
+  }
+});
+
+// Delete comment (admin only)
+router.delete('/admin/comments/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comment.findByIdAndDelete(id);
+
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Comment deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting comment'
+    });
+  }
+});
+
 // Get single blog post by ID or slug (comes last)
 router.get('/:idOrSlug', async (req, res) => {
   try {

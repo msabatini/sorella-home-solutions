@@ -1,0 +1,555 @@
+<div class="admin-settings">
+  <!-- Header -->
+  <div class="settings-header">
+    <h2>Settings</h2>
+    <p>Manage your site configuration, categories, admins, and email settings</p>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <button
+      *ngFor="let tab of ['general', 'categories', 'admins', 'email']"
+      (click)="setActiveTab(tab)"
+      [class.active]="activeTab === tab"
+      class="tab-button"
+    >
+      <span *ngIf="tab === 'general'">⚙️ General Settings</span>
+      <span *ngIf="tab === 'categories'">📚 Categories</span>
+      <span *ngIf="tab === 'admins'">👥 Admin Accounts</span>
+      <span *ngIf="tab === 'email'">📧 Email Config</span>
+    </button>
+  </div>
+
+  <!-- Content Container -->
+  <div class="tab-content">
+    <!-- GENERAL SETTINGS TAB -->
+    <div *ngIf="activeTab === 'general'" class="tab-pane">
+      <div class="section-container">
+        <h3>General Settings</h3>
+        <p class="section-description">Configure basic site information and metadata</p>
+
+        <!-- Success Message -->
+        <div *ngIf="generalSuccess" class="alert alert-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>{{ generalSuccess }}</span>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="generalError" class="alert alert-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ generalError }}</span>
+        </div>
+
+        <form [formGroup]="generalForm" class="settings-form">
+          <div class="form-group">
+            <label for="siteName">Site Name *</label>
+            <input
+              type="text"
+              id="siteName"
+              formControlName="siteName"
+              placeholder="e.g., Sorella Home Solutions"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="siteEmail">Site Email *</label>
+              <input
+                type="email"
+                id="siteEmail"
+                formControlName="siteEmail"
+                placeholder="info@example.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="sitePhone">Site Phone</label>
+              <input
+                type="tel"
+                id="sitePhone"
+                formControlName="sitePhone"
+                placeholder="+1 (555) 123-4567"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="siteDescription">Site Description</label>
+            <textarea
+              id="siteDescription"
+              formControlName="siteDescription"
+              placeholder="Brief description of your site"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <button
+            type="button"
+            (click)="saveGeneralSettings()"
+            [disabled]="generalLoading"
+            class="btn-primary"
+          >
+            <span *ngIf="!generalLoading">Save Settings</span>
+            <span *ngIf="generalLoading" class="loading-spinner-inline">
+              <span class="spinner-mini"></span>
+              Saving...
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- CATEGORIES TAB -->
+    <div *ngIf="activeTab === 'categories'" class="tab-pane">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <h3>Blog Categories</h3>
+            <p class="section-description">Manage blog post categories</p>
+          </div>
+          <button (click)="openCategoryForm()" *ngIf="!showCategoryForm" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Category
+          </button>
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="categorySuccess" class="alert alert-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>{{ categorySuccess }}</span>
+        </div>
+
+        <!-- Category Form -->
+        <div *ngIf="showCategoryForm" class="form-card">
+          <h4>{{ editingCategoryId ? 'Edit Category' : 'New Category' }}</h4>
+          <form [formGroup]="categoryForm" class="settings-form">
+            <div class="form-group">
+              <label for="catName">Category Name *</label>
+              <input
+                type="text"
+                id="catName"
+                formControlName="name"
+                placeholder="e.g., Seasonal Care"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="catDesc">Description</label>
+              <textarea
+                id="catDesc"
+                formControlName="description"
+                placeholder="Category description"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="catIcon">Icon (emoji or URL)</label>
+              <input
+                type="text"
+                id="catIcon"
+                formControlName="icon"
+                placeholder="e.g., 🌿 or https://..."
+              />
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                (click)="saveCategory()"
+                class="btn-primary"
+              >
+                {{ editingCategoryId ? 'Update' : 'Add' }} Category
+              </button>
+              <button
+                type="button"
+                (click)="resetCategoryForm()"
+                class="btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="categoriesLoading" class="loading-container">
+          <div class="loading-spinner">
+            <span class="spinner"></span>
+          </div>
+          <p>Loading categories...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="categoriesError && !categoriesLoading" class="alert alert-error">
+          {{ categoriesError }}
+        </div>
+
+        <!-- Categories List -->
+        <div *ngIf="!categoriesLoading && categories.length > 0" class="categories-grid">
+          <div *ngFor="let category of categories" class="category-card">
+            <div class="category-header">
+              <div class="category-info">
+                <span *ngIf="category.icon" class="category-icon">{{ category.icon }}</span>
+                <div class="category-text">
+                  <h4>{{ category.name }}</h4>
+                  <p *ngIf="category.description">{{ category.description }}</p>
+                </div>
+              </div>
+              <div class="category-actions">
+                <button (click)="editCategory(category)" class="btn-icon btn-edit" title="Edit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+
+                <div *ngIf="categoryDeleteConfirm === category._id" class="delete-confirmation">
+                  <button
+                    (click)="deleteCategory(category._id!)"
+                    class="btn-icon btn-confirm"
+                    title="Confirm"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    (click)="cancelCategoryDelete()"
+                    class="btn-icon btn-cancel"
+                    title="Cancel"
+                  >
+                    No
+                  </button>
+                </div>
+
+                <button
+                  *ngIf="categoryDeleteConfirm !== category._id"
+                  (click)="confirmDeleteCategory(category._id!)"
+                  class="btn-icon btn-delete"
+                  title="Delete"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!categoriesLoading && categories.length === 0" class="empty-state">
+          <p>No categories found</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN ACCOUNTS TAB -->
+    <div *ngIf="activeTab === 'admins'" class="tab-pane">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <h3>Admin Accounts</h3>
+            <p class="section-description">Create and manage admin users</p>
+          </div>
+          <button (click)="openAdminForm()" *ngIf="!showAdminForm" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Admin
+          </button>
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="adminSuccess" class="alert alert-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>{{ adminSuccess }}</span>
+        </div>
+
+        <!-- Admin Form -->
+        <div *ngIf="showAdminForm" class="form-card">
+          <h4>Create New Admin Account</h4>
+          <form [formGroup]="adminForm" class="settings-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="adminUsername">Username *</label>
+                <input
+                  type="text"
+                  id="adminUsername"
+                  formControlName="username"
+                  placeholder="Username"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminEmail">Email *</label>
+                <input
+                  type="email"
+                  id="adminEmail"
+                  formControlName="email"
+                  placeholder="admin@example.com"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="adminPassword">Password *</label>
+                <input
+                  type="password"
+                  id="adminPassword"
+                  formControlName="password"
+                  placeholder="Minimum 6 characters"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="adminRole">Role *</label>
+                <select id="adminRole" formControlName="role">
+                  <option value="editor">Editor</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                (click)="saveAdmin()"
+                class="btn-primary"
+              >
+                Create Account
+              </button>
+              <button
+                type="button"
+                (click)="resetAdminForm()"
+                class="btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="adminsLoading" class="loading-container">
+          <div class="loading-spinner">
+            <span class="spinner"></span>
+          </div>
+          <p>Loading admin accounts...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="adminsError && !adminsLoading" class="alert alert-error">
+          {{ adminsError }}
+        </div>
+
+        <!-- Admins Table -->
+        <div *ngIf="!adminsLoading && admins.length > 0" class="admins-table-wrapper">
+          <table class="admins-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let admin of admins" class="admin-row">
+                <td class="username">{{ admin.username }}</td>
+                <td class="email">{{ admin.email }}</td>
+                <td class="role">
+                  <span [class.admin-badge]="admin.role === 'admin'" [class.editor-badge]="admin.role === 'editor'">
+                    {{ getAdminRoleLabel(admin.role) }}
+                  </span>
+                </td>
+                <td class="created">{{ formatDate(admin.createdAt) }}</td>
+                <td class="actions">
+                  <div *ngIf="isCurrentUser(admin._id)" class="current-user">
+                    <span class="badge-current">Current User</span>
+                  </div>
+                  <div *ngIf="!isCurrentUser(admin._id)" class="admin-actions">
+                    <div
+                      *ngIf="adminDeleteConfirm === admin._id"
+                      class="delete-confirmation"
+                    >
+                      <button
+                        (click)="deleteAdmin(admin._id)"
+                        class="btn-icon btn-confirm"
+                        title="Confirm"
+                      >
+                        Yes
+                      </button>
+                      <button
+                        (click)="cancelAdminDelete()"
+                        class="btn-icon btn-cancel"
+                        title="Cancel"
+                      >
+                        No
+                      </button>
+                    </div>
+
+                    <button
+                      *ngIf="adminDeleteConfirm !== admin._id"
+                      (click)="confirmDeleteAdmin(admin._id)"
+                      class="btn-icon btn-delete"
+                      title="Delete admin"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="!adminsLoading && admins.length === 0" class="empty-state">
+          <p>No admin accounts found</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAIL CONFIGURATION TAB -->
+    <div *ngIf="activeTab === 'email'" class="tab-pane">
+      <div class="section-container">
+        <h3>Email Configuration</h3>
+        <p class="section-description">Configure SMTP settings for sending emails</p>
+
+        <!-- Success Message -->
+        <div *ngIf="emailSuccess" class="alert alert-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>{{ emailSuccess }}</span>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="emailError" class="alert alert-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ emailError }}</span>
+        </div>
+
+        <form [formGroup]="emailForm" class="settings-form">
+          <div class="info-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <p>Configure your SMTP server to enable automated email notifications for contact forms and blog updates.</p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="smtpHost">SMTP Host *</label>
+              <input
+                type="text"
+                id="smtpHost"
+                formControlName="smtpHost"
+                placeholder="e.g., smtp.gmail.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="smtpPort">SMTP Port *</label>
+              <input
+                type="number"
+                id="smtpPort"
+                formControlName="smtpPort"
+                placeholder="587 or 465"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="smtpUser">SMTP User *</label>
+              <input
+                type="email"
+                id="smtpUser"
+                formControlName="smtpUser"
+                placeholder="your-email@gmail.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="smtpFrom">From Email Address *</label>
+              <input
+                type="email"
+                id="smtpFrom"
+                formControlName="smtpFrom"
+                placeholder="noreply@example.com"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="smtpPassword">SMTP Password *</label>
+            <div class="password-input-wrapper">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="smtpPassword"
+                formControlName="smtpPassword"
+                placeholder="Your SMTP password"
+              />
+              <button
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="btn-toggle-password"
+              >
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input
+                type="checkbox"
+                id="smtpSecure"
+                formControlName="smtpSecure"
+              />
+              <label for="smtpSecure">Use TLS/SSL (recommended for port 465)</label>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="saveEmailConfig()"
+            [disabled]="emailLoading"
+            class="btn-primary"
+          >
+            <span *ngIf="!emailLoading">Save Email Configuration</span>
+            <span *ngIf="emailLoading" class="loading-spinner-inline">
+              <span class="spinner-mini"></span>
+              Saving...
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

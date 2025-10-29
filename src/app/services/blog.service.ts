@@ -131,4 +131,40 @@ export class BlogService {
   deletePost(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // ADMIN COMMENT MANAGEMENT
+
+  // Get all comments (admin only)
+  getAllComments(page: number = 1, limit: number = 50): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http.get<any>(`${this.apiUrl}/admin/comments/all`, { params });
+  }
+
+  // Approve comment (admin only)
+  approveComment(commentId: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/admin/comments/${commentId}/approve`, {});
+  }
+
+  // Reject comment (admin only)
+  rejectComment(commentId: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/admin/comments/${commentId}/reject`, {});
+  }
+
+  // Delete comment (admin only)
+  deleteComment(commentId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/admin/comments/${commentId}`);
+  }
+
+  // Get all posts for admin (including unpublished)
+  getAllPosts(page: number = 1, limit: number = 100): Observable<ListResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('includeUnpublished', 'true');
+
+    return this.http.get<ListResponse>(`${this.apiUrl}/admin/all`, { params });
+  }
 }

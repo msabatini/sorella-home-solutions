@@ -35,8 +35,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
   },
   {
-    path: 'admin',
-    loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+    path: 'admin/blog/:id',
+    loadComponent: () => import('./pages/admin-blog-form/admin-blog-form.component').then(m => m.AdminBlogFormComponent),
     canActivate: [AuthGuard]
   },
   {
@@ -45,8 +45,18 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'admin/blog/:id',
-    loadComponent: () => import('./pages/admin-blog-form/admin-blog-form.component').then(m => m.AdminBlogFormComponent),
+    path: 'admin/comments',
+    loadComponent: () => import('./pages/admin-comments-management/admin-comments-management.component').then(m => m.AdminCommentsManagementComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin/settings',
+    loadComponent: () => import('./pages/admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
     canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: '' }

@@ -76,29 +76,38 @@ export class AdminBlogFormComponent implements OnInit {
 
   loadPost(): void {
     this.loading = true;
+    this.error = null;
 
     this.blogService.getPost(this.postId!).subscribe({
       next: (response) => {
-        const post = response.data;
+        // Handle both response formats (with or without data wrapper)
+        const post = response.data || response;
+        
+        if (!post || !post.title) {
+          throw new Error('Invalid post data');
+        }
+
         this.form.patchValue({
           title: post.title,
-          subtitle: post.subtitle,
-          author: post.author,
-          category: post.category,
-          featuredImage: post.featuredImage,
-          introText: post.introText,
-          metaDescription: post.metaDescription,
-          published: post.published
+          subtitle: post.subtitle || '',
+          author: post.author || '',
+          category: post.category || '',
+          featuredImage: post.featuredImage || '',
+          introText: post.introText || '',
+          metaDescription: post.metaDescription || '',
+          published: post.published !== undefined ? post.published : true
         });
 
-        this.imagePreview = post.featuredImage;
-        this.contentSections = post.contentSections || [{ heading: '', content: '' }];
+        this.imagePreview = post.featuredImage || null;
+        this.contentSections = post.contentSections && post.contentSections.length > 0 
+          ? post.contentSections 
+          : [{ heading: '', content: '' }];
         this.tags = post.tags || [];
 
         this.loading = false;
       },
       error: (error) => {
-        this.error = 'Failed to load blog post';
+        this.error = 'Failed to load blog post. The post may have been deleted.';
         this.loading = false;
         console.error('Error loading post:', error);
       }

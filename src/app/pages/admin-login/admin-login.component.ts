@@ -52,11 +52,18 @@ export class AdminLoginComponent implements OnInit {
 
     this.authService.login(username, password).subscribe({
       next: (response) => {
+        console.log('✅ Login response:', response);
         if (response.success) {
+          console.log('✅ Login successful, navigating to /admin');
           this.router.navigate(['/admin']);
+        } else {
+          console.error('❌ response.success is false:', response);
+          this.loading = false;
+          this.error = 'Login failed. Please try again.';
         }
       },
       error: (error) => {
+        console.error('❌ Login error:', error);
         this.loading = false;
         this.error = error.error?.message || 'Login failed. Please try again.';
       }

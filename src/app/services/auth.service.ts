@@ -38,7 +38,8 @@ export class AuthService {
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    this.verifyToken();
+    // Don't verify token in constructor - causes circular dependency with interceptor
+    // Token verification happens lazily when needed or in components
   }
 
   login(username: string, password: string): Observable<LoginResponse> {

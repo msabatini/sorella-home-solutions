@@ -32,8 +32,8 @@ export class AdminBlogManagementComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Get all posts (we'll fetch with a high limit to show all)
-    this.blogService.getPosts(1, 100).subscribe({
+    // Get all posts including unpublished (admin only)
+    this.blogService.getAllPosts(1, 100).subscribe({
       next: (response) => {
         this.posts = response.data;
         this.loading = false;

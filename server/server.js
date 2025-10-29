@@ -10,9 +10,10 @@ require('dotenv').config();
 // Import routes
 const authRoutes = require('./routes/auth');
 const blogRoutes = require('./routes/blog');
+const settingsRoutes = require('./routes/settings');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // ============ DATABASE CONNECTION ============
 const connectDB = async () => {
@@ -227,6 +228,7 @@ app.get('/api/health', (req, res) => {
 // ============ API ROUTES ============
 app.use('/api/auth', authRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
