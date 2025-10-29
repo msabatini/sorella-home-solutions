@@ -1,0 +1,89 @@
+<div class="social-share-container">
+  <div class="share-label">Share this post:</div>
+  
+  <div class="share-buttons">
+    <!-- Native Share Button (if available on mobile) -->
+    <button 
+      *ngIf="isNativeShareAvailable" 
+      class="share-button native-share" 
+      (click)="nativeShare()"
+      title="Share"
+      aria-label="Share using device share menu">
+      <span class="share-icon">⬆️</span>
+      <span class="share-text">Share</span>
+    </button>
+
+    <!-- Facebook -->
+    <button 
+      class="share-button facebook" 
+      (click)="shareOnFacebook()"
+      title="Share on Facebook"
+      aria-label="Share on Facebook">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      </svg>
+      <span class="share-text">Facebook</span>
+    </button>
+
+    <!-- Twitter/X -->
+    <button 
+      class="share-button twitter" 
+      (click)="shareOnTwitter()"
+      title="Share on Twitter"
+      aria-label="Share on Twitter">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M23.953 4.57a10 10 0 002.856-9.935c-1.974.29-3.884 1.3-5.494 2.58a10 10 0 00-5.579 5.92 10 10 0 01-5.95-1.49 10.076 10.076 0 00-8.36 4.41 10.175 10.175 0 002.52 16.012 10.123 10.123 0 005.670-1.85 10.079 10.079 0 01-2.22 11.377 10.089 10.089 0 008.268-4.30 10.069 10.069 0 008.268 4.3 10.079 10.079 0 002.22-11.377"/>
+      </svg>
+      <span class="share-text">Twitter</span>
+    </button>
+
+    <!-- LinkedIn -->
+    <button 
+      class="share-button linkedin" 
+      (click)="shareOnLinkedIn()"
+      title="Share on LinkedIn"
+      aria-label="Share on LinkedIn">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+      <span class="share-text">LinkedIn</span>
+    </button>
+
+    <!-- WhatsApp -->
+    <button 
+      class="share-button whatsapp" 
+      (click)="shareOnWhatsApp()"
+      title="Share on WhatsApp"
+      aria-label="Share on WhatsApp">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.006a9.87 9.87 0 00-5.031 1.378c-1.51.906-2.812 2.135-3.822 3.665C3.396 13.766 3.1 15.64 3.971 17.342c.393.784.659 1.42 1.151 2.247.342.564.611 1.01.876 1.438.266.43.666.67 1.014.67.166 0 .331-.034.49-.096 1.092-.429 2.105-1.095 3.018-1.893.842-.713 1.693-1.577 2.368-2.527.706-.989 1.25-2.084 1.588-3.195.353-1.165.462-2.455.276-3.671a9.782 9.782 0 00-1.369-3.58c-.944-1.45-2.25-2.595-3.831-3.399-.849-.457-1.76-.842-2.722-1.103z"/>
+      </svg>
+      <span class="share-text">WhatsApp</span>
+    </button>
+
+    <!-- Email -->
+    <button 
+      class="share-button email" 
+      (click)="shareViaEmail()"
+      title="Share via Email"
+      aria-label="Share via Email">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+      <span class="share-text">Email</span>
+    </button>
+
+    <!-- Copy Link -->
+    <button 
+      class="share-button copy-link" 
+      [class.copied]="showCopyFeedback"
+      (click)="copyToClipboard()"
+      title="Copy link to clipboard"
+      aria-label="Copy link to clipboard">
+      <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+      </svg>
+      <span class="share-text">{{ copyButtonText }}</span>
+    </button>
+  </div>
+</div>

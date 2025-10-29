@@ -4,10 +4,29 @@ const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { body, validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 require('dotenv').config();
+
+// Import routes
+const authRoutes = require('./routes/auth');
+const blogRoutes = require('./routes/blog');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// ============ DATABASE CONNECTION ============
+const connectDB = async () => {
+  try {
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/sorella-home-solutions';
+    await mongoose.connect(mongoUri);
+    console.log('✅ MongoDB connected successfully');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 // Security middleware
 app.use(helmet());
@@ -204,6 +223,10 @@ app.get('/api/health', (req, res) => {
     service: 'Sorella Contact API'
   });
 });
+
+// ============ API ROUTES ============
+app.use('/api/auth', authRoutes);
+app.use('/api/blog', blogRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

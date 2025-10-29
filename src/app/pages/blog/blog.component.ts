@@ -2,26 +2,40 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
+import { SocialShareButtonsComponent } from '../../components/social-share-buttons/social-share-buttons.component';
 import { AnimationService } from '../../services/animation.service';
+import { BlogService, BlogPost } from '../../services/blog.service';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, FooterComponent, BackToTopComponent],
+  imports: [
+    CommonModule, 
+    HttpClientModule,
+    HeaderComponent, 
+    FooterComponent, 
+    BackToTopComponent,
+    SocialShareButtonsComponent
+  ],
   templateUrl: './blog.component.html',
   styleUrls: ['./blog.component.scss']
 })
 export class BlogComponent implements OnInit, OnDestroy {
   phoneIcon: SafeHtml;
+  blogPosts: BlogPost[] = [];
+  isLoading: boolean = true;
+  error: string | null = null;
   
   constructor(
     private animationService: AnimationService,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private blogService: BlogService
   ) {
     this.phoneIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.phone);
   }
@@ -30,12 +44,30 @@ export class BlogComponent implements OnInit, OnDestroy {
     this.scrollToTop();
     this.setupScrollHeader();
     this.setupParallaxEffect();
+    this.loadBlogPosts();
     
     // Initialize animations after a short delay
     setTimeout(() => {
       this.animationService.initScrollAnimations();
       this.animationService.triggerPageLoadAnimations();
     }, 100);
+  }
+
+  private loadBlogPosts() {
+    this.isLoading = true;
+    this.error = null;
+    
+    this.blogService.getPosts(1, 100).subscribe({
+      next: (response) => {
+        this.blogPosts = response.data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading blog posts:', error);
+        this.error = 'Failed to load blog posts. Please try again later.';
+        this.isLoading = false;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -118,5 +150,9 @@ export class BlogComponent implements OnInit, OnDestroy {
 
   scheduleConsultation() {
     window.location.href = 'mailto:hello@sorellahomesolutions.com?subject=Schedule%20a%20Home%20Care%20Consultation';
+  }
+
+  getShareUrl(post: BlogPost): string {
+    return `${window.location.origin}/blog/${post.slug}`;
   }
 }

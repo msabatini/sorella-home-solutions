@@ -1,0 +1,395 @@
+const express = require('express');
+const router = express.Router();
+const { body, validationResult } = require('express-validator');
+const BlogPost = require('../models/BlogPost');
+const Comment = require('../models/Comment');
+const { authenticateToken } = require('../middleware/auth');
+
+// ============ PUBLIC ENDPOINTS ============
+
+// Get all published blog posts with pagination, filtering, and search
+router.get('/', async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category, tag, search, sortBy = 'date' } = req.query;
+    const skip = (page - 1) * limit;
+
+    let query = { published: true };
+
+    // Filter by category
+    if (category) {
+      query.category = category;
+    }
+
+    // Filter by tag
+    if (tag) {
+      query.tags = { $in: [tag] };
+    }
+
+    // Search in title, subtitle, and intro
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { subtitle: { $regex: search, $options: 'i' } },
+        { introText: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Determine sort order
+    let sortOrder = {};
+    switch(sortBy) {
+      case 'date':
+        sortOrder = { date: -1 };
+        break;
+      case 'views':
+        sortOrder = { views: -1 };
+        break;
+      case 'oldest':
+        sortOrder = { date: 1 };
+        break;
+      default:
+        sortOrder = { date: -1 };
+    }
+
+    const total = await BlogPost.countDocuments(query);
+    const posts = await BlogPost.find(query)
+      .sort(sortOrder)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json({
+      success: true,
+      data: posts,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blog posts'
+    });
+  }
+});
+
+// Get all categories (must come before /:idOrSlug to avoid route matching)
+router.get('/categories/list', async (req, res) => {
+  try {
+    const categories = [
+      'Seasonal Care',
+      'Move Management',
+      'Home Care',
+      'Concierge',
+      'Corporate Relocation',
+      'Tips & Advice'
+    ];
+
+    res.json({
+      success: true,
+      data: categories
+    });
+
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching categories'
+    });
+  }
+});
+
+// Get related posts by category and tags (must come before /:idOrSlug)
+router.get('/:id/related', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    // Find posts with same category or tags, excluding current post
+    const related = await BlogPost.find({
+      _id: { $ne: post._id },
+      published: true,
+      $or: [
+        { category: post.category },
+        { tags: { $in: post.tags } }
+      ]
+    })
+    .limit(3);
+
+    res.json({
+      success: true,
+      data: related
+    });
+
+  } catch (error) {
+    console.error('Error fetching related posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching related posts'
+    });
+  }
+});
+
+// Get single blog post by ID or slug (comes last)
+router.get('/:idOrSlug', async (req, res) => {
+  try {
+    const { idOrSlug } = req.params;
+    
+    let post;
+    // Try to find by ID first, then by slug
+    if (idOrSlug.match(/^[0-9a-fA-F]{24}$/)) {
+      post = await BlogPost.findById(idOrSlug);
+    } else {
+      post = await BlogPost.findOne({ slug: idOrSlug });
+    }
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    // Increment views
+    post.views += 1;
+    await post.save();
+
+    // Get comments
+    const comments = await Comment.find({ blogPostId: post._id, approved: true }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: post,
+      comments
+    });
+
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching blog post'
+    });
+  }
+});
+
+// Add comment to blog post
+router.post('/:id/comments', [
+  body('author').trim().isLength({ min: 2, max: 100 }),
+  body('email').isEmail().normalizeEmail(),
+  body('content').trim().isLength({ min: 5, max: 2000 })
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const { id } = req.params;
+    const { author, email, content } = req.body;
+
+    // Verify blog post exists
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    // Create comment
+    const comment = new Comment({
+      blogPostId: id,
+      author,
+      email,
+      content
+    });
+
+    await comment.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Comment added successfully',
+      data: comment
+    });
+
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding comment'
+    });
+  }
+});
+
+// Get comments for a blog post
+router.get('/:id/comments', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const total = await Comment.countDocuments({ blogPostId: id, approved: true });
+    const comments = await Comment.find({ blogPostId: id, approved: true })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json({
+      success: true,
+      data: comments,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching comments'
+    });
+  }
+});
+
+// ============ ADMIN ENDPOINTS ============
+
+// Create new blog post (requires authentication)
+router.post('/', authenticateToken, [
+  body('title').trim().isLength({ min: 5, max: 200 }),
+  body('subtitle').trim().isLength({ min: 5, max: 300 }),
+  body('author').trim().isLength({ min: 2, max: 100 }),
+  body('category').isIn(['Seasonal Care', 'Move Management', 'Home Care', 'Concierge', 'Corporate Relocation', 'Tips & Advice']),
+  body('featuredImage').trim().notEmpty(),
+  body('introText').trim().isLength({ min: 10, max: 1000 }),
+  body('contentSections').isArray()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = true, date } = req.body;
+
+    const blogPost = new BlogPost({
+      title,
+      subtitle,
+      author,
+      category,
+      featuredImage,
+      introText,
+      contentSections,
+      tags,
+      metaDescription,
+      published,
+      date: date ? new Date(date) : Date.now()
+    });
+
+    await blogPost.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Blog post created successfully',
+      data: blogPost
+    });
+
+  } catch (error) {
+    console.error('Error creating blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating blog post'
+    });
+  }
+});
+
+// Update blog post (requires authentication)
+router.put('/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Don't allow modifying slug directly
+    delete updates.slug;
+    delete updates.createdAt;
+
+    const post = await BlogPost.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Blog post updated successfully',
+      data: post
+    });
+
+  } catch (error) {
+    console.error('Error updating blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating blog post'
+    });
+  }
+});
+
+// Delete blog post (requires authentication)
+router.delete('/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await BlogPost.findByIdAndDelete(id);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    // Also delete associated comments
+    await Comment.deleteMany({ blogPostId: id });
+
+    res.json({
+      success: true,
+      message: 'Blog post deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting blog post'
+    });
+  }
+});
+
+module.exports = router;
