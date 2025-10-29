@@ -117,24 +117,18 @@ export class BlogService {
     return this.http.get<CommentsResponse>(`${this.apiUrl}/${blogPostId}/comments`, { params });
   }
 
-  // Create blog post (admin only)
-  createPost(post: any, token: string): Observable<BlogResponse> {
-    return this.http.post<BlogResponse>(this.apiUrl, post, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  // Create blog post (admin only) - token auto-added by interceptor
+  createPost(post: any): Observable<BlogResponse> {
+    return this.http.post<BlogResponse>(this.apiUrl, post);
   }
 
-  // Update blog post (admin only)
-  updatePost(id: string, post: any, token: string): Observable<BlogResponse> {
-    return this.http.put<BlogResponse>(`${this.apiUrl}/${id}`, post, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  // Update blog post (admin only) - token auto-added by interceptor
+  updatePost(id: string, post: any): Observable<BlogResponse> {
+    return this.http.put<BlogResponse>(`${this.apiUrl}/${id}`, post);
   }
 
-  // Delete blog post (admin only)
-  deletePost(id: string, token: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  // Delete blog post (admin only) - token auto-added by interceptor
+  deletePost(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

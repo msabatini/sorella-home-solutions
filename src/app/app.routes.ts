@@ -39,5 +39,15 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
     canActivate: [AuthGuard]
   },
+  {
+    path: 'admin/blog',
+    loadComponent: () => import('./pages/admin-blog-management/admin-blog-management.component').then(m => m.AdminBlogManagementComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin/blog/:id',
+    loadComponent: () => import('./pages/admin-blog-form/admin-blog-form.component').then(m => m.AdminBlogFormComponent),
+    canActivate: [AuthGuard]
+  },
   { path: '**', redirectTo: '' }
 ];

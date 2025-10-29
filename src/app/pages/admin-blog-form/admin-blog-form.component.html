@@ -1,0 +1,284 @@
+<div class="blog-form-container">
+  <div class="form-header">
+    <h2>{{ isEdit ? 'Edit Blog Post' : 'Create New Blog Post' }}</h2>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner">
+      <span class="spinner"></span>
+    </div>
+    <p>Loading blog post...</p>
+  </div>
+
+  <div *ngIf="!loading" class="form-wrapper">
+    <!-- Success Message -->
+    <div *ngIf="success" class="alert alert-success">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>{{ success }}</span>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-error">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ error }}</span>
+    </div>
+
+    <form [formGroup]="form">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h3>Basic Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Title *</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              placeholder="Enter blog post title"
+              [class.is-invalid]="submitted && f['title'].errors"
+            />
+            <div *ngIf="submitted && f['title'].errors" class="error-message">
+              <span *ngIf="f['title'].errors['required']">Title is required</span>
+              <span *ngIf="f['title'].errors['minlength']">Minimum 5 characters</span>
+              <span *ngIf="f['title'].errors['maxlength']">Maximum 200 characters</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="author">Author *</label>
+            <input
+              type="text"
+              id="author"
+              formControlName="author"
+              placeholder="Author name"
+              [class.is-invalid]="submitted && f['author'].errors"
+            />
+            <div *ngIf="submitted && f['author'].errors" class="error-message">
+              <span *ngIf="f['author'].errors['required']">Author is required</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="subtitle">Subtitle *</label>
+          <input
+            type="text"
+            id="subtitle"
+            formControlName="subtitle"
+            placeholder="Enter blog post subtitle"
+            [class.is-invalid]="submitted && f['subtitle'].errors"
+          />
+          <div *ngIf="submitted && f['subtitle'].errors" class="error-message">
+            <span *ngIf="f['subtitle'].errors['required']">Subtitle is required</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <select
+              id="category"
+              formControlName="category"
+              [class.is-invalid]="submitted && f['category'].errors"
+            >
+              <option value="">Select a category</option>
+              <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+            </select>
+            <div *ngIf="submitted && f['category'].errors" class="error-message">
+              <span *ngIf="f['category'].errors['required']">Category is required</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="published">Status</label>
+            <div class="checkbox-group">
+              <input
+                type="checkbox"
+                id="published"
+                formControlName="published"
+              />
+              <label for="published" class="checkbox-label">Publish immediately</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Image Section -->
+      <div class="form-section">
+        <h3>Featured Image</h3>
+
+        <div class="image-upload">
+          <div class="image-preview" *ngIf="imagePreview">
+            <img [src]="imagePreview" alt="Featured image preview" />
+            <button type="button" (click)="removeImage()" class="btn-remove-image">
+              Remove Image
+            </button>
+          </div>
+
+          <div *ngIf="!imagePreview" class="image-input-area">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <p>Click to upload or drag and drop</p>
+            <p class="file-info">PNG, JPG, GIF up to 5MB</p>
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onImageSelected($event)"
+              class="file-input"
+            />
+          </div>
+
+          <div *ngIf="fileUploadError" class="error-message">
+            {{ fileUploadError }}
+          </div>
+        </div>
+
+        <div *ngIf="submitted && f['featuredImage'].errors" class="error-message">
+          <span *ngIf="f['featuredImage'].errors['required']">Featured image is required</span>
+        </div>
+      </div>
+
+      <!-- Intro & Meta Section -->
+      <div class="form-section">
+        <h3>Intro & Meta</h3>
+
+        <div class="form-group">
+          <label for="introText">Intro Text *</label>
+          <textarea
+            id="introText"
+            formControlName="introText"
+            placeholder="Enter introduction text (10-1000 characters)"
+            rows="3"
+            [class.is-invalid]="submitted && f['introText'].errors"
+          ></textarea>
+          <div class="char-count">
+            {{ form.get('introText')?.value?.length || 0 }} / 1000
+          </div>
+          <div *ngIf="submitted && f['introText'].errors" class="error-message">
+            <span *ngIf="f['introText'].errors['required']">Intro text is required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="metaDescription">Meta Description</label>
+          <textarea
+            id="metaDescription"
+            formControlName="metaDescription"
+            placeholder="SEO meta description (up to 160 characters)"
+            rows="2"
+          ></textarea>
+          <div class="char-count">
+            {{ form.get('metaDescription')?.value?.length || 0 }} / 160
+          </div>
+        </div>
+      </div>
+
+      <!-- Tags Section -->
+      <div class="form-section">
+        <h3>Tags</h3>
+
+        <div class="tags-input-group">
+          <div class="tag-input-wrapper">
+            <input
+              type="text"
+              [(ngModel)]="tagInput"
+              (keyup.enter)="addTag()"
+              placeholder="Add tags (press Enter)"
+              [ngModelOptions]="{ standalone: true }"
+              class="tag-input"
+            />
+            <button type="button" (click)="addTag()" class="btn-add-tag">Add</button>
+          </div>
+
+          <div class="tags-display" *ngIf="tags.length > 0">
+            <span *ngFor="let tag of tags" class="tag-badge">
+              {{ tag }}
+              <button type="button" (click)="removeTag(tag)" class="tag-remove">×</button>
+            </span>
+          </div>
+
+          <p *ngIf="tags.length === 0" class="tags-hint">No tags added yet</p>
+        </div>
+      </div>
+
+      <!-- Content Sections -->
+      <div class="form-section">
+        <div class="content-header">
+          <h3>Content Sections</h3>
+          <button type="button" (click)="addContentSection()" class="btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Section
+          </button>
+        </div>
+
+        <div *ngFor="let section of contentSections; let i = index" class="content-section">
+          <div class="section-number">Section {{ i + 1 }}</div>
+
+          <div class="form-group">
+            <label>Heading</label>
+            <input
+              type="text"
+              [(ngModel)]="section.heading"
+              (ngModelChange)="updateContentSection(i, 'heading', $event)"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Section heading"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Content</label>
+            <textarea
+              [(ngModel)]="section.content"
+              (ngModelChange)="updateContentSection(i, 'content', $event)"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Section content"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <button
+            *ngIf="contentSections.length > 1"
+            type="button"
+            (click)="removeContentSection(i)"
+            class="btn-remove-section"
+          >
+            Remove Section
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" (click)="cancel()" class="btn-cancel">Cancel</button>
+        <button
+          type="button"
+          (click)="saveBlog()"
+          [disabled]="savingBlog"
+          class="btn-save"
+        >
+          <span *ngIf="!savingBlog">
+            {{ isEdit ? 'Update Post' : 'Create Post' }}
+          </span>
+          <span *ngIf="savingBlog" class="loading-spinner-inline">
+            <span class="spinner-mini"></span>
+            Saving...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
