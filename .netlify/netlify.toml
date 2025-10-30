@@ -1,3 +1,4 @@
+headersOrigin = "config"
 redirectsOrigin = "config"
 functionsDirectory = "/Users/michaelsabatini/Documents/sorella-home-solutions/netlify/functions"
 functionsDirectoryOrigin = "config"
@@ -36,18 +37,31 @@ NODE_VERSION = "20"
 [build.services]
 
 [[headers]]
-for = "/*.mp4"
-
-[headers.values]
-Content-Type = "video/mp4"
-Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
 for = "/home-page-hero-video4-web-compressed.mp4"
 
 [headers.values]
 Content-Type = "video/mp4"
-Cache-Control = "public, max-age=31536000, immutable"
+Cache-Control = "public, max-age=3600"
+Accept-Ranges = "bytes"
+Access-Control-Allow-Origin = "*"
+
+[[headers]]
+for = "/home-page-hero-v*.mp4"
+
+[headers.values]
+Content-Type = "video/mp4"
+Cache-Control = "public, max-age=604800"
+Accept-Ranges = "bytes"
+Access-Control-Allow-Origin = "*"
+
+[[headers]]
+for = "/*.mp4"
+
+[headers.values]
+Content-Type = "video/mp4"
+Cache-Control = "public, max-age=3600"
+Accept-Ranges = "bytes"
+Access-Control-Allow-Origin = "*"
 
 [[redirects]]
 from = "/home-page-hero-video4-web-compressed.mp4"

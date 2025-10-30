@@ -70,6 +70,14 @@ const blogPostSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  publishDate: {
+    type: Date,
+    default: null
+  },
+  wordCount: {
+    type: Number,
+    default: 0
+  },
   views: {
     type: Number,
     default: 0
@@ -81,6 +89,10 @@ const blogPostSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  lastAutoSavedAt: {
+    type: Date,
+    default: null
   }
 });
 
@@ -98,13 +110,14 @@ blogPostSchema.pre('save', function(next) {
   next();
 });
 
-// Calculate read time based on word count
+// Calculate read time and word count based on content
 blogPostSchema.pre('save', function(next) {
   if (this.isModified('introText') || this.isModified('contentSections')) {
     const totalText = this.introText + ' ' + 
       this.contentSections.map(s => s.heading + ' ' + s.content).join(' ');
-    const wordCount = totalText.trim().split(/\s+/).length;
+    const wordCount = totalText.trim().split(/\s+/).filter(w => w.length > 0).length;
     this.readTime = Math.max(1, Math.ceil(wordCount / 200)); // Average 200 words per minute
+    this.wordCount = wordCount;
   }
   next();
 });

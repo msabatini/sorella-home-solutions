@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,7 @@ interface ContentSection {
   templateUrl: './admin-blog-form.component.html',
   styleUrls: ['./admin-blog-form.component.scss']
 })
-export class AdminBlogFormComponent implements OnInit {
+export class AdminBlogFormComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isEdit = false;
   postId: string | null = null;
@@ -25,6 +25,8 @@ export class AdminBlogFormComponent implements OnInit {
   error: string | null = null;
   success: string | null = null;
   savingBlog = false;
+  autoSaving = false;
+  lastAutoSaveTime: string | null = null;
 
   imagePreview: string | null = null;
   fileUploadError: string | null = null;
@@ -32,6 +34,14 @@ export class AdminBlogFormComponent implements OnInit {
   contentSections: ContentSection[] = [{ heading: '', content: '' }];
   tags: string[] = [];
   tagInput = '';
+
+  showPreview = false;
+  scheduleForLater = false;
+  autoSaveInterval: any = null;
+  AUTO_SAVE_INTERVAL = 60000; // Auto-save every 60 seconds
+
+  totalWordCount = 0;
+  sectionWordCounts: number[] = [0];
 
   categories = [
     'Seasonal Care',
@@ -51,14 +61,27 @@ export class AdminBlogFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.calculateWordCounts();
 
     this.route.params.subscribe(params => {
       if (params['id'] && params['id'] !== 'new') {
         this.isEdit = true;
         this.postId = params['id'];
         this.loadPost();
+      } else {
+        // For new posts, start autosave after form is initialized
+        this.startAutoSave();
       }
     });
+
+    // Set up word count calculations
+    this.form.valueChanges.subscribe(() => {
+      this.calculateWordCounts();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoSave();
   }
 
   initializeForm(): void {
@@ -70,7 +93,8 @@ export class AdminBlogFormComponent implements OnInit {
       featuredImage: ['', Validators.required],
       introText: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
       metaDescription: ['', [Validators.maxLength(160)]],
-      published: [true]
+      published: [true],
+      publishDate: ['']
     });
   }
 
@@ -95,7 +119,8 @@ export class AdminBlogFormComponent implements OnInit {
           featuredImage: post.featuredImage || '',
           introText: post.introText || '',
           metaDescription: post.metaDescription || '',
-          published: post.published !== undefined ? post.published : true
+          published: post.published !== undefined ? post.published : true,
+          publishDate: post.publishDate ? this.formatDateForInput(new Date(post.publishDate)) : ''
         });
 
         this.imagePreview = post.featuredImage || null;
@@ -103,7 +128,11 @@ export class AdminBlogFormComponent implements OnInit {
           ? post.contentSections 
           : [{ heading: '', content: '' }];
         this.tags = post.tags || [];
+        this.scheduleForLater = !!post.publishDate;
+        this.lastAutoSaveTime = post.lastAutoSavedAt ? new Date(post.lastAutoSavedAt).toLocaleString() : null;
 
+        this.calculateWordCounts();
+        this.startAutoSave();
         this.loading = false;
       },
       error: (error) => {
@@ -188,12 +217,18 @@ export class AdminBlogFormComponent implements OnInit {
       return;
     }
 
+    if (this.scheduleForLater && !this.form.get('publishDate')?.value) {
+      this.error = 'Please set a publish date for scheduled posts';
+      return;
+    }
+
     this.savingBlog = true;
 
     const postData = {
       ...this.form.value,
       contentSections: this.contentSections,
-      tags: this.tags
+      tags: this.tags,
+      scheduleForLater: this.scheduleForLater
     };
 
     const request = this.isEdit
@@ -204,6 +239,7 @@ export class AdminBlogFormComponent implements OnInit {
       next: (response) => {
         this.success = this.isEdit ? 'Post updated successfully!' : 'Post created successfully!';
         this.savingBlog = false;
+        this.stopAutoSave();
 
         setTimeout(() => {
           this.router.navigate(['/admin/blog']);
@@ -218,6 +254,101 @@ export class AdminBlogFormComponent implements OnInit {
   }
 
   cancel(): void {
+    this.stopAutoSave();
     this.router.navigate(['/admin/blog']);
+  }
+
+  // Word Count Calculations
+  calculateWordCounts(): void {
+    const introWords = this.countWords(this.form.get('introText')?.value || '');
+    const sectionWords = this.contentSections.map(section => 
+      this.countWords(section.heading + ' ' + section.content)
+    );
+    this.sectionWordCounts = sectionWords;
+    this.totalWordCount = introWords + sectionWords.reduce((a, b) => a + b, 0);
+  }
+
+  private countWords(text: string): number {
+    if (!text || typeof text !== 'string') return 0;
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  }
+
+  // Auto-save Functionality
+  startAutoSave(): void {
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval);
+    }
+
+    this.autoSaveInterval = setInterval(() => {
+      this.performAutoSave();
+    }, this.AUTO_SAVE_INTERVAL);
+  }
+
+  stopAutoSave(): void {
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval);
+      this.autoSaveInterval = null;
+    }
+  }
+
+  private performAutoSave(): void {
+    if (this.form.invalid || !this.form.get('title')?.value) {
+      return;
+    }
+
+    this.autoSaving = true;
+    const postData = {
+      ...this.form.value,
+      contentSections: this.contentSections,
+      tags: this.tags
+    };
+
+    this.blogService.autoSavePost(this.postId, postData).subscribe({
+      next: (response) => {
+        const data = response.data as BlogPost;
+        if (!this.isEdit && data && '_id' in data) {
+          // First auto-save creates the draft
+          this.isEdit = true;
+          this.postId = (data as BlogPost)._id;
+        }
+        this.lastAutoSaveTime = new Date().toLocaleTimeString();
+        this.autoSaving = false;
+      },
+      error: (error) => {
+        console.error('Auto-save error:', error);
+        this.autoSaving = false;
+      }
+    });
+  }
+
+  // Preview Functionality
+  togglePreview(): void {
+    this.showPreview = !this.showPreview;
+  }
+
+  closePreview(): void {
+    this.showPreview = false;
+  }
+
+  // Scheduled Publishing
+  toggleScheduleForLater(): void {
+    this.scheduleForLater = !this.scheduleForLater;
+    if (!this.scheduleForLater) {
+      this.form.patchValue({ publishDate: '' });
+    }
+  }
+
+  // Helper Functions
+  private formatDateForInput(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  getReadingTime(): number {
+    return Math.max(1, Math.ceil(this.totalWordCount / 200));
   }
 }

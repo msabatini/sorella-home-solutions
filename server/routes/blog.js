@@ -12,8 +12,15 @@ router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 10, category, tag, search, sortBy = 'date' } = req.query;
     const skip = (page - 1) * limit;
+    const now = new Date();
 
-    let query = { published: true };
+    let query = { 
+      published: true,
+      $or: [
+        { publishDate: null }, // Posts with no scheduled date (publish immediately)
+        { publishDate: { $lte: now } } // Posts where publish date has passed
+      ]
+    };
 
     // Filter by category
     if (category) {
@@ -470,7 +477,7 @@ router.post('/', authenticateToken, [
       });
     }
 
-    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = true, date } = req.body;
+    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = true, date, publishDate, scheduleForLater } = req.body;
 
     const blogPost = new BlogPost({
       title,
@@ -482,8 +489,9 @@ router.post('/', authenticateToken, [
       contentSections,
       tags,
       metaDescription,
-      published,
-      date: date ? new Date(date) : Date.now()
+      published: scheduleForLater ? false : published,
+      date: date ? new Date(date) : Date.now(),
+      publishDate: scheduleForLater && publishDate ? new Date(publishDate) : null
     });
 
     await blogPost.save();
@@ -568,6 +576,84 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error deleting blog post'
+    });
+  }
+});
+
+// Auto-save new blog post (requires authentication)
+router.post('/autosave', authenticateToken, async (req, res) => {
+  try {
+    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = false, publishDate } = req.body;
+
+    const blogPost = new BlogPost({
+      title: title || 'Untitled Draft',
+      subtitle: subtitle || '',
+      author: author || 'Unknown',
+      category: category || 'Tips & Advice',
+      featuredImage: featuredImage || '',
+      introText: introText || '',
+      contentSections: contentSections || [{ heading: '', content: '' }],
+      tags,
+      metaDescription,
+      published: false, // Always draft on autosave
+      publishDate: publishDate ? new Date(publishDate) : null,
+      lastAutoSavedAt: new Date()
+    });
+
+    await blogPost.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Blog post auto-saved',
+      data: blogPost
+    });
+
+  } catch (error) {
+    console.error('Error auto-saving blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error auto-saving blog post'
+    });
+  }
+});
+
+// Auto-save existing blog post (requires authentication)
+router.put('/:id/autosave', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Don't allow modifying slug, createdAt, or published via autosave
+    delete updates.slug;
+    delete updates.createdAt;
+    delete updates.published;
+    
+    updates.lastAutoSavedAt = new Date();
+
+    const post = await BlogPost.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: false } // Skip validation on autosave
+    );
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Blog post auto-saved',
+      data: post
+    });
+
+  } catch (error) {
+    console.error('Error auto-saving blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error auto-saving blog post'
     });
   }
 });

@@ -16,11 +16,14 @@ export interface BlogPost {
   introText: string;
   contentSections: ContentSection[];
   readTime: number;
+  wordCount: number;
   metaDescription: string;
   published: boolean;
+  publishDate?: string | null;
   views: number;
   createdAt: string;
   updatedAt: string;
+  lastAutoSavedAt?: string | null;
 }
 
 export interface ContentSection {
@@ -166,5 +169,14 @@ export class BlogService {
       .set('includeUnpublished', 'true');
 
     return this.http.get<ListResponse>(`${this.apiUrl}/admin/all`, { params });
+  }
+
+  // Auto-save blog post (admin only)
+  autoSavePost(id: string | null, post: any): Observable<BlogResponse> {
+    if (id && id !== 'new') {
+      return this.http.put<BlogResponse>(`${this.apiUrl}/${id}/autosave`, post);
+    } else {
+      return this.http.post<BlogResponse>(`${this.apiUrl}/autosave`, post);
+    }
   }
 }

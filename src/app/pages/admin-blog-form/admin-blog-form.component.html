@@ -1,6 +1,35 @@
 <div class="blog-form-container">
   <div class="form-header">
-    <h2>{{ isEdit ? 'Edit Blog Post' : 'Create New Blog Post' }}</h2>
+    <div class="header-top">
+      <h2>{{ isEdit ? 'Edit Blog Post' : 'Create New Blog Post' }}</h2>
+      <div class="header-actions">
+        <button type="button" (click)="togglePreview()" class="btn-preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Preview
+        </button>
+      </div>
+    </div>
+    <div class="header-stats">
+      <span class="stat-item">
+        <strong>{{ totalWordCount }}</strong> words
+      </span>
+      <span class="stat-item">
+        <strong>{{ getReadingTime() }}</strong> min read
+      </span>
+      <span class="stat-item" *ngIf="autoSaving">
+        <span class="auto-saving-dot"></span>
+        Auto-saving...
+      </span>
+      <span class="stat-item" *ngIf="lastAutoSaveTime && !autoSaving" title="Last auto-saved at {{ lastAutoSaveTime }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Auto-saved
+      </span>
+    </div>
   </div>
 
   <!-- Loading State -->
@@ -28,6 +57,49 @@
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
       <span>{{ error }}</span>
+    </div>
+
+    <!-- Preview Modal -->
+    <div *ngIf="showPreview" class="preview-modal-overlay" (click)="closePreview()">
+      <div class="preview-modal" (click)="$event.stopPropagation()">
+        <div class="preview-header">
+          <h3>Post Preview</h3>
+          <button type="button" (click)="closePreview()" class="btn-close">×</button>
+        </div>
+        <div class="preview-content">
+          <article class="preview-article">
+            <h1 class="preview-title">{{ form.get('title')?.value || 'Untitled' }}</h1>
+            <p class="preview-subtitle">{{ form.get('subtitle')?.value || 'Subtitle' }}</p>
+            
+            <div class="preview-meta">
+              <span>By {{ form.get('author')?.value || 'Author' }}</span>
+              <span>•</span>
+              <span>{{ getReadingTime() }} min read</span>
+              <span>•</span>
+              <span class="category-badge">{{ form.get('category')?.value }}</span>
+            </div>
+
+            <div *ngIf="imagePreview" class="preview-featured-image">
+              <img [src]="imagePreview" [alt]="form.get('title')?.value" />
+            </div>
+
+            <div class="preview-intro">
+              {{ form.get('introText')?.value || 'Introduction text...' }}
+            </div>
+
+            <div class="preview-content-sections">
+              <div *ngFor="let section of contentSections; let i = index" class="preview-section">
+                <h2 class="preview-section-heading">{{ section.heading || `Section ${i + 1}` }}</h2>
+                <p class="preview-section-content">{{ section.content || 'Content...' }}</p>
+              </div>
+            </div>
+
+            <div *ngIf="tags.length > 0" class="preview-tags">
+              <span *ngFor="let tag of tags" class="preview-tag">{{ tag }}</span>
+            </div>
+          </article>
+        </div>
+      </div>
     </div>
 
     <form [formGroup]="form">
@@ -98,16 +170,43 @@
           </div>
 
           <div class="form-group">
-            <label for="published">Status</label>
+            <label for="published">Publication</label>
             <div class="checkbox-group">
               <input
                 type="checkbox"
                 id="published"
                 formControlName="published"
+                (change)="scheduleForLater = false"
               />
               <label for="published" class="checkbox-label">Publish immediately</label>
             </div>
           </div>
+        </div>
+
+        <!-- Scheduled Publishing Section -->
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="scheduleForLater"
+              [(ngModel)]="scheduleForLater"
+              [ngModelOptions]="{ standalone: true }"
+              (change)="toggleScheduleForLater()"
+            />
+            <label for="scheduleForLater" class="checkbox-label">Schedule for later</label>
+          </div>
+        </div>
+
+        <div *ngIf="scheduleForLater" class="form-group">
+          <label for="publishDate">Publish Date & Time *</label>
+          <input
+            type="datetime-local"
+            id="publishDate"
+            formControlName="publishDate"
+            class="datetime-input"
+            [class.is-invalid]="submitted && !form.get('publishDate')?.value && scheduleForLater"
+          />
+          <small class="form-hint">Your post will be automatically published at this date and time</small>
         </div>
       </div>
 
@@ -226,7 +325,12 @@
         </div>
 
         <div *ngFor="let section of contentSections; let i = index" class="content-section">
-          <div class="section-number">Section {{ i + 1 }}</div>
+          <div class="section-header">
+            <div class="section-number">Section {{ i + 1 }}</div>
+            <div class="section-stats">
+              <span class="word-count">{{ sectionWordCounts[i] || 0 }} words</span>
+            </div>
+          </div>
 
           <div class="form-group">
             <label>Heading</label>
