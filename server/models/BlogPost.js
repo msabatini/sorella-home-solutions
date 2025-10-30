@@ -93,6 +93,11 @@ const blogPostSchema = new mongoose.Schema({
   lastAutoSavedAt: {
     type: Date,
     default: null
+  },
+  featured: {
+    type: Boolean,
+    default: false,
+    index: true
   }
 });
 

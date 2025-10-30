@@ -41,20 +41,20 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    // Determine sort order
+    // Determine sort order (featured posts always first)
     let sortOrder = {};
     switch(sortBy) {
       case 'date':
-        sortOrder = { date: -1 };
+        sortOrder = { featured: -1, date: -1 };
         break;
       case 'views':
-        sortOrder = { views: -1 };
+        sortOrder = { featured: -1, views: -1 };
         break;
       case 'oldest':
-        sortOrder = { date: 1 };
+        sortOrder = { featured: -1, date: 1 };
         break;
       default:
-        sortOrder = { date: -1 };
+        sortOrder = { featured: -1, date: -1 };
     }
 
     const total = await BlogPost.countDocuments(query);
@@ -477,7 +477,7 @@ router.post('/', authenticateToken, [
       });
     }
 
-    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = true, date, publishDate, scheduleForLater } = req.body;
+    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = true, date, publishDate, scheduleForLater, featured = false } = req.body;
 
     const blogPost = new BlogPost({
       title,
@@ -491,7 +491,8 @@ router.post('/', authenticateToken, [
       metaDescription,
       published: scheduleForLater ? false : published,
       date: date ? new Date(date) : Date.now(),
-      publishDate: scheduleForLater && publishDate ? new Date(publishDate) : null
+      publishDate: scheduleForLater && publishDate ? new Date(publishDate) : null,
+      featured
     });
 
     await blogPost.save();
@@ -576,6 +577,37 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error deleting blog post'
+    });
+  }
+});
+
+// Toggle featured status (requires authentication)
+router.put('/:id/toggle-featured', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    post.featured = !post.featured;
+    await post.save();
+
+    res.json({
+      success: true,
+      message: `Blog post ${post.featured ? 'marked as' : 'unmarked from'} featured`,
+      data: post
+    });
+
+  } catch (error) {
+    console.error('Error toggling featured status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error toggling featured status'
     });
   }
 });

@@ -20,6 +20,7 @@ export interface BlogPost {
   metaDescription: string;
   published: boolean;
   publishDate?: string | null;
+  featured?: boolean;
   views: number;
   createdAt: string;
   updatedAt: string;
@@ -178,5 +179,10 @@ export class BlogService {
     } else {
       return this.http.post<BlogResponse>(`${this.apiUrl}/autosave`, post);
     }
+  }
+
+  // Toggle featured status (admin only)
+  toggleFeatured(id: string): Observable<BlogResponse> {
+    return this.http.put<BlogResponse>(`${this.apiUrl}/${id}/toggle-featured`, {});
   }
 }

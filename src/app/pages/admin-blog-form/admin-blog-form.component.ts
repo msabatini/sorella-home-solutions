@@ -101,7 +101,8 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
       introText: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
       metaDescription: ['', [Validators.maxLength(160)]],
       published: [true],
-      publishDate: ['']
+      publishDate: [''],
+      featured: [false]
     });
   }
 
@@ -127,7 +128,8 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
           introText: post.introText || '',
           metaDescription: post.metaDescription || '',
           published: post.published !== undefined ? post.published : true,
-          publishDate: post.publishDate ? this.formatDateForInput(new Date(post.publishDate)) : ''
+          publishDate: post.publishDate ? this.formatDateForInput(new Date(post.publishDate)) : '',
+          featured: post.featured || false
         });
 
         this.imagePreview = post.featuredImage || null;
