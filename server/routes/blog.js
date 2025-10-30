@@ -2,8 +2,71 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const BlogPost = require('../models/BlogPost');
+const PostRevision = require('../models/PostRevision');
 const Comment = require('../models/Comment');
 const { authenticateToken } = require('../middleware/auth');
+
+// Helper function to track changes and create revision
+async function createPostRevision(postId, oldPost, newPost, revisionType = 'manual', changedBy = 'Admin') {
+  try {
+    // Calculate what changed
+    const changes = [];
+    const fieldsToTrack = ['title', 'subtitle', 'author', 'category', 'tags', 'featuredImage', 'introText', 'contentSections', 'metaDescription', 'published', 'publishDate', 'featured'];
+    
+    fieldsToTrack.forEach(field => {
+      const oldValue = oldPost[field];
+      const newValue = newPost[field];
+      
+      // Compare based on field type
+      let changed = false;
+      if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+        changed = JSON.stringify(oldValue) !== JSON.stringify(newValue);
+      } else if (typeof oldValue === 'object' && typeof newValue === 'object') {
+        changed = JSON.stringify(oldValue) !== JSON.stringify(newValue);
+      } else {
+        changed = oldValue !== newValue;
+      }
+      
+      if (changed) {
+        changes.push({
+          field,
+          oldValue,
+          newValue
+        });
+      }
+    });
+    
+    // Only create revision if something actually changed
+    if (changes.length > 0) {
+      const revision = new PostRevision({
+        blogPostId: postId,
+        snapshot: {
+          title: newPost.title,
+          subtitle: newPost.subtitle,
+          author: newPost.author,
+          category: newPost.category,
+          tags: newPost.tags,
+          featuredImage: newPost.featuredImage,
+          introText: newPost.introText,
+          contentSections: newPost.contentSections,
+          metaDescription: newPost.metaDescription,
+          published: newPost.published,
+          publishDate: newPost.publishDate,
+          featured: newPost.featured
+        },
+        changes,
+        revisionType,
+        changedBy
+      });
+      
+      await revision.save();
+      return revision;
+    }
+  } catch (error) {
+    console.error('Error creating post revision:', error);
+    // Don't throw - revision tracking shouldn't break the main operation
+  }
+}
 
 // ============ PUBLIC ENDPOINTS ============
 
@@ -522,18 +585,23 @@ router.put('/:id', authenticateToken, async (req, res) => {
     delete updates.slug;
     delete updates.createdAt;
 
+    // Get the old post before updating
+    const oldPost = await BlogPost.findById(id);
+    if (!oldPost) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
     const post = await BlogPost.findByIdAndUpdate(
       id,
       updates,
       { new: true, runValidators: true }
     );
 
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: 'Blog post not found'
-      });
-    }
+    // Create revision after successful update
+    await createPostRevision(id, oldPost.toObject(), post.toObject(), 'manual');
 
     res.json({
       success: true,
@@ -612,6 +680,152 @@ router.put('/:id/toggle-featured', authenticateToken, async (req, res) => {
   }
 });
 
+// ============ REVISION HISTORY ENDPOINTS ============
+
+// Get revisions for a blog post (requires authentication)
+router.get('/:id/revisions', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { limit = 20 } = req.query;
+
+    // Verify post exists
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    const revisions = await PostRevision.find({ blogPostId: id })
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit));
+
+    res.json({
+      success: true,
+      data: revisions
+    });
+
+  } catch (error) {
+    console.error('Error fetching revisions:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching revisions'
+    });
+  }
+});
+
+// Get a specific revision (requires authentication)
+router.get('/:id/revisions/:revisionId', authenticateToken, async (req, res) => {
+  try {
+    const { id, revisionId } = req.params;
+
+    // Verify post exists
+    const post = await BlogPost.findById(id);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    const revision = await PostRevision.findOne({
+      _id: revisionId,
+      blogPostId: id
+    });
+
+    if (!revision) {
+      return res.status(404).json({
+        success: false,
+        message: 'Revision not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: revision
+    });
+
+  } catch (error) {
+    console.error('Error fetching revision:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching revision'
+    });
+  }
+});
+
+// Restore blog post to a previous revision (requires authentication)
+router.post('/:id/restore/:revisionId', authenticateToken, async (req, res) => {
+  try {
+    const { id, revisionId } = req.params;
+
+    // Get the revision
+    const revision = await PostRevision.findOne({
+      _id: revisionId,
+      blogPostId: id
+    });
+
+    if (!revision) {
+      return res.status(404).json({
+        success: false,
+        message: 'Revision not found'
+      });
+    }
+
+    // Get current post for history
+    const currentPost = await BlogPost.findById(id);
+    if (!currentPost) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    // Restore post data from snapshot
+    const restoredPost = await BlogPost.findByIdAndUpdate(
+      id,
+      {
+        title: revision.snapshot.title,
+        subtitle: revision.snapshot.subtitle,
+        author: revision.snapshot.author,
+        category: revision.snapshot.category,
+        tags: revision.snapshot.tags,
+        featuredImage: revision.snapshot.featuredImage,
+        introText: revision.snapshot.introText,
+        contentSections: revision.snapshot.contentSections,
+        metaDescription: revision.snapshot.metaDescription,
+        published: revision.snapshot.published,
+        publishDate: revision.snapshot.publishDate,
+        featured: revision.snapshot.featured
+      },
+      { new: true, runValidators: true }
+    );
+
+    // Create a revision entry for this restore action
+    await createPostRevision(
+      id,
+      currentPost.toObject(),
+      restoredPost.toObject(),
+      'manual',
+      'Admin'
+    );
+
+    res.json({
+      success: true,
+      message: 'Blog post restored successfully',
+      data: restoredPost
+    });
+
+  } catch (error) {
+    console.error('Error restoring blog post:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error restoring blog post'
+    });
+  }
+});
+
 // Auto-save new blog post (requires authentication)
 router.post('/autosave', authenticateToken, async (req, res) => {
   try {
@@ -662,18 +876,23 @@ router.put('/:id/autosave', authenticateToken, async (req, res) => {
     
     updates.lastAutoSavedAt = new Date();
 
+    // Get old post before updating
+    const oldPost = await BlogPost.findById(id);
+    if (!oldPost) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
     const post = await BlogPost.findByIdAndUpdate(
       id,
       updates,
       { new: true, runValidators: false } // Skip validation on autosave
     );
 
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: 'Blog post not found'
-      });
-    }
+    // Create revision for autosave
+    await createPostRevision(id, oldPost.toObject(), post.toObject(), 'autosave');
 
     res.json({
       success: true,

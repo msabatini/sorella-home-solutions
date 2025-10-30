@@ -32,6 +32,22 @@ export interface ContentSection {
   content: string;
 }
 
+export interface PostRevisionChange {
+  field: string;
+  oldValue: any;
+  newValue: any;
+}
+
+export interface PostRevision {
+  _id: string;
+  blogPostId: string;
+  snapshot: BlogPost;
+  changes: PostRevisionChange[];
+  changedBy: string;
+  revisionType: 'manual' | 'autosave' | 'scheduled_publish';
+  createdAt: string;
+}
+
 export interface Comment {
   _id: string;
   blogPostId: string;
@@ -184,5 +200,23 @@ export class BlogService {
   // Toggle featured status (admin only)
   toggleFeatured(id: string): Observable<BlogResponse> {
     return this.http.put<BlogResponse>(`${this.apiUrl}/${id}/toggle-featured`, {});
+  }
+
+  // REVISION HISTORY (admin only)
+
+  // Get revisions for a post
+  getPostRevisions(postId: string, limit: number = 20): Observable<any> {
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<any>(`${this.apiUrl}/${postId}/revisions`, { params });
+  }
+
+  // Get a specific revision
+  getPostRevision(postId: string, revisionId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${postId}/revisions/${revisionId}`);
+  }
+
+  // Restore post to a previous revision
+  restorePostRevision(postId: string, revisionId: string): Observable<BlogResponse> {
+    return this.http.post<BlogResponse>(`${this.apiUrl}/${postId}/restore/${revisionId}`, {});
   }
 }

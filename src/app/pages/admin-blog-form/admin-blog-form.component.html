@@ -385,6 +385,14 @@
       <!-- Form Actions -->
       <div class="form-actions">
         <button type="button" (click)="cancel()" class="btn-cancel">Cancel</button>
+        <button type="button" (click)="toggleRevisionHistory()" class="btn-history" *ngIf="isEdit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.5 1.5H3.75A2.25 2.25 0 0 0 1.5 3.75v16.5A2.25 2.25 0 0 0 3.75 22.5h16.5a2.25 2.25 0 0 0 2.25-2.25V13.5"></path>
+            <path d="M22.5 2.5L12 13"></path>
+            <path d="M22.5 2.5h-7v7"></path>
+          </svg>
+          History
+        </button>
         <button
           type="button"
           (click)="saveBlog()"
@@ -401,5 +409,74 @@
         </button>
       </div>
     </form>
+
+    <!-- Revision History Sidebar -->
+    <div class="revision-history-sidebar" *ngIf="isEdit && showRevisionHistory">
+      <div class="revision-header">
+        <h3>Revision History</h3>
+        <button type="button" (click)="toggleRevisionHistory()" class="btn-close">×</button>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="revisionsLoading" class="revision-loading">
+        <div class="loading-spinner-small"></div>
+        <p>Loading revisions...</p>
+      </div>
+
+      <!-- Revisions List -->
+      <div *ngIf="!revisionsLoading && revisions.length > 0" class="revisions-list">
+        <div *ngFor="let revision of revisions; let i = index" 
+             class="revision-item" 
+             [class.selected]="selectedRevision?._id === revision._id"
+             (click)="selectRevision(revision)">
+          <div class="revision-info">
+            <div class="revision-type">
+              <span class="type-badge" [class]="'type-' + revision.revisionType">
+                {{ getRevisionTypeLabel(revision.revisionType) }}
+              </span>
+              <span class="revision-time">{{ revision.createdAt | date:'short' }}</span>
+            </div>
+            <div class="revision-changes">
+              {{ getSummaryOfChanges(revision) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!revisionsLoading && revisions.length === 0" class="revision-empty">
+        <p>No revisions yet</p>
+      </div>
+
+      <!-- Selected Revision Details -->
+      <div *ngIf="selectedRevision" class="revision-details">
+        <div class="details-header">
+          <h4>Revision Details</h4>
+        </div>
+        <div class="details-content">
+          <div class="detail-item" *ngFor="let change of selectedRevision.changes">
+            <div class="field-name">{{ change.field }}</div>
+            <div class="field-change">
+              <div class="old-value" *ngIf="change.oldValue">
+                <small>Previous:</small>
+                <div class="value-text">{{ change.oldValue | json }}</div>
+              </div>
+              <div class="new-value" *ngIf="change.newValue">
+                <small>Current:</small>
+                <div class="value-text">{{ change.newValue | json }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          (click)="restoreRevision()" 
+          [disabled]="restoring"
+          class="btn-restore">
+          {{ restoring ? 'Restoring...' : 'Restore this Revision' }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
