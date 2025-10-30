@@ -433,12 +433,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setVideoSource() {
-    // Using versioned video for cache busting - v1 is permanent, increment version if file changes
-    const newSrc = '/home-page-hero-v1.mp4';
+    // Using deployed video file - not versioned file which isn't in git
+    const newSrc = '/home-page-hero-video4-web-compressed.mp4';
     
     if (this.currentVideoSrc !== newSrc) {
       this.currentVideoSrc = newSrc;
-      console.log(`[VIDEO] Setting video source - ${newSrc} (version 1)`);
+      console.log(`[VIDEO] Setting video source - ${newSrc}`);
       
       // If video element exists and is initialized, reload it
       if (this.heroVideo?.nativeElement) {
