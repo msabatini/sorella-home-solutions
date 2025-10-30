@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   // Video properties
   videoLoaded = false; // Start with false so fallback shows initially
   isMobile = false;
-  currentVideoSrc = '/home-page-hero-v1.mp4'; // Versioned video (v1) for cache busting
+  currentVideoSrc = '/home-page-hero-video4-web-compressed.mp4'; // Using existing deployed video file
   videoRetryCount = 0;
   maxRetries = 3;
   videoLoadTimeout: ReturnType<typeof setTimeout> | null = null;
