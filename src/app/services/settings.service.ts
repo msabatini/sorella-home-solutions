@@ -111,6 +111,13 @@ export class SettingsService {
     );
   }
 
+  updateCurrentAdminProfile(data: { username: string; currentPassword?: string; newPassword?: string }): Observable<{ success: boolean; message: string; data: any }> {
+    return this.http.put<{ success: boolean; message: string; data: any }>(
+      `${this.apiUrl}/admins/profile/current`,
+      data
+    );
+  }
+
   deleteAdmin(id: string): Observable<{ success: boolean; message: string }> {
     return this.http.delete<{ success: boolean; message: string }>(
       `${this.apiUrl}/admins/${id}`

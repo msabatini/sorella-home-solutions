@@ -72,7 +72,7 @@ router.get('/verify', authenticateToken, (req, res) => {
   res.json({
     success: true,
     message: 'Token is valid',
-    admin: req.admin
+    admin: req.user
   });
 });
 

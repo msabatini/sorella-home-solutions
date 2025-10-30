@@ -3,7 +3,10 @@
   <header class="admin-header">
     <div class="header-container">
       <div class="header-left">
-        <h1>Admin Dashboard</h1>
+        <div class="logo-section">
+          <img src="/SHS-main-logo.png" alt="Sorella Home Solutions Logo" class="admin-logo" />
+          <h1>Admin Dashboard</h1>
+        </div>
       </div>
       <div class="header-right">
         <div class="user-info" *ngIf="currentAdmin$ | async as admin">
@@ -28,12 +31,89 @@
   <main class="admin-content">
     <div class="content-container">
       <div class="welcome-section">
-        <h2>Welcome to Admin Dashboard</h2>
+        <h2>Welcome to Sorella Home Solutions Admin Dashboard</h2>
         <p>This is your central hub for managing Sorella Home Solutions content and settings.</p>
       </div>
 
+      <!-- Getting Started Card -->
+      <div class="getting-started-card">
+        <div class="getting-started-header" (click)="toggleGettingStarted()" role="button" tabindex="0">
+          <div class="getting-started-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="getting-started-icon">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            <h3>Getting Started Guide</h3>
+          </div>
+          <div class="toggle-icon" [class.rotated]="showGettingStarted">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        
+        <div *ngIf="showGettingStarted" class="getting-started-content">
+          <p class="getting-started-intro">New to the admin dashboard? Start here with these essential tasks:</p>
+          
+          <div class="quick-tasks">
+            <div class="quick-task-item" (click)="navigateTo('/admin/blog')" role="button" tabindex="0">
+              <div class="task-number">1</div>
+              <div class="task-content">
+                <h4>Create Your First Blog Post</h4>
+                <p>Write and publish engaging content with a rich text editor, featured images, and SEO metadata.</p>
+              </div>
+              <div class="task-arrow">→</div>
+            </div>
+            
+            <div class="quick-task-item" (click)="navigateTo('/admin/settings')" role="button" tabindex="0">
+              <div class="task-number">2</div>
+              <div class="task-content">
+                <h4>Configure Site Settings</h4>
+                <p>Set up your site name, email, phone, and description. Then customize blog categories.</p>
+              </div>
+              <div class="task-arrow">→</div>
+            </div>
+            
+            <div class="quick-task-item" (click)="navigateTo('/admin/settings')" role="button" tabindex="0">
+              <div class="task-number">3</div>
+              <div class="task-content">
+                <h4>Manage Admin Accounts</h4>
+                <p>Create additional admin accounts for your team members to collaborate.</p>
+              </div>
+              <div class="task-arrow">→</div>
+            </div>
+            
+            <div class="quick-task-item" (click)="navigateTo('/admin/settings')" role="button" tabindex="0">
+              <div class="task-number">4</div>
+              <div class="task-content">
+                <h4>Set Up Email Configuration</h4>
+                <p>Configure SMTP settings to enable automated email notifications and alerts.</p>
+              </div>
+              <div class="task-arrow">→</div>
+            </div>
+            
+            <div class="quick-task-item" (click)="navigateTo('/admin/comments')" role="button" tabindex="0">
+              <div class="task-number">5</div>
+              <div class="task-content">
+                <h4>Moderate Comments</h4>
+                <p>Review and manage comments on your published blog posts.</p>
+              </div>
+              <div class="task-arrow">→</div>
+            </div>
+          </div>
+          
+          <div class="help-footer">
+            <a routerLink="/admin/settings" (click)="setActiveHelpTab()" class="view-full-guide">
+              <span class="guide-icon" [innerHTML]="getSafeIcon('book')"></span>
+              View Full Comprehensive Guide in Settings
+              <span class="guide-arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card" (click)="navigateTo('/admin/blog')" role="button" tabindex="0">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -45,7 +125,7 @@
           <a routerLink="/admin/blog" class="feature-link">Manage Posts →</a>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card" (click)="navigateTo('/admin/comments')" role="button" tabindex="0">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -56,7 +136,7 @@
           <a routerLink="/admin/comments" class="feature-link">Manage Comments →</a>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card" (click)="navigateTo('/admin/settings')" role="button" tabindex="0">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>

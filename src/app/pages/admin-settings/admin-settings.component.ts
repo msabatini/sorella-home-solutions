@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { SettingsService, Category, Admin, EmailConfig, GeneralSettings } from '../../services/settings.service';
 import { AuthService } from '../../services/auth.service';
+import { ServiceIcons } from '../../../assets/icons/service-icons';
 
 @Component({
   selector: 'app-admin-settings',
@@ -12,7 +15,9 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./admin-settings.component.scss']
 })
 export class AdminSettingsComponent implements OnInit {
-  activeTab: 'general' | 'categories' | 'admins' | 'email' = 'general';
+  activeTab: 'general' | 'categories' | 'admins' | 'email' | 'help' = 'general';
+  expandedSection: string | null = null;
+  icons = ServiceIcons;
 
   // General Settings
   generalForm!: FormGroup;
@@ -39,6 +44,13 @@ export class AdminSettingsComponent implements OnInit {
   adminSuccess: string | null = null;
   adminDeleteConfirm: string | null = null;
   currentUserId: string | null = null;
+  
+  // Current Admin Profile
+  profileForm!: FormGroup;
+  profileLoading = false;
+  profileSuccess: string | null = null;
+  profileError: string | null = null;
+  showPasswordFields = false;
 
   // Email Config
   emailForm!: FormGroup;
@@ -50,7 +62,9 @@ export class AdminSettingsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private settingsService: SettingsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +75,13 @@ export class AdminSettingsComponent implements OnInit {
       this.loadCategories();
       this.loadAdmins();
       this.loadEmailConfig();
+
+      // Check if we should navigate to help tab from dashboard
+      const activeTab = sessionStorage.getItem('activeAdminTab');
+      if (activeTab === 'help') {
+        this.activeTab = 'help';
+        sessionStorage.removeItem('activeAdminTab');
+      }
     } catch (error) {
       console.error('Error initializing settings component:', error);
     }
@@ -89,6 +110,13 @@ export class AdminSettingsComponent implements OnInit {
       role: ['editor', Validators.required]
     });
 
+    this.profileForm = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      currentPassword: [''],
+      newPassword: ['', Validators.minLength(6)],
+      confirmPassword: ['']
+    });
+
     this.emailForm = this.formBuilder.group({
       smtpHost: ['', Validators.required],
       smtpPort: [587, [Validators.required, Validators.min(1), Validators.max(65535)]],
@@ -102,6 +130,11 @@ export class AdminSettingsComponent implements OnInit {
   loadCurrentUser(): void {
     const admin = this.authService.getCurrentAdmin();
     this.currentUserId = admin?.id || null;
+    if (admin?.username) {
+      this.profileForm.patchValue({
+        username: admin.username
+      });
+    }
   }
 
   setActiveTab(tab: any): void {
@@ -167,7 +200,10 @@ export class AdminSettingsComponent implements OnInit {
         this.categoriesLoading = false;
       },
       error: (error) => {
-        this.categoriesError = 'Failed to load categories';
+        console.error('Error loading categories:', error);
+        console.error('Status:', error.status);
+        console.error('Message:', error.error?.message);
+        this.categoriesError = error.error?.message || 'Failed to load categories';
         this.categoriesLoading = false;
       }
     });
@@ -276,7 +312,10 @@ export class AdminSettingsComponent implements OnInit {
         this.adminsLoading = false;
       },
       error: (error) => {
-        this.adminsError = 'Failed to load admin accounts';
+        console.error('Error loading admin accounts:', error);
+        console.error('Status:', error.status);
+        console.error('Message:', error.error?.message);
+        this.adminsError = error.error?.message || 'Failed to load admin accounts';
         this.adminsLoading = false;
       }
     });
@@ -345,6 +384,75 @@ export class AdminSettingsComponent implements OnInit {
     return id === this.currentUserId;
   }
 
+  // ============ CURRENT ADMIN PROFILE ============
+
+  togglePasswordFields(): void {
+    this.showPasswordFields = !this.showPasswordFields;
+    if (!this.showPasswordFields) {
+      this.profileForm.patchValue({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    }
+  }
+
+  saveProfile(): void {
+    if (this.profileForm.invalid) {
+      this.profileError = 'Please fill in all required fields correctly';
+      return;
+    }
+
+    // If changing password, verify passwords match
+    if (this.showPasswordFields) {
+      const { newPassword, confirmPassword } = this.profileForm.value;
+      if (newPassword !== confirmPassword) {
+        this.profileError = 'New passwords do not match';
+        return;
+      }
+    }
+
+    this.profileLoading = true;
+    this.profileError = null;
+    this.profileSuccess = null;
+
+    const updateData = {
+      username: this.profileForm.value.username,
+      ...(this.showPasswordFields && {
+        currentPassword: this.profileForm.value.currentPassword,
+        newPassword: this.profileForm.value.newPassword
+      })
+    };
+
+    this.settingsService.updateCurrentAdminProfile(updateData).subscribe({
+      next: (response) => {
+        this.profileSuccess = 'Profile updated successfully!';
+        this.profileLoading = false;
+        this.showPasswordFields = false;
+        this.profileForm.patchValue({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+
+        // Update the auth service with new username
+        const currentAdmin = this.authService.getCurrentAdmin();
+        if (currentAdmin) {
+          currentAdmin.username = response.data.username;
+          this.authService.updateCurrentAdmin(currentAdmin);
+        }
+
+        setTimeout(() => {
+          this.profileSuccess = null;
+        }, 3000);
+      },
+      error: (error) => {
+        this.profileError = error.error?.message || 'Failed to update profile';
+        this.profileLoading = false;
+      }
+    });
+  }
+
   // ============ EMAIL CONFIGURATION ============
 
   loadEmailConfig(): void {
@@ -408,5 +516,24 @@ export class AdminSettingsComponent implements OnInit {
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/admin-login']);
+  }
+
+  // ============ HELP & GUIDE ============
+
+  toggleHelpSection(section: string): void {
+    if (this.expandedSection === section) {
+      this.expandedSection = null;
+    } else {
+      this.expandedSection = section;
+    }
+  }
+
+  getSafeIcon(iconName: keyof typeof ServiceIcons) {
+    return this.sanitizer.bypassSecurityTrustHtml(ServiceIcons[iconName]);
   }
 }

@@ -69,4 +69,8 @@ export class AdminLoginComponent implements OnInit {
       }
     });
   }
+
+  navigateToMainApp(): void {
+    this.router.navigate(['/']);
+  }
 }

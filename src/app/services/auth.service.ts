@@ -78,6 +78,10 @@ export class AuthService {
     this.currentAdminSubject.next(admin);
   }
 
+  updateCurrentAdmin(admin: Admin): void {
+    this.setAdmin(admin);
+  }
+
   private getStoredAdmin(): Admin | null {
     const stored = localStorage.getItem(this.adminKey);
     return stored ? JSON.parse(stored) : null;

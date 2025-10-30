@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
           message: 'Invalid or expired token'
         });
       }
-      req.admin = admin;
+      req.user = admin;
       next();
     }
   );

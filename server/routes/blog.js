@@ -909,4 +909,148 @@ router.put('/:id/autosave', authenticateToken, async (req, res) => {
   }
 });
 
+// ============ BULK ACTIONS ENDPOINTS ============
+
+// Bulk publish posts (requires authentication)
+router.post('/admin/bulk/publish', authenticateToken, async (req, res) => {
+  try {
+    const { postIds } = req.body;
+
+    if (!Array.isArray(postIds) || postIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid post IDs'
+      });
+    }
+
+    const result = await BlogPost.updateMany(
+      { _id: { $in: postIds } },
+      { published: true },
+      { multi: true }
+    );
+
+    res.json({
+      success: true,
+      message: `${result.modifiedCount} post(s) published successfully`,
+      data: { modifiedCount: result.modifiedCount }
+    });
+
+  } catch (error) {
+    console.error('Error bulk publishing posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error publishing posts'
+    });
+  }
+});
+
+// Bulk unpublish posts (requires authentication)
+router.post('/admin/bulk/unpublish', authenticateToken, async (req, res) => {
+  try {
+    const { postIds } = req.body;
+
+    if (!Array.isArray(postIds) || postIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid post IDs'
+      });
+    }
+
+    const result = await BlogPost.updateMany(
+      { _id: { $in: postIds } },
+      { published: false },
+      { multi: true }
+    );
+
+    res.json({
+      success: true,
+      message: `${result.modifiedCount} post(s) unpublished successfully`,
+      data: { modifiedCount: result.modifiedCount }
+    });
+
+  } catch (error) {
+    console.error('Error bulk unpublishing posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error unpublishing posts'
+    });
+  }
+});
+
+// Bulk delete posts (requires authentication)
+router.post('/admin/bulk/delete', authenticateToken, async (req, res) => {
+  try {
+    const { postIds } = req.body;
+
+    if (!Array.isArray(postIds) || postIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid post IDs'
+      });
+    }
+
+    // Delete posts
+    const deleteResult = await BlogPost.deleteMany(
+      { _id: { $in: postIds } }
+    );
+
+    // Also delete associated comments and revisions
+    await Comment.deleteMany({ blogPostId: { $in: postIds } });
+    await PostRevision.deleteMany({ blogPostId: { $in: postIds } });
+
+    res.json({
+      success: true,
+      message: `${deleteResult.deletedCount} post(s) deleted successfully`,
+      data: { deletedCount: deleteResult.deletedCount }
+    });
+
+  } catch (error) {
+    console.error('Error bulk deleting posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting posts'
+    });
+  }
+});
+
+// Bulk update category (requires authentication)
+router.post('/admin/bulk/category', authenticateToken, async (req, res) => {
+  try {
+    const { postIds, category } = req.body;
+
+    if (!Array.isArray(postIds) || postIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid post IDs'
+      });
+    }
+
+    if (!category || typeof category !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid category'
+      });
+    }
+
+    const result = await BlogPost.updateMany(
+      { _id: { $in: postIds } },
+      { category },
+      { multi: true }
+    );
+
+    res.json({
+      success: true,
+      message: `Category updated for ${result.modifiedCount} post(s)`,
+      data: { modifiedCount: result.modifiedCount }
+    });
+
+  } catch (error) {
+    console.error('Error bulk updating category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating category'
+    });
+  }
+});
+
 module.exports = router;

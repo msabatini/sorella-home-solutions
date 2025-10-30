@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { DOCUMENT } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
@@ -30,12 +32,16 @@ export class BlogComponent implements OnInit, OnDestroy {
   blogPosts: BlogPost[] = [];
   isLoading: boolean = true;
   error: string | null = null;
+  private jsonLdScripts: HTMLScriptElement[] = [];
   
   constructor(
     private animationService: AnimationService,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private blogService: BlogService
+    private blogService: BlogService,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.phoneIcon = this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.phone);
   }
@@ -61,6 +67,13 @@ export class BlogComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.blogPosts = response.data;
         this.isLoading = false;
+        
+        // Inject JSON-LD schemas for each blog post
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => {
+            this.injectJSONLDScripts();
+          }, 100);
+        }
       },
       error: (error) => {
         console.error('Error loading blog posts:', error);
@@ -72,6 +85,32 @@ export class BlogComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.animationService.destroy();
+    this.removeJSONLDScripts();
+  }
+
+  private injectJSONLDScripts() {
+    // Remove existing scripts first
+    this.removeJSONLDScripts();
+
+    // Inject JSON-LD schema for each blog post
+    this.blogPosts.forEach(post => {
+      const schema = this.blogService.generateJSONLD(post);
+      const script = this.renderer.createElement('script');
+      this.renderer.setAttribute(script, 'type', 'application/ld+json');
+      this.renderer.setAttribute(script, 'data-post-id', post._id);
+      const schemaText = this.renderer.createText(JSON.stringify(schema));
+      this.renderer.appendChild(script, schemaText);
+      this.renderer.appendChild(this.document.head, script);
+      this.jsonLdScripts.push(script);
+    });
+  }
+
+  private removeJSONLDScripts() {
+    // Remove all JSON-LD scripts that were injected by this component
+    this.jsonLdScripts.forEach(script => {
+      this.renderer.removeChild(this.document.head, script);
+    });
+    this.jsonLdScripts = [];
   }
 
   private scrollToTop() {

@@ -1,22 +1,93 @@
+<!-- Header -->
+<header class="admin-header">
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo-section">
+        <img src="/SHS-main-logo.png" alt="Sorella Home Solutions Logo" class="admin-logo" />
+        <h1>Settings</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <button (click)="logout()" class="logout-button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
 <div class="admin-settings">
+  <!-- Back Button -->
+  <div class="back-navigation">
+    <a href="/admin" class="back-link">← Back to Dashboard</a>
+  </div>
+
   <!-- Header -->
   <div class="settings-header">
-    <h2>Settings</h2>
-    <p>Manage your site configuration, categories, admins, and email settings</p>
+    <h2>Manage Settings</h2>
+    <p>Configure your site settings, categories, admin accounts, and email configuration</p>
   </div>
 
   <!-- Tab Navigation -->
   <div class="tab-navigation">
     <button
-      *ngFor="let tab of ['general', 'categories', 'admins', 'email']"
+      *ngFor="let tab of ['general', 'categories', 'admins', 'email', 'help']"
       (click)="setActiveTab(tab)"
       [class.active]="activeTab === tab"
       class="tab-button"
     >
-      <span *ngIf="tab === 'general'">⚙️ General Settings</span>
-      <span *ngIf="tab === 'categories'">📚 Categories</span>
-      <span *ngIf="tab === 'admins'">👥 Admin Accounts</span>
-      <span *ngIf="tab === 'email'">📧 Email Config</span>
+      <!-- General Settings Icon -->
+      <span *ngIf="tab === 'general'" class="tab-icon-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"></path>
+        </svg>
+        General Settings
+      </span>
+
+      <!-- Categories Icon -->
+      <span *ngIf="tab === 'categories'" class="tab-icon-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <path d="M4 5h16a1 1 0 0 1 1 1v2H3V6a1 1 0 0 1 1-1z"></path>
+          <path d="M3 9h18v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"></path>
+          <line x1="9" y1="13" x2="15" y2="13"></line>
+          <line x1="9" y1="17" x2="15" y2="17"></line>
+        </svg>
+        Categories
+      </span>
+
+      <!-- Admin Accounts Icon -->
+      <span *ngIf="tab === 'admins'" class="tab-icon-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path>
+        </svg>
+        Admin Accounts
+      </span>
+
+      <!-- Email Config Icon -->
+      <span *ngIf="tab === 'email'" class="tab-icon-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+          <path d="M2 6l10 7 10-7"></path>
+        </svg>
+        Email Config
+      </span>
+
+      <!-- Help & Guide Icon -->
+      <span *ngIf="tab === 'help'" class="tab-icon-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
+        Help & Guide
+      </span>
     </button>
   </div>
 
@@ -257,6 +328,114 @@
     <!-- ADMIN ACCOUNTS TAB -->
     <div *ngIf="activeTab === 'admins'" class="tab-pane">
       <div class="section-container">
+        <!-- Current Admin Profile Section -->
+        <div class="form-card profile-card">
+          <h4>Your Account</h4>
+          <p class="section-description">Update your username and password</p>
+
+          <!-- Profile Success Message -->
+          <div *ngIf="profileSuccess" class="alert alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>{{ profileSuccess }}</span>
+          </div>
+
+          <!-- Profile Error Message -->
+          <div *ngIf="profileError" class="alert alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ profileError }}</span>
+          </div>
+
+          <form [formGroup]="profileForm" class="settings-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="profileUsername">Username *</label>
+                <input
+                  type="text"
+                  id="profileUsername"
+                  formControlName="username"
+                  placeholder="Your username"
+                  [disabled]="profileLoading"
+                />
+              </div>
+            </div>
+
+            <!-- Password Update Section -->
+            <div class="password-toggle">
+              <button
+                type="button"
+                (click)="togglePasswordFields()"
+                class="toggle-button"
+                [disabled]="profileLoading"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.rotated]="showPasswordFields">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                {{ showPasswordFields ? 'Cancel Password Change' : 'Change Password' }}
+              </button>
+            </div>
+
+            <div *ngIf="showPasswordFields" class="password-fields">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="currentPassword">Current Password *</label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    formControlName="currentPassword"
+                    placeholder="Enter your current password"
+                    [disabled]="profileLoading"
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="newPassword">New Password *</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    formControlName="newPassword"
+                    placeholder="Minimum 6 characters"
+                    [disabled]="profileLoading"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmPassword">Confirm Password *</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    placeholder="Confirm your new password"
+                    [disabled]="profileLoading"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                (click)="saveProfile()"
+                class="btn-primary"
+                [disabled]="profileForm.invalid || profileLoading"
+              >
+                <span *ngIf="!profileLoading">Save Changes</span>
+                <span *ngIf="profileLoading">Saving...</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Separator -->
+        <div class="divider"></div>
+
         <div class="section-header">
           <div>
             <h3>Admin Accounts</h3>
@@ -549,6 +728,194 @@
             </span>
           </button>
         </form>
+      </div>
+    </div>
+
+    <!-- HELP & GUIDE TAB -->
+    <div *ngIf="activeTab === 'help'" class="tab-pane">
+      <div class="section-container help-container">
+        <h3>Admin Dashboard Guide</h3>
+        <p class="section-description">Learn how to use the admin dashboard to manage your website</p>
+
+        <!-- Quick Start Section -->
+        <div class="help-section">
+          <h4 class="help-section-title">
+            <span class="help-section-icon" [innerHTML]="getSafeIcon('lightning')"></span>
+            Quick Start
+          </h4>
+          <div class="help-section-content">
+            <p>Welcome to your admin dashboard! Here are the five essential tasks to get you started:</p>
+            <ol class="help-list">
+              <li><strong>Create a Blog Post:</strong> Navigate to Blog Management and click "Create New Post"</li>
+              <li><strong>Configure Settings:</strong> Go to General Settings to set your site name and description</li>
+              <li><strong>Create Categories:</strong> Organize your blog with custom categories</li>
+              <li><strong>Add Admin Users:</strong> Invite team members by creating admin accounts</li>
+              <li><strong>Moderate Comments:</strong> Review and manage reader comments from the Comments section</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Blog Management Section -->
+        <div class="help-section collapsible-section" [class.expanded]="expandedSection === 'blog'">
+          <h4 class="help-section-title help-section-collapsible" (click)="toggleHelpSection('blog')">
+            <span class="help-section-icon" [innerHTML]="getSafeIcon('document')"></span>
+            Blog Management
+            <span class="collapse-arrow" [class.rotated]="expandedSection === 'blog'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </h4>
+          <div class="help-section-content" *ngIf="expandedSection === 'blog'">
+            <h5>Creating a New Blog Post</h5>
+            <ol class="help-list">
+              <li>Click <strong>"Create New Post"</strong> button in Blog Management</li>
+              <li>Enter your post <strong>title</strong> and <strong>content</strong></li>
+              <li>Select a <strong>category</strong> from the dropdown</li>
+              <li>Add a <strong>featured image</strong> for your post</li>
+              <li>Fill in SEO metadata (slug, meta description)</li>
+              <li>Click <strong>"Save as Draft"</strong> to save without publishing</li>
+              <li>Click <strong>"Publish"</strong> to make the post live</li>
+            </ol>
+            <h5>Editing Existing Posts</h5>
+            <p>Find your post in the list, click the <strong>edit icon</strong>, make your changes, and click <strong>"Update Post"</strong>.</p>
+            <h5>Deleting Posts</h5>
+            <p>Click the <strong>delete icon</strong> and confirm with <strong>"Yes"</strong> in the confirmation dialog.</p>
+          </div>
+        </div>
+
+        <!-- Comments Management Section -->
+        <div class="help-section collapsible-section" [class.expanded]="expandedSection === 'comments'">
+          <h4 class="help-section-title help-section-collapsible" (click)="toggleHelpSection('comments')">
+            <span class="help-section-icon" [innerHTML]="getSafeIcon('messageSquare')"></span>
+            Comments Management
+            <span class="collapse-arrow" [class.rotated]="expandedSection === 'comments'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </h4>
+          <div class="help-section-content" *ngIf="expandedSection === 'comments'">
+            <p>Monitor and moderate comments on your blog posts.</p>
+            <h5>Reviewing Comments</h5>
+            <ul class="help-list">
+              <li>View all comments with post associations</li>
+              <li>See commenter name, email, and message</li>
+              <li>Check the post title for context</li>
+            </ul>
+            <h5>Moderating Comments</h5>
+            <ul class="help-list">
+              <li>Approve comments by clicking the <strong>checkmark</strong> icon</li>
+              <li>Delete inappropriate comments with the <strong>trash</strong> icon</li>
+              <li>Use the search box to find specific comments</li>
+              <li>Filter by post to see comments on a specific article</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Settings Management Section -->
+        <div class="help-section collapsible-section" [class.expanded]="expandedSection === 'settings'">
+          <h4 class="help-section-title help-section-collapsible" (click)="toggleHelpSection('settings')">
+            <span class="help-section-icon" [innerHTML]="getSafeIcon('settings')"></span>
+            Settings Management
+            <span class="collapse-arrow" [class.rotated]="expandedSection === 'settings'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </h4>
+          <div class="help-section-content" *ngIf="expandedSection === 'settings'">
+            <h5>General Settings</h5>
+            <p>Configure basic information about your site:</p>
+            <ul class="help-list">
+              <li><strong>Site Name:</strong> The name of your website (displayed in headers)</li>
+              <li><strong>Site Email:</strong> Primary contact email address</li>
+              <li><strong>Site Phone:</strong> Your business phone number</li>
+              <li><strong>Description:</strong> Brief description of your site</li>
+            </ul>
+            <h5>Blog Categories</h5>
+            <p>Organize your blog posts with categories:</p>
+            <ul class="help-list">
+              <li>Click <strong>"Add Category"</strong> to create a new category</li>
+              <li>Enter category <strong>name</strong> and optional <strong>description</strong></li>
+              <li>Add an <strong>icon</strong> (emoji or URL) to represent the category</li>
+              <li>Edit or delete categories with the action buttons</li>
+            </ul>
+            <h5>Admin Accounts</h5>
+            <p>Manage team members with admin access:</p>
+            <ul class="help-list">
+              <li>Click <strong>"Add Admin"</strong> to invite a new team member</li>
+              <li>Enter <strong>username, email,</strong> and <strong>password</strong></li>
+              <li>Select a <strong>role</strong> (editor or admin)</li>
+              <li>Each admin can manage their own profile</li>
+            </ul>
+            <h5>Email Configuration</h5>
+            <p>Set up SMTP to send automated emails:</p>
+            <ul class="help-list">
+              <li><strong>SMTP Host:</strong> Your email provider's server (e.g., smtp.gmail.com)</li>
+              <li><strong>SMTP Port:</strong> Usually 587 (TLS) or 465 (SSL)</li>
+              <li><strong>SMTP User:</strong> Your email address</li>
+              <li><strong>SMTP Password:</strong> Your email password or app-specific password</li>
+              <li><strong>From Email:</strong> Sender email address for automated emails</li>
+              <li><strong>Use TLS/SSL:</strong> Check for secure connections</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="help-section collapsible-section" [class.expanded]="expandedSection === 'faq'">
+          <h4 class="help-section-title help-section-collapsible" (click)="toggleHelpSection('faq')">
+            <span class="help-section-icon" [innerHTML]="getSafeIcon('questionCircle')"></span>
+            Frequently Asked Questions
+            <span class="collapse-arrow" [class.rotated]="expandedSection === 'faq'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </h4>
+          <div class="help-section-content" *ngIf="expandedSection === 'faq'">
+            <div class="faq-item">
+              <h5>How do I publish a blog post?</h5>
+              <p>Create your post in Blog Management, fill in all details, and click <strong>"Publish"</strong>. The post will be immediately visible on your site.</p>
+            </div>
+            <div class="faq-item">
+              <h5>Can I schedule posts for later?</h5>
+              <p>Currently, posts are published immediately. You can create as a draft and publish when ready.</p>
+            </div>
+            <div class="faq-item">
+              <h5>How do I add multiple admins?</h5>
+              <p>Go to Settings → Admin Accounts → <strong>"Add Admin"</strong>. Each admin gets a unique login.</p>
+            </div>
+            <div class="faq-item">
+              <h5>What email should I use for SMTP?</h5>
+              <p>For Gmail: Use your Gmail address and generate an <strong>App Password</strong> for security. For other providers, contact support for SMTP details.</p>
+            </div>
+            <div class="faq-item">
+              <h5>How do I delete my account?</h5>
+              <p>Contact the site administrator. Only the first admin account cannot be deleted.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips & Best Practices -->
+        <div class="help-section tips-section">
+          <h4 class="help-section-title">
+            <span class="help-section-icon" [innerHTML]="getSafeIcon('lightbulb')"></span>
+            Tips & Best Practices
+          </h4>
+          <div class="help-section-content">
+            <ul class="help-tips">
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span>Always use <strong>descriptive titles and slugs</strong> for better SEO</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span>Add <strong>featured images</strong> to all posts for better engagement</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span><strong>Organize posts with categories</strong> to help readers browse by topic</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span><strong>Save drafts regularly</strong> to avoid losing work</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span><strong>Review comments regularly</strong> to foster community engagement</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span>Use <strong>clear, concise language</strong> in your content</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span>Include <strong>internal links</strong> between related blog posts</li>
+              <li><span class="tip-icon" [innerHTML]="getSafeIcon('lightbulb')"></span><strong>Test email configuration</strong> after setup to ensure notifications work</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

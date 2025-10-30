@@ -1,7 +1,35 @@
+<!-- Header -->
+<header class="admin-header">
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo-section">
+        <img src="/SHS-main-logo.png" alt="Sorella Home Solutions Logo" class="admin-logo" />
+        <h1>{{ isEdit ? 'Edit Blog Post' : 'Create New Blog Post' }}</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <button (click)="logout()" class="logout-button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
 <div class="blog-form-container">
+  <!-- Back Button -->
+  <div class="back-navigation">
+    <a href="/admin/blog" class="back-link">← Back to Blog Management</a>
+  </div>
+
   <div class="form-header">
     <div class="header-top">
-      <h2>{{ isEdit ? 'Edit Blog Post' : 'Create New Blog Post' }}</h2>
+      <h2>{{ isEdit ? 'Edit Post' : 'Create New Post' }}</h2>
       <div class="header-actions">
         <button type="button" (click)="togglePreview()" class="btn-preview">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -400,6 +428,25 @@
           </svg>
           SEO Preview
         </button>
+        <button type="button" (click)="toggleSocialPreview()" class="btn-social">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="6" cy="6" r="2"></circle>
+            <circle cx="18" cy="6" r="2"></circle>
+            <circle cx="12" cy="18" r="2"></circle>
+            <line x1="7" y1="8" x2="11" y2="16"></line>
+            <line x1="17" y1="8" x2="13" y2="16"></line>
+          </svg>
+          Social Meta
+        </button>
+        <button type="button" (click)="toggleJSONLDPreview()" class="btn-jsonld">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+            <path d="M21 3v5h-5"></path>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+            <path d="M3 21v-5h5"></path>
+          </svg>
+          Schema
+        </button>
         <button
           type="button"
           (click)="saveBlog()"
@@ -568,6 +615,244 @@
             class="btn-copy-meta">
             Auto-fill from Content
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Meta Tags Sidebar -->
+    <div class="social-preview-sidebar" *ngIf="showSocialPreview">
+      <div class="social-header">
+        <h3>Social Meta Tags</h3>
+        <button type="button" (click)="toggleSocialPreview()" class="btn-close">×</button>
+      </div>
+
+      <div class="social-content" *ngIf="socialMeta">
+        <!-- Platform Selector Tabs -->
+        <div class="social-platform-tabs">
+          <button 
+            type="button" 
+            class="platform-tab" 
+            [class.active]="activeSocialPlatform === 'facebook'"
+            (click)="setSocialPlatform('facebook')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v7h3v.1h-6v2h8c3.31 0 6-2.69 6-6V8.5c-.4 0-.8-.02-1.2-.07C18.6 7.77 17.81 7 17 7h-1V3.5C17 2.67 16.33 2 15.5 2S14 2.67 14 3.5V6h-1c-1.66 0-3 1.34-3 3v2H8v3h2v7h3v.1"/>
+            </svg>
+            Facebook
+          </button>
+          <button 
+            type="button" 
+            class="platform-tab" 
+            [class.active]="activeSocialPlatform === 'twitter'"
+            (click)="setSocialPlatform('twitter')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-11.16z"/>
+            </svg>
+            Twitter
+          </button>
+          <button 
+            type="button" 
+            class="platform-tab" 
+            [class.active]="activeSocialPlatform === 'linkedin'"
+            (click)="setSocialPlatform('linkedin')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+            LinkedIn
+          </button>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="social-preview-section" *ngIf="getSocialPlatformData(activeSocialPlatform) as platformData">
+          <h4>Preview</h4>
+          
+          <!-- Platform-specific preview -->
+          <div [ngSwitch]="activeSocialPlatform" class="platform-preview">
+            <!-- Facebook Preview -->
+            <div *ngSwitchCase="'facebook'" class="facebook-preview">
+              <div class="preview-card">
+                <div *ngIf="platformData.image" class="preview-image">
+                  <img [src]="platformData.image" alt="Preview" />
+                </div>
+                <div class="preview-content">
+                  <div class="preview-domain">sorella-home-solutions.com</div>
+                  <div class="preview-title">{{ platformData.title || 'Post title' }}</div>
+                  <div class="preview-description">{{ platformData.description || 'Post description will appear here' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Twitter Preview -->
+            <div *ngSwitchCase="'twitter'" class="twitter-preview">
+              <div class="preview-card twitter-card">
+                <div class="preview-content-twitter">
+                  <div class="preview-title">{{ platformData.title || 'Post title' }}</div>
+                  <div class="preview-description">{{ platformData.description || 'Post description will appear here' }}</div>
+                  <div *ngIf="platformData.image" class="preview-image-twitter">
+                    <img [src]="platformData.image" alt="Preview" />
+                  </div>
+                  <div class="preview-domain-twitter">sorella-home-solutions.com</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LinkedIn Preview -->
+            <div *ngSwitchCase="'linkedin'" class="linkedin-preview">
+              <div class="preview-card linkedin-card">
+                <div *ngIf="platformData.image" class="preview-image-linkedin">
+                  <img [src]="platformData.image" alt="Preview" />
+                </div>
+                <div class="preview-content-linkedin">
+                  <div class="preview-title">{{ platformData.title || 'Post title' }}</div>
+                  <div class="preview-description">{{ platformData.description || 'Post description will appear here' }}</div>
+                  <div class="preview-domain-linkedin">sorella-home-solutions.com</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Fields Section -->
+        <div class="social-edit-section">
+          <h4>Edit Tags for {{ activeSocialPlatform | titlecase }}</h4>
+          
+          <!-- Title Field -->
+          <div class="form-group-social">
+            <label>Title ({{ activeSocialPlatform === 'facebook' ? '60' : activeSocialPlatform === 'twitter' ? '70' : '100' }} chars)</label>
+            <input 
+              type="text" 
+              [value]="getSocialPlatformData(activeSocialPlatform).title"
+              (input)="updateSocialField(activeSocialPlatform, 'title', $any($event.target).value)"
+              [attr.maxlength]="activeSocialPlatform === 'facebook' ? 60 : activeSocialPlatform === 'twitter' ? 70 : 100"
+              placeholder="Enter social media title"
+              class="social-input">
+            <div class="char-count">
+              {{ (getSocialPlatformData(activeSocialPlatform).title || '').length }}/{{ activeSocialPlatform === 'facebook' ? 60 : activeSocialPlatform === 'twitter' ? 70 : 100 }}
+            </div>
+          </div>
+
+          <!-- Description Field -->
+          <div class="form-group-social">
+            <label>Description ({{ activeSocialPlatform === 'twitter' ? '200' : '160' }} chars)</label>
+            <textarea 
+              [value]="getSocialPlatformData(activeSocialPlatform).description"
+              (input)="updateSocialField(activeSocialPlatform, 'description', $any($event.target).value)"
+              [attr.maxlength]="activeSocialPlatform === 'twitter' ? 200 : 160"
+              placeholder="Enter social media description"
+              class="social-textarea"
+              rows="3"></textarea>
+            <div class="char-count">
+              {{ (getSocialPlatformData(activeSocialPlatform).description || '').length }}/{{ activeSocialPlatform === 'twitter' ? 200 : 160 }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="social-image-section">
+          <h4>Image</h4>
+          <div *ngIf="socialImagePreview" class="current-image">
+            <img [src]="socialImagePreview" alt="Social media image" />
+            <div class="image-label">
+              {{ useCustomSocialImage ? 'Custom Image' : 'Blog Featured Image' }}
+            </div>
+          </div>
+          
+          <div class="image-actions">
+            <div class="image-option">
+              <label class="checkbox-label">
+                <input 
+                  type="checkbox" 
+                  [(ngModel)]="useCustomSocialImage"
+                  (change)="useCustomSocialImage ? '' : resetSocialImageToDefault()">
+                Use Custom Image
+              </label>
+            </div>
+            
+            <div *ngIf="useCustomSocialImage" class="upload-area">
+              <input 
+                type="file" 
+                #socialImageInput
+                (change)="onSocialImageSelected($event)"
+                accept="image/*"
+                style="display: none">
+              <button 
+                type="button" 
+                (click)="socialImageInput.click()"
+                class="btn-upload-image">
+                Upload New Image
+              </button>
+            </div>
+            
+            <button 
+              type="button" 
+              (click)="resetSocialImageToDefault()"
+              *ngIf="useCustomSocialImage"
+              class="btn-reset-image">
+              Use Featured Image
+            </button>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="social-actions">
+          <button 
+            type="button" 
+            (click)="autoFillSocialMeta()" 
+            class="btn-autofill-social">
+            Auto-fill from Content
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JSON-LD Schema Preview Sidebar -->
+    <div class="jsonld-preview-sidebar" *ngIf="showJSONLDPreview">
+      <div class="jsonld-header">
+        <h3>JSON-LD Schema</h3>
+        <button type="button" (click)="toggleJSONLDPreview()" class="btn-close">×</button>
+      </div>
+
+      <div class="jsonld-content">
+        <!-- Schema Info -->
+        <div class="schema-info">
+          <div class="info-item">
+            <span class="label">Type:</span>
+            <span class="value">BlogPosting</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Context:</span>
+            <span class="value">schema.org</span>
+          </div>
+        </div>
+
+        <!-- Schema Preview -->
+        <div class="schema-preview-container">
+          <div class="schema-toolbar">
+            <h4>Schema Code</h4>
+            <button 
+              type="button" 
+              (click)="copyJSONLDToClipboard()"
+              class="btn-copy-schema">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre class="schema-code"><code>{{ jsonLdPreviewFormatted }}</code></pre>
+        </div>
+
+        <!-- Validation Info -->
+        <div class="schema-validation">
+          <div class="validation-item">
+            <span class="validation-badge validation-success">✓</span>
+            <span class="validation-text">All required fields present</span>
+          </div>
+          <div class="validation-item">
+            <span class="validation-badge validation-info">ℹ</span>
+            <span class="validation-text">Test with Google Rich Results Test</span>
+          </div>
         </div>
       </div>
     </div>

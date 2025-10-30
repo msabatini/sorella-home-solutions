@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { BlogService, BlogPost } from '../../services/blog.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-admin-blog-management',
@@ -19,8 +20,18 @@ export class AdminBlogManagementComponent implements OnInit {
   deleting: string | null = null;
   searchQuery = '';
 
+  // Bulk Actions
+  selectedPostIds: Set<string> = new Set();
+  showBulkActionsMenu = false;
+  bulkActionInProgress = false;
+  bulkActionMessage: string | null = null;
+  bulkDeleteConfirm = false;
+  showCategorySelector = false;
+  categories: string[] = ['Technology', 'Home Improvement', 'Design', 'DIY', 'Maintenance', 'Other'];
+
   constructor(
     private blogService: BlogService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -119,5 +130,177 @@ export class AdminBlogManagementComponent implements OnInit {
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  // BULK ACTIONS METHODS
+
+  togglePostSelection(postId: string): void {
+    if (this.selectedPostIds.has(postId)) {
+      this.selectedPostIds.delete(postId);
+    } else {
+      this.selectedPostIds.add(postId);
+    }
+    this.showBulkActionsMenu = this.selectedPostIds.size > 0;
+  }
+
+  isPostSelected(postId: string): boolean {
+    return this.selectedPostIds.has(postId);
+  }
+
+  toggleAllSelection(): void {
+    if (this.selectedPostIds.size === this.filteredPosts.length && this.selectedPostIds.size > 0) {
+      this.selectedPostIds.clear();
+      this.showBulkActionsMenu = false;
+    } else {
+      this.filteredPosts.forEach(post => this.selectedPostIds.add(post._id));
+      this.showBulkActionsMenu = this.selectedPostIds.size > 0;
+    }
+  }
+
+  isAllSelected(): boolean {
+    return this.filteredPosts.length > 0 && this.selectedPostIds.size === this.filteredPosts.length;
+  }
+
+  isIndeterminate(): boolean {
+    return this.selectedPostIds.size > 0 && this.selectedPostIds.size < this.filteredPosts.length;
+  }
+
+  bulkPublish(): void {
+    this.bulkActionInProgress = true;
+    this.bulkActionMessage = null;
+
+    this.blogService.bulkPublish(Array.from(this.selectedPostIds)).subscribe({
+      next: () => {
+        // Update local posts
+        this.selectedPostIds.forEach(id => {
+          const post = this.posts.find(p => p._id === id);
+          if (post) {
+            post.published = true;
+          }
+        });
+
+        this.bulkActionMessage = `✓ ${this.selectedPostIds.size} post(s) published successfully`;
+        this.clearBulkSelection();
+        this.bulkActionInProgress = false;
+
+        // Clear message after 3 seconds
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      },
+      error: (error) => {
+        console.error('Bulk publish error:', error);
+        this.bulkActionMessage = '✗ Failed to publish posts';
+        this.bulkActionInProgress = false;
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      }
+    });
+  }
+
+  bulkUnpublish(): void {
+    this.bulkActionInProgress = true;
+    this.bulkActionMessage = null;
+
+    this.blogService.bulkUnpublish(Array.from(this.selectedPostIds)).subscribe({
+      next: () => {
+        // Update local posts
+        this.selectedPostIds.forEach(id => {
+          const post = this.posts.find(p => p._id === id);
+          if (post) {
+            post.published = false;
+          }
+        });
+
+        this.bulkActionMessage = `✓ ${this.selectedPostIds.size} post(s) unpublished successfully`;
+        this.clearBulkSelection();
+        this.bulkActionInProgress = false;
+
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      },
+      error: (error) => {
+        console.error('Bulk unpublish error:', error);
+        this.bulkActionMessage = '✗ Failed to unpublish posts';
+        this.bulkActionInProgress = false;
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      }
+    });
+  }
+
+  bulkDelete(): void {
+    if (!this.bulkDeleteConfirm) {
+      this.bulkDeleteConfirm = true;
+      return;
+    }
+
+    this.bulkActionInProgress = true;
+    this.bulkActionMessage = null;
+
+    this.blogService.bulkDelete(Array.from(this.selectedPostIds)).subscribe({
+      next: () => {
+        // Remove deleted posts from local list
+        const idsToDelete = Array.from(this.selectedPostIds);
+        this.posts = this.posts.filter(p => !idsToDelete.includes(p._id));
+
+        this.bulkActionMessage = `✓ ${this.selectedPostIds.size} post(s) deleted successfully`;
+        this.clearBulkSelection();
+        this.bulkActionInProgress = false;
+        this.bulkDeleteConfirm = false;
+
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      },
+      error: (error) => {
+        console.error('Bulk delete error:', error);
+        this.bulkActionMessage = '✗ Failed to delete posts';
+        this.bulkActionInProgress = false;
+        this.bulkDeleteConfirm = false;
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      }
+    });
+  }
+
+  bulkUpdateCategory(category: string): void {
+    this.bulkActionInProgress = true;
+    this.bulkActionMessage = null;
+    this.showCategorySelector = false;
+
+    this.blogService.bulkUpdateCategory(Array.from(this.selectedPostIds), category).subscribe({
+      next: () => {
+        // Update local posts
+        this.selectedPostIds.forEach(id => {
+          const post = this.posts.find(p => p._id === id);
+          if (post) {
+            post.category = category;
+          }
+        });
+
+        this.bulkActionMessage = `✓ Category updated for ${this.selectedPostIds.size} post(s)`;
+        this.clearBulkSelection();
+        this.bulkActionInProgress = false;
+
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      },
+      error: (error) => {
+        console.error('Bulk category update error:', error);
+        this.bulkActionMessage = '✗ Failed to update category';
+        this.bulkActionInProgress = false;
+        setTimeout(() => this.bulkActionMessage = null, 3000);
+      }
+    });
+  }
+
+  clearBulkSelection(): void {
+    this.selectedPostIds.clear();
+    this.showBulkActionsMenu = false;
+  }
+
+  cancelBulkDelete(): void {
+    this.bulkDeleteConfirm = false;
+  }
+
+  get selectedCount(): number {
+    return this.selectedPostIds.size;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/admin-login']);
   }
 }

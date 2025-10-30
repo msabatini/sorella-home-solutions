@@ -1,10 +1,21 @@
-<button 
-  class="back-to-top-btn"
-  [class.visible]="isVisible"
-  (click)="scrollToTop()"
-  aria-label="Back to top"
-  title="Back to top">
-  <svg viewBox="0 0 24 24" fill="currentColor" class="chevron-icon">
-    <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-  </svg>
-</button>
+<div class="floating-buttons-container">
+  <button 
+    class="admin-access-btn"
+    [class.visible]="true"
+    (click)="navigateToAdmin()"
+    aria-label="Admin Dashboard"
+    [title]="isAdminLoggedIn ? 'Go to Admin Dashboard' : 'Admin Login'">
+    <span class="admin-icon" [innerHTML]="getSafeIcon('shield')"></span>
+  </button>
+
+  <button 
+    class="back-to-top-btn"
+    [class.visible]="isVisible"
+    (click)="scrollToTop()"
+    aria-label="Back to top"
+    title="Back to top">
+    <svg viewBox="0 0 24 24" fill="currentColor" class="chevron-icon">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+  </button>
+</div>

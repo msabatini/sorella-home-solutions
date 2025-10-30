@@ -98,6 +98,44 @@ const blogPostSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     index: true
+  },
+  socialMeta: {
+    ogTitle: {
+      type: String,
+      trim: true
+    },
+    ogDescription: {
+      type: String,
+      trim: true
+    },
+    ogImage: {
+      type: String,
+      trim: true
+    },
+    twitterTitle: {
+      type: String,
+      trim: true
+    },
+    twitterDescription: {
+      type: String,
+      trim: true
+    },
+    twitterImage: {
+      type: String,
+      trim: true
+    },
+    linkedinTitle: {
+      type: String,
+      trim: true
+    },
+    linkedinDescription: {
+      type: String,
+      trim: true
+    },
+    linkedinImage: {
+      type: String,
+      trim: true
+    }
   }
 });
 

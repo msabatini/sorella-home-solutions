@@ -3,6 +3,18 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface SocialMeta {
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  linkedinTitle?: string;
+  linkedinDescription?: string;
+  linkedinImage?: string;
+}
+
 export interface BlogPost {
   _id: string;
   title: string;
@@ -21,6 +33,7 @@ export interface BlogPost {
   published: boolean;
   publishDate?: string | null;
   featured?: boolean;
+  socialMeta?: SocialMeta;
   views: number;
   createdAt: string;
   updatedAt: string;
@@ -60,6 +73,24 @@ export interface SEOScore {
   suggestions: SEOSuggestion[];
   titleLength: number;
   descriptionLength: number;
+}
+
+export interface JSONLDSchema {
+  '@context': string;
+  '@type': string;
+  headline: string;
+  description: string;
+  image: string;
+  datePublished: string;
+  dateModified: string;
+  author: {
+    '@type': string;
+    name: string;
+  };
+  articleBody: string;
+  keywords: string;
+  inLanguage: string;
+  url: string;
 }
 
 export interface Comment {
@@ -232,5 +263,106 @@ export class BlogService {
   // Restore post to a previous revision
   restorePostRevision(postId: string, revisionId: string): Observable<BlogResponse> {
     return this.http.post<BlogResponse>(`${this.apiUrl}/${postId}/restore/${revisionId}`, {});
+  }
+
+  // SOCIAL META TAGS (client-side generation)
+
+  // Generate social meta tags from post data
+  generateSocialMeta(post: any): SocialMeta {
+    // Truncate text intelligently at word boundaries
+    const truncateAtWord = (text: string, maxLength: number): string => {
+      if (text.length <= maxLength) return text;
+      const truncated = text.substring(0, maxLength);
+      const lastSpace = truncated.lastIndexOf(' ');
+      return lastSpace > maxLength * 0.7 ? truncated.substring(0, lastSpace) + '...' : truncated + '...';
+    };
+
+    const title = post.title || '';
+    const description = post.metaDescription || post.introText || '';
+    const image = post.featuredImage || '';
+
+    return {
+      // Open Graph (Facebook, Pinterest, LinkedIn default)
+      ogTitle: title,
+      ogDescription: truncateAtWord(description, 160),
+      ogImage: image,
+
+      // Twitter Card
+      twitterTitle: title,
+      twitterDescription: truncateAtWord(description, 200),
+      twitterImage: image,
+
+      // LinkedIn (Similar to Open Graph)
+      linkedinTitle: truncateAtWord(title, 100),
+      linkedinDescription: truncateAtWord(description, 160),
+      linkedinImage: image
+    };
+  }
+
+  // JSON-LD SCHEMA (client-side generation)
+
+  // Generate JSON-LD BlogPosting schema from post data
+  generateJSONLD(post: any, baseUrl: string = 'https://www.sorellahomesolutions.com'): JSONLDSchema {
+    // Strip HTML tags from content sections to create plain text articleBody
+    const stripHtml = (html: string): string => {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      return div.textContent || div.innerText || '';
+    };
+
+    // Combine all content sections into one article body
+    const articleBody = post.contentSections
+      ? post.contentSections
+          .map((section: ContentSection) => {
+            const heading = section.heading ? `${section.heading}\n\n` : '';
+            const content = stripHtml(section.content);
+            return heading + content;
+          })
+          .join('\n\n')
+      : stripHtml(post.introText || '');
+
+    // Build the post URL (using slug if available)
+    const postSlug = post.slug || post._id;
+    const postUrl = `${baseUrl}/blog#${postSlug}`;
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title || '',
+      description: post.metaDescription || post.introText || '',
+      image: post.featuredImage || '',
+      datePublished: post.publishDate || post.createdAt || new Date().toISOString(),
+      dateModified: post.updatedAt || post.createdAt || new Date().toISOString(),
+      author: {
+        '@type': 'Person',
+        name: post.author || 'Sorella Home Solutions'
+      },
+      articleBody: articleBody.trim(),
+      keywords: post.tags && post.tags.length > 0 ? post.tags.join(', ') : post.category || '',
+      inLanguage: 'en-US',
+      url: postUrl
+    };
+  }
+
+  // BULK ACTIONS (admin only)
+
+  // Bulk publish posts
+  bulkPublish(postIds: string[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/admin/bulk/publish`, { postIds });
+  }
+
+  // Bulk unpublish posts
+  bulkUnpublish(postIds: string[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/admin/bulk/unpublish`, { postIds });
+  }
+
+  // Bulk delete posts
+  bulkDelete(postIds: string[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/admin/bulk/delete`, { postIds });
+  }
+
+  // Bulk update category
+  bulkUpdateCategory(postIds: string[], category: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/admin/bulk/category`, { postIds, category });
   }
 }

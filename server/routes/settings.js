@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Settings = require('../models/Settings');
 const Admin = require('../models/Admin');
-const authMiddleware = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // ============ GENERAL SETTINGS ============
 
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update general settings
-router.put('/general', authMiddleware, async (req, res) => {
+router.put('/general', authenticateToken, async (req, res) => {
   try {
     const { siteName, siteEmail, sitePhone, siteDescription } = req.body;
     
@@ -106,7 +106,7 @@ router.get('/categories', async (req, res) => {
 });
 
 // Add new category
-router.post('/categories', authMiddleware, async (req, res) => {
+router.post('/categories', authenticateToken, async (req, res) => {
   try {
     const { name, description, icon } = req.body;
 
@@ -154,7 +154,7 @@ router.post('/categories', authMiddleware, async (req, res) => {
 });
 
 // Update category
-router.put('/categories/:id', authMiddleware, async (req, res) => {
+router.put('/categories/:id', authenticateToken, async (req, res) => {
   try {
     const { name, description, icon } = req.body;
 
@@ -196,7 +196,7 @@ router.put('/categories/:id', authMiddleware, async (req, res) => {
 });
 
 // Delete category
-router.delete('/categories/:id', authMiddleware, async (req, res) => {
+router.delete('/categories/:id', authenticateToken, async (req, res) => {
   try {
     let settings = await Settings.findOne();
     if (!settings) {
@@ -235,7 +235,7 @@ router.delete('/categories/:id', authMiddleware, async (req, res) => {
 // ============ ADMIN ACCOUNT MANAGEMENT ============
 
 // Get all admins
-router.get('/admins', authMiddleware, async (req, res) => {
+router.get('/admins', authenticateToken, async (req, res) => {
   try {
     const admins = await Admin.find().select('-password');
     res.json({
@@ -252,7 +252,7 @@ router.get('/admins', authMiddleware, async (req, res) => {
 });
 
 // Create new admin
-router.post('/admins', authMiddleware, async (req, res) => {
+router.post('/admins', authenticateToken, async (req, res) => {
   try {
     const { username, password, email, role } = req.body;
 
@@ -306,7 +306,7 @@ router.post('/admins', authMiddleware, async (req, res) => {
 });
 
 // Update admin
-router.put('/admins/:id', authMiddleware, async (req, res) => {
+router.put('/admins/:id', authenticateToken, async (req, res) => {
   try {
     const { email, role } = req.body;
 
@@ -351,7 +351,7 @@ router.put('/admins/:id', authMiddleware, async (req, res) => {
 });
 
 // Delete admin
-router.delete('/admins/:id', authMiddleware, async (req, res) => {
+router.delete('/admins/:id', authenticateToken, async (req, res) => {
   try {
     // Prevent deleting yourself
     if (req.params.id === req.user.id) {
@@ -382,10 +382,92 @@ router.delete('/admins/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// Update current admin's profile (username and password)
+router.put('/admins/profile/current', authenticateToken, async (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+
+    // Validate input
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username is required'
+      });
+    }
+
+    const admin = await Admin.findById(req.user.id);
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found'
+      });
+    }
+
+    // If updating password, verify current password
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({
+          success: false,
+          message: 'Current password is required to set a new password'
+        });
+      }
+
+      const isPasswordValid = await admin.comparePassword(currentPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: 'Current password is incorrect'
+        });
+      }
+
+      // Validate new password
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: 'New password must be at least 6 characters'
+        });
+      }
+
+      admin.password = newPassword;
+    }
+
+    // Check if username is already taken by another user
+    if (username.toLowerCase() !== admin.username) {
+      const existingAdmin = await Admin.findOne({ username: username.toLowerCase() });
+      if (existingAdmin) {
+        return res.status(400).json({
+          success: false,
+          message: 'Username already taken'
+        });
+      }
+      admin.username = username.toLowerCase();
+    }
+
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        role: admin.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update profile',
+      error: error.message
+    });
+  }
+});
+
 // ============ EMAIL CONFIGURATION ============
 
 // Get email configuration (without password for security)
-router.get('/email-config', authMiddleware, async (req, res) => {
+router.get('/email-config', authenticateToken, async (req, res) => {
   try {
     let settings = await Settings.findOne();
     if (!settings) {
@@ -411,7 +493,7 @@ router.get('/email-config', authMiddleware, async (req, res) => {
 });
 
 // Update email configuration
-router.put('/email-config', authMiddleware, async (req, res) => {
+router.put('/email-config', authenticateToken, async (req, res) => {
   try {
     const { smtpHost, smtpPort, smtpUser, smtpPassword, smtpFrom, smtpSecure } = req.body;
 
