@@ -393,6 +393,13 @@
           </svg>
           History
         </button>
+        <button type="button" (click)="toggleSEOPreview()" class="btn-seo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          SEO Preview
+        </button>
         <button
           type="button"
           (click)="saveBlog()"
@@ -476,6 +483,92 @@
           class="btn-restore">
           {{ restoring ? 'Restoring...' : 'Restore this Revision' }}
         </button>
+      </div>
+    </div>
+
+    <!-- SEO Preview Sidebar -->
+    <div class="seo-preview-sidebar" *ngIf="showSEOPreview">
+      <div class="seo-header">
+        <h3>SEO Preview</h3>
+        <button type="button" (click)="toggleSEOPreview()" class="btn-close">×</button>
+      </div>
+
+      <div class="seo-content" *ngIf="seoScore">
+        <!-- SEO Score -->
+        <div class="seo-score-container" [ngClass]="getSEOScoreClass()">
+          <div class="score-display">
+            <span class="score-icon">{{ getSEOScoreIcon() }}</span>
+            <div class="score-text">
+              <span class="score-number">{{ seoScore.score }}/100</span>
+              <span class="score-level">{{ seoScore.level | uppercase }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Result Preview -->
+        <div class="search-preview">
+          <h4>Search Result Preview</h4>
+          <div class="preview-box">
+            <div class="preview-title">{{ form.get('title')?.value || 'Your Page Title' }}</div>
+            <div class="preview-url">{{ siteUrl }}/blog/{{ previewSlug || 'your-post-url' }}</div>
+            <div class="preview-description">
+              {{ form.get('metaDescription')?.value || 'Your meta description will appear here...' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Character Counts -->
+        <div class="character-counts">
+          <div class="count-item">
+            <div class="count-label">Meta Title</div>
+            <div class="count-bar">
+              <div class="count-fill" [style.width.%]="Math.min(seoScore.titleLength / 60 * 100, 100)" 
+                   [ngClass]="seoScore.titleLength > 60 ? 'count-error' : (seoScore.titleLength >= 30 ? 'count-good' : 'count-warning')"></div>
+            </div>
+            <div class="count-text" [ngClass]="seoScore.titleLength > 60 ? 'text-error' : (seoScore.titleLength >= 30 ? 'text-good' : 'text-warning')">
+              {{ seoScore.titleLength }}/60 characters
+            </div>
+          </div>
+
+          <div class="count-item">
+            <div class="count-label">Meta Description</div>
+            <div class="count-bar">
+              <div class="count-fill" [style.width.%]="Math.min(seoScore.descriptionLength / 160 * 100, 100)"
+                   [ngClass]="seoScore.descriptionLength > 160 ? 'count-error' : (seoScore.descriptionLength >= 120 ? 'count-good' : 'count-warning')"></div>
+            </div>
+            <div class="count-text" [ngClass]="seoScore.descriptionLength > 160 ? 'text-error' : (seoScore.descriptionLength >= 120 ? 'text-good' : 'text-warning')">
+              {{ seoScore.descriptionLength }}/160 characters
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="seo-suggestions">
+          <h4>Suggestions</h4>
+          <div class="suggestions-list">
+            <div *ngFor="let suggestion of seoScore.suggestions" class="suggestion-item" [ngClass]="'suggestion-' + suggestion.type">
+              <div class="suggestion-icon">
+                <span *ngIf="suggestion.type === 'success'">✓</span>
+                <span *ngIf="suggestion.type === 'warning'">!</span>
+                <span *ngIf="suggestion.type === 'error'">✕</span>
+              </div>
+              <div class="suggestion-content">
+                <div class="suggestion-message">{{ suggestion.message }}</div>
+                <div class="suggestion-detail" *ngIf="suggestion.suggestion">{{ suggestion.suggestion }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="seo-actions">
+          <button 
+            type="button" 
+            (click)="copyToMetaFields()" 
+            class="btn-copy-meta">
+            Auto-fill from Content
+          </button>
+        </div>
       </div>
     </div>
   </div>

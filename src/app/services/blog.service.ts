@@ -48,6 +48,20 @@ export interface PostRevision {
   createdAt: string;
 }
 
+export interface SEOSuggestion {
+  type: 'success' | 'warning' | 'error';
+  message: string;
+  suggestion?: string;
+}
+
+export interface SEOScore {
+  score: number;
+  level: 'excellent' | 'good' | 'fair' | 'poor';
+  suggestions: SEOSuggestion[];
+  titleLength: number;
+  descriptionLength: number;
+}
+
 export interface Comment {
   _id: string;
   blogPostId: string;
