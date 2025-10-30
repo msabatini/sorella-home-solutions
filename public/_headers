@@ -1,7 +1,17 @@
 /*.mp4
   Content-Type: video/mp4
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=3600
+  Accept-Ranges: bytes
+  Access-Control-Allow-Origin: *
+
+/home-page-hero-v*.mp4
+  Content-Type: video/mp4
+  Cache-Control: public, max-age=604800
+  Accept-Ranges: bytes
+  Access-Control-Allow-Origin: *
 
 /home-page-hero-video4-web-compressed.mp4
   Content-Type: video/mp4
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=3600
+  Accept-Ranges: bytes
+  Access-Control-Allow-Origin: *

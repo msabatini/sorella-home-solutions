@@ -37,7 +37,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   // Video properties
   videoLoaded = false; // Start with false so fallback shows initially
   isMobile = false;
-  currentVideoSrc = '/home-page-hero-video4-web-compressed.mp4'; // New hi-res optimized video
+  currentVideoSrc = '/home-page-hero-v1.mp4'; // Versioned video (v1) for cache busting
+  videoRetryCount = 0;
+  maxRetries = 3;
+  videoLoadTimeout: ReturnType<typeof setTimeout> | null = null;
+  videoLoadStartTime = 0;
 
   constructor(
     private sanitizer: DomSanitizer, 
@@ -187,32 +191,56 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private initializeVideo() {
     if (!this.heroVideo?.nativeElement) {
-      console.warn('Hero video element not found');
+      console.warn('[VIDEO] Hero video element not found');
       return;
     }
 
     const video = this.heroVideo.nativeElement;
+    this.videoLoadStartTime = Date.now();
     
-    console.log('Initializing video element. Current src:', video.src, 'Expected src:', this.currentVideoSrc);
+    console.log(`[VIDEO] Initializing video element. Expecting src: ${this.currentVideoSrc}`);
     
-    // Don't override src if already set by Angular binding
-    // The HTML binding [src]="currentVideoSrc" is the primary mechanism
+    // Setup timeout to detect if video isn't loading
+    this.videoLoadTimeout = setTimeout(() => {
+      if (!this.videoLoaded && !video.src) {
+        console.error('[VIDEO] ⚠️ TIMEOUT: Video element has no source after 5 seconds');
+        this.handleVideoLoadFailure('Video source not set');
+      } else if (!this.videoLoaded && video.readyState === 0) {
+        console.error('[VIDEO] ⚠️ TIMEOUT: Video source set but no data loaded after 5 seconds');
+        this.handleVideoLoadFailure('Video not loading - possible network or server issue');
+      }
+    }, 5000);
     
     // Handle page visibility changes (when user switches tabs)
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && this.videoLoaded && video.paused) {
-        console.log('Page became visible, attempting to restart video');
+        console.log('[VIDEO] Page became visible, attempting to restart video');
         this.attemptVideoPlay(video);
+      }
+    });
+    
+    // Setup loadstart event listener to monitor video loading
+    video.addEventListener('loadstart', () => {
+      console.log('[VIDEO] ✓ Video loading started');
+    });
+    
+    // Setup progress listener for debugging
+    video.addEventListener('progress', () => {
+      if (video.buffered.length > 0) {
+        const loadedPercent = (video.buffered.end(0) / video.duration) * 100;
+        if (loadedPercent > 10) {
+          console.log(`[VIDEO] Progress: ${loadedPercent.toFixed(0)}% buffered`);
+        }
       }
     });
     
     // Try to play after a short delay to allow initial buffering
     setTimeout(() => {
-      console.log('Attempting initial play after initialization');
+      console.log('[VIDEO] Attempting initial play after initialization');
       this.attemptVideoPlay(video);
     }, 500);
     
-    // Final check: if video isn't playing after 3 seconds, ensure fallback is shown
+    // Final check: if video isn't playing after 3 seconds, ensure fallback is shown or retry
     setTimeout(() => {
       this.checkVideoPlaybackStatus(video);
     }, 3000);
@@ -225,7 +253,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   // Video-related methods
   onVideoLoaded() {
     this.videoLoaded = true;
-    console.log('Hero video loaded successfully');
+    if (this.videoLoadTimeout) {
+      clearTimeout(this.videoLoadTimeout);
+      this.videoLoadTimeout = null;
+    }
+    const loadTime = Date.now() - this.videoLoadStartTime;
+    console.log(`[VIDEO] ✅ Hero video loaded successfully (${loadTime}ms)`);
   }
 
   onVideoError(event?: Event) {
@@ -244,7 +277,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         case 4: errorType = 'MEDIA_ERR_SRC_NOT_SUPPORTED - Video format not supported'; break;
       }
       
-      console.warn('Hero video failed to load:', {
+      console.warn('[VIDEO] ❌ Hero video error:', {
         errorType,
         errorMessage,
         src: video.src,
@@ -252,8 +285,44 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         readyState: video.readyState,
         networkState: video.networkState
       });
+      
+      // Attempt retry if we haven't exceeded max retries
+      this.handleVideoLoadFailure(`${errorType}: ${errorMessage}`);
     } else {
-      console.warn('Hero video failed to load, showing fallback background');
+      console.warn('[VIDEO] ❌ Hero video failed to load, showing fallback background');
+      this.handleVideoLoadFailure('Video element not accessible');
+    }
+  }
+
+  private handleVideoLoadFailure(reason: string) {
+    console.error(`[VIDEO] Handling video load failure: ${reason}`);
+    
+    if (this.videoRetryCount < this.maxRetries) {
+      this.videoRetryCount++;
+      const delayMs = 1000 * Math.pow(2, this.videoRetryCount - 1); // Exponential backoff: 1s, 2s, 4s
+      
+      console.log(`[VIDEO] Retry attempt ${this.videoRetryCount}/${this.maxRetries} in ${delayMs}ms`);
+      console.error(`[VIDEO] Error details: ${reason}`);
+      
+      setTimeout(() => {
+        if (this.heroVideo?.nativeElement) {
+          const video = this.heroVideo.nativeElement;
+          console.log(`[VIDEO] Retrying video load (attempt ${this.videoRetryCount})`);
+          
+          // Force clear and reload
+          video.src = '';
+          video.load();
+          
+          // Reset src and reload
+          setTimeout(() => {
+            video.src = this.currentVideoSrc;
+            video.load();
+          }, 100);
+        }
+      }, delayMs);
+    } else {
+      console.error('[VIDEO] ❌ Max retries exceeded. Fallback background will be shown.');
+      this.videoLoaded = false;
     }
   }
 
@@ -264,7 +333,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private attemptVideoPlay(video: HTMLVideoElement) {
-    console.log('Attempting to play video. Paused:', video.paused, 'ReadyState:', video.readyState);
+    console.log(`[VIDEO] Attempting to play. Paused: ${video.paused}, ReadyState: ${video.readyState}, NetworkState: ${video.networkState}`);
     
     if (video.paused) {
       // Ensure video properties are set correctly
@@ -277,36 +346,40 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log('✅ Video is playing successfully');
+            console.log('[VIDEO] ✅ Video is playing successfully');
           })
           .catch(error => {
-            console.log('❌ Autoplay was prevented:', error.name, error.message);
+            console.warn(`[VIDEO] ⚠️ Autoplay prevented - ${error.name}: ${error.message}`);
             // Try to play with user interaction
             this.setupVideoPlayOnInteraction(video);
           });
       } else {
-        console.log('⚠️ Play promise is undefined');
+        console.warn('[VIDEO] ⚠️ Play promise is undefined - older browser');
       }
     } else {
-      console.log('✅ Video is already playing');
+      console.log('[VIDEO] ✅ Video is already playing');
     }
   }
 
   private setupVideoPlayOnInteraction(video: HTMLVideoElement) {
+    let setupAttempts = 0;
     const playOnInteraction = () => {
+      setupAttempts++;
+      console.log(`[VIDEO] User interaction detected (attempt ${setupAttempts}) - attempting play`);
+      
       // Ensure video is still muted and has correct attributes
       video.muted = true;
       video.loop = true;
       
       video.play().then(() => {
-        console.log('✅ Video started playing after user interaction');
+        console.log('[VIDEO] ✅ Video started playing after user interaction');
         // Remove the event listeners once video starts playing
         document.removeEventListener('click', playOnInteraction);
         document.removeEventListener('touchstart', playOnInteraction);
         document.removeEventListener('keydown', playOnInteraction);
         document.removeEventListener('scroll', playOnInteraction);
       }).catch(error => {
-        console.log('❌ Video play failed even after interaction:', error);
+        console.error(`[VIDEO] ❌ Video play failed even after interaction - ${error.name}: ${error.message}`);
         // If video still fails, show fallback background
         this.videoLoaded = false;
       });
@@ -318,17 +391,29 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     document.addEventListener('keydown', playOnInteraction, { once: true });
     document.addEventListener('scroll', playOnInteraction, { once: true });
     
-    console.log('🎬 Video will start playing on user interaction (click, touch, key, or scroll)');
+    console.log('[VIDEO] 🎬 Video will start playing on user interaction (click, touch, key, or scroll)');
   }
 
   private checkVideoPlaybackStatus(video: HTMLVideoElement) {
+    const status = {
+      videoLoaded: this.videoLoaded,
+      paused: video.paused,
+      readyState: video.readyState,
+      networkState: video.networkState,
+      src: video.src,
+      duration: video.duration,
+      currentTime: video.currentTime
+    };
+    
+    console.log('[VIDEO] Status check:', status);
+    
     if (this.videoLoaded && video.paused) {
-      console.log('⚠️ Video loaded but not playing after 3 seconds - setting up interaction handlers');
+      console.log('[VIDEO] ⚠️ Video loaded but not playing - setting up interaction handlers');
       this.setupVideoPlayOnInteraction(video);
     } else if (this.videoLoaded && !video.paused) {
-      console.log('✅ Video is loaded and playing successfully');
+      console.log('[VIDEO] ✅ Video is loaded and playing successfully');
     } else if (!this.videoLoaded) {
-      console.log('ℹ️ Video not loaded - fallback background should be visible');
+      console.log('[VIDEO] ℹ️ Video not loaded - fallback background will be visible');
     }
   }
 
@@ -348,12 +433,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setVideoSource() {
-    // Using new hi-res optimized video - same video for both mobile and desktop
-    const newSrc = '/home-page-hero-video4-web-compressed.mp4';
+    // Using versioned video for cache busting - v1 is permanent, increment version if file changes
+    const newSrc = '/home-page-hero-v1.mp4';
     
     if (this.currentVideoSrc !== newSrc) {
       this.currentVideoSrc = newSrc;
-      console.log(`Setting video source: hi-res optimized video - ${newSrc}`);
+      console.log(`[VIDEO] Setting video source - ${newSrc} (version 1)`);
       
       // If video element exists and is initialized, reload it
       if (this.heroVideo?.nativeElement) {

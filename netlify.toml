@@ -69,3 +69,20 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Cache headers for video assets
+[[headers]]
+  for = "/home-page-hero-v*.mp4"
+  [headers.values]
+    Content-Type = "video/mp4"
+    Cache-Control = "public, max-age=604800" # 7 days for versioned videos
+    Accept-Ranges = "bytes"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*.mp4"
+  [headers.values]
+    Content-Type = "video/mp4"
+    Cache-Control = "public, max-age=3600" # 1 hour for non-versioned videos
+    Accept-Ranges = "bytes"
+    Access-Control-Allow-Origin = "*"
