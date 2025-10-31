@@ -522,15 +522,15 @@ router.get('/:id/comments', async (req, res) => {
 
 // Create new blog post (requires authentication)
 router.post('/', authenticateToken, [
-  body('title').trim().isLength({ min: 5, max: 200 }),
-  body('subtitle').trim().isLength({ min: 5, max: 300 }),
-  body('author').trim().isLength({ min: 2, max: 100 }),
-  body('category').isIn(['Seasonal Care', 'Move Management', 'Home Care', 'Concierge', 'Corporate Relocation', 'Tips & Advice']),
-  body('featuredImage').trim().notEmpty(),
-  body('introText').trim().isLength({ min: 10, max: 1000 }),
-  body('contentSections').isArray()
+  body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+  body('subtitle').trim().isLength({ min: 5, max: 300 }).withMessage('Subtitle must be between 5 and 300 characters'),
+  body('author').trim().isLength({ min: 2, max: 100 }).withMessage('Author must be between 2 and 100 characters'),
+  body('category').isIn(['Seasonal Care', 'Move Management', 'Home Care', 'Concierge', 'Corporate Relocation', 'Tips & Advice']).withMessage('Invalid category'),
+  body('featuredImage').trim().notEmpty().withMessage('Featured image is required'),
+  body('introText').trim().isLength({ min: 10, max: 1000 }).withMessage('Intro text must be between 10 and 1000 characters')
 ], async (req, res) => {
   try {
+    // Validate standard fields first
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -540,16 +540,62 @@ router.post('/', authenticateToken, [
       });
     }
 
-    const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = true, date, publishDate, scheduleForLater, featured = false } = req.body;
+    // Validate contentSections separately with better error handling
+    const { contentSections = [] } = req.body;
+    
+    if (!Array.isArray(contentSections)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Content sections must be an array'
+      });
+    }
+
+    if (contentSections.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one content section is required'
+      });
+    }
+
+    // Validate each section has heading and content
+    for (let i = 0; i < contentSections.length; i++) {
+      const section = contentSections[i];
+      
+      if (!section || typeof section !== 'object') {
+        return res.status(400).json({
+          success: false,
+          message: `Content section ${i + 1} is invalid`
+        });
+      }
+
+      if (!section.heading || typeof section.heading !== 'string' || !section.heading.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: `Content section ${i + 1}: heading is required and must be non-empty`
+        });
+      }
+
+      if (!section.content || typeof section.content !== 'string' || !section.content.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: `Content section ${i + 1}: content is required and must be non-empty`
+        });
+      }
+    }
+
+    const { title, subtitle, author, category, featuredImage, introText, tags = [], metaDescription, published = true, date, publishDate, scheduleForLater, featured = false } = req.body;
 
     const blogPost = new BlogPost({
-      title,
-      subtitle,
-      author,
+      title: title.trim(),
+      subtitle: subtitle.trim(),
+      author: author.trim(),
       category,
-      featuredImage,
-      introText,
-      contentSections,
+      featuredImage: featuredImage.trim(),
+      introText: introText.trim(),
+      contentSections: contentSections.map(section => ({
+        heading: section.heading.trim(),
+        content: section.content.trim()
+      })),
       tags,
       metaDescription,
       published: scheduleForLater ? false : published,
@@ -570,7 +616,7 @@ router.post('/', authenticateToken, [
     console.error('Error creating blog post:', error);
     res.status(500).json({
       success: false,
-      message: 'Error creating blog post'
+      message: error.message || 'Error creating blog post'
     });
   }
 });
@@ -831,16 +877,33 @@ router.post('/autosave', authenticateToken, async (req, res) => {
   try {
     const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = false, publishDate } = req.body;
 
+    // Filter out empty content sections and ensure at least one valid section
+    let validSections = (contentSections || [])
+      .filter(s => s && typeof s === 'object')
+      .filter(s => 
+        s.heading && typeof s.heading === 'string' && s.heading.trim() && 
+        s.content && typeof s.content === 'string' && s.content.trim()
+      )
+      .map(s => ({
+        heading: s.heading.trim(),
+        content: s.content.trim()
+      }));
+    
+    // If no valid sections, create one placeholder to avoid schema validation error
+    if (validSections.length === 0) {
+      validSections = [{ heading: 'Content', content: 'Your content goes here...' }];
+    }
+
     const blogPost = new BlogPost({
-      title: title || 'Untitled Draft',
-      subtitle: subtitle || '',
-      author: author || 'Unknown',
+      title: (title || 'Untitled Draft').trim(),
+      subtitle: (subtitle || '').trim(),
+      author: (author || 'Unknown').trim(),
       category: category || 'Tips & Advice',
-      featuredImage: featuredImage || '',
-      introText: introText || '',
-      contentSections: contentSections || [{ heading: '', content: '' }],
-      tags,
-      metaDescription,
+      featuredImage: (featuredImage || '').trim(),
+      introText: (introText || '').trim(),
+      contentSections: validSections,
+      tags: Array.isArray(tags) ? tags : [],
+      metaDescription: metaDescription || '',
       published: false, // Always draft on autosave
       publishDate: publishDate ? new Date(publishDate) : null,
       lastAutoSavedAt: new Date()
@@ -858,7 +921,7 @@ router.post('/autosave', authenticateToken, async (req, res) => {
     console.error('Error auto-saving blog post:', error);
     res.status(500).json({
       success: false,
-      message: 'Error auto-saving blog post'
+      message: error.message || 'Error auto-saving blog post'
     });
   }
 });
@@ -873,6 +936,24 @@ router.put('/:id/autosave', authenticateToken, async (req, res) => {
     delete updates.slug;
     delete updates.createdAt;
     delete updates.published;
+    
+    // Filter out empty content sections if provided
+    if (updates.contentSections && Array.isArray(updates.contentSections)) {
+      updates.contentSections = updates.contentSections.filter(s => 
+        s && s.heading && s.heading.trim() && s.content && s.content.trim()
+      );
+      
+      // If no valid sections, keep the original or provide a placeholder
+      if (updates.contentSections.length === 0) {
+        delete updates.contentSections; // Keep the original sections
+      } else {
+        // Trim whitespace from sections
+        updates.contentSections = updates.contentSections.map(section => ({
+          heading: section.heading.trim(),
+          content: section.content.trim()
+        }));
+      }
+    }
     
     updates.lastAutoSavedAt = new Date();
 
@@ -904,7 +985,7 @@ router.put('/:id/autosave', authenticateToken, async (req, res) => {
     console.error('Error auto-saving blog post:', error);
     res.status(500).json({
       success: false,
-      message: 'Error auto-saving blog post'
+      message: error.message || 'Error auto-saving blog post'
     });
   }
 });

@@ -302,6 +302,19 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Validate that all content sections have both heading and content
+    for (let i = 0; i < this.contentSections.length; i++) {
+      const section = this.contentSections[i];
+      if (!section.heading || !section.heading.trim()) {
+        this.error = `Content section ${i + 1}: heading is required`;
+        return;
+      }
+      if (!section.content || !section.content.trim()) {
+        this.error = `Content section ${i + 1}: content is required`;
+        return;
+      }
+    }
+
     if (this.scheduleForLater && !this.form.get('publishDate')?.value) {
       this.error = 'Please set a publish date for scheduled posts';
       return;
