@@ -166,8 +166,14 @@ blogPostSchema.pre('save', function(next) {
 });
 
 // Calculate read time and word count based on content
+// Only recalculate if readTime wasn't explicitly provided by client
 blogPostSchema.pre('save', function(next) {
-  if (this.isModified('introText') || this.isModified('contentSections')) {
+  // Check if this is a new document and no readTime was provided
+  const isNewWithoutReadTime = this.isNew && this.readTime === 5;
+  // Or if content changed but readTime wasn't explicitly set (still default)
+  const contentChangedAndDefaultReadTime = (this.isModified('introText') || this.isModified('contentSections')) && this.readTime === 5;
+  
+  if (isNewWithoutReadTime || contentChangedAndDefaultReadTime) {
     try {
       const introText = this.introText || '';
       const contentText = Array.isArray(this.contentSections) 

@@ -221,7 +221,7 @@
                 [checked]="scheduleForLater"
                 (change)="scheduleForLater = !scheduleForLater; toggleScheduleForLater()"
               />
-              <label for="scheduleForLater" class="checkbox-label">Schedule for later</label>
+              <label for="scheduleForLater" class="checkbox-label">Set custom publish date</label>
             </div>
           </div>
 
@@ -247,7 +247,7 @@
             [class.is-invalid]="submitted && !form.get('publishDate')?.value && scheduleForLater"
             (click)="openDatePicker()"
           />
-          <small class="form-hint">Your post will be automatically published at this date and time</small>
+          <small class="form-hint">Set to a past date to backdate the post, or future date to schedule publication</small>
         </div>
       </div>
 

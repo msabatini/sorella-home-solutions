@@ -336,6 +336,47 @@
   }
 }
 
+// Blog Tags Section
+.blog-tags {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(14, 35, 64, 0.05) 0%, rgba(30, 58, 95, 0.05) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 162, 255, 0.15);
+}
+
+.tags-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tag-label {
+  font-weight: 600;
+  color: #0e2340;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.blog-tag-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #0ea5e9;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #0284c7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 162, 255, 0.3);
+  }
+}
+
 // Blog CTA Info (within blog section)
 .blog-cta-info {
   display: flex;
@@ -586,6 +627,20 @@
     }
   }
 
+  .blog-tags {
+    margin: 2.5rem 0;
+    padding: 1.5rem;
+  }
+
+  .tags-container {
+    gap: 0.75rem;
+  }
+
+  .blog-tag-link {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
   .cta-section {
     padding: 5rem 0;
   }
@@ -673,6 +728,24 @@
         0 12px 40px rgba(0, 0, 0, 0.1),
         0 4px 12px rgba(0, 162, 255, 0.06);
     }
+  }
+
+  .blog-tags {
+    margin: 2rem 0;
+    padding: 1rem;
+  }
+
+  .tags-container {
+    gap: 0.5rem;
+  }
+
+  .tag-label {
+    font-size: 0.85rem;
+  }
+
+  .blog-tag-link {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
   }
 
   .cta-section {

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
@@ -18,6 +18,7 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
   standalone: true,
   imports: [
     CommonModule, 
+    RouterModule,
     HttpClientModule,
     HeaderComponent, 
     FooterComponent, 

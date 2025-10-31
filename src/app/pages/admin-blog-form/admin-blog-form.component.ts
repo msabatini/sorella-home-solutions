@@ -327,7 +327,9 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
       contentSections: this.contentSections,
       tags: this.tags,
       scheduleForLater: this.scheduleForLater,
-      socialMeta: this.socialMeta
+      socialMeta: this.socialMeta,
+      readTime: this.getReadingTime(),
+      wordCount: this.totalWordCount
     };
 
     // Debug: log what's being sent
