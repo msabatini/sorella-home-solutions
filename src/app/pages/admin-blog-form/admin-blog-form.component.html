@@ -360,13 +360,6 @@
       <div class="form-section">
         <div class="content-header">
           <h3>Content Sections</h3>
-          <button type="button" (click)="addContentSection()" class="btn-secondary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Add Section
-          </button>
         </div>
 
         <div *ngFor="let section of contentSections; let i = index" class="content-section">
@@ -399,14 +392,24 @@
             ></textarea>
           </div>
 
-          <button
-            *ngIf="contentSections.length > 1"
-            type="button"
-            (click)="removeContentSection(i)"
-            class="btn-remove-section"
-          >
-            Remove Section
-          </button>
+          <!-- Section Actions -->
+          <div class="section-actions">
+            <button
+              *ngIf="contentSections.length > 1"
+              type="button"
+              (click)="removeContentSection(i)"
+              class="btn-remove-section"
+            >
+              Remove Section
+            </button>
+            <button type="button" (click)="addContentSection()" class="btn-add-section">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Section
+            </button>
+          </div>
         </div>
       </div>
 
