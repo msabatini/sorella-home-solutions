@@ -330,6 +330,10 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
       socialMeta: this.socialMeta
     };
 
+    // Debug: log what's being sent
+    console.log('Sending blog post data:', postData);
+    console.log('Content sections:', this.contentSections);
+
     const request = this.isEdit
       ? this.blogService.updatePost(this.postId!, postData)
       : this.blogService.createPost(postData);
@@ -340,14 +344,28 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
         this.savingBlog = false;
         this.stopAutoSave();
 
+        // Redirect to manage blog page after success
         setTimeout(() => {
           this.router.navigate(['/admin/blog']);
-        }, 1500);
+        }, 1000);
       },
       error: (error) => {
-        this.error = error.error?.message || 'Failed to save blog post';
+        // Extract error message from various possible response formats
+        let errorMsg = 'Failed to save blog post';
+        
+        if (error.error?.message) {
+          errorMsg = error.error.message;
+        } else if (error.error?.errors && Array.isArray(error.error.errors)) {
+          // Express-validator format
+          errorMsg = error.error.errors.map((e: any) => e.msg).join(', ');
+        } else if (error.message) {
+          errorMsg = error.message;
+        }
+        
+        this.error = errorMsg;
         this.savingBlog = false;
         console.error('Error saving post:', error);
+        console.error('Full error response:', error.error);
       }
     });
   }

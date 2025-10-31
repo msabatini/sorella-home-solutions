@@ -530,12 +530,15 @@ router.post('/', authenticateToken, [
   body('introText').trim().isLength({ min: 10, max: 1000 }).withMessage('Intro text must be between 10 and 1000 characters')
 ], async (req, res) => {
   try {
+    console.log('POST /api/blog - Request body:', req.body);
+    
     // Validate standard fields first
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Express validator errors:', errors.array());
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
+        message: 'Validation failed: ' + errors.array().map(e => `${e.param}: ${e.msg}`).join(', '),
         errors: errors.array()
       });
     }
@@ -544,13 +547,15 @@ router.post('/', authenticateToken, [
     const { contentSections = [] } = req.body;
     
     if (!Array.isArray(contentSections)) {
+      console.log('Content sections is not an array:', typeof contentSections, contentSections);
       return res.status(400).json({
         success: false,
-        message: 'Content sections must be an array'
+        message: `Content sections must be an array, received: ${typeof contentSections}`
       });
     }
 
     if (contentSections.length === 0) {
+      console.log('No content sections provided');
       return res.status(400).json({
         success: false,
         message: 'At least one content section is required'
@@ -562,23 +567,26 @@ router.post('/', authenticateToken, [
       const section = contentSections[i];
       
       if (!section || typeof section !== 'object') {
+        console.log(`Section ${i + 1} is invalid:`, section, typeof section);
         return res.status(400).json({
           success: false,
-          message: `Content section ${i + 1} is invalid`
+          message: `Content section ${i + 1}: invalid format (not an object)`
         });
       }
 
       if (!section.heading || typeof section.heading !== 'string' || !section.heading.trim()) {
+        console.log(`Section ${i + 1} heading invalid:`, section.heading);
         return res.status(400).json({
           success: false,
-          message: `Content section ${i + 1}: heading is required and must be non-empty`
+          message: `Content section ${i + 1}: heading is required (non-empty text)`
         });
       }
 
       if (!section.content || typeof section.content !== 'string' || !section.content.trim()) {
+        console.log(`Section ${i + 1} content invalid:`, section.content);
         return res.status(400).json({
           success: false,
-          message: `Content section ${i + 1}: content is required and must be non-empty`
+          message: `Content section ${i + 1}: content is required (non-empty text)`
         });
       }
     }
