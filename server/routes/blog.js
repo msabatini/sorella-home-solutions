@@ -593,8 +593,19 @@ router.post('/', authenticateToken, [
 
     const { title, subtitle, author, category, featuredImage, introText, tags = [], metaDescription, published = true, date, publishDate, scheduleForLater, featured = false } = req.body;
 
+    // Generate slug manually as fallback
+    const generateSlug = (titleStr) => {
+      return titleStr
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    };
+
     const blogPost = new BlogPost({
       title: title.trim(),
+      slug: generateSlug(title), // Set slug explicitly
       subtitle: subtitle.trim(),
       author: author.trim(),
       category,
@@ -612,6 +623,7 @@ router.post('/', authenticateToken, [
       featured
     });
 
+    console.log('Created BlogPost object with slug:', blogPost.slug);
     await blogPost.save();
 
     res.status(201).json({
@@ -903,6 +915,16 @@ router.post('/autosave', authenticateToken, async (req, res) => {
   try {
     const { title, subtitle, author, category, featuredImage, introText, contentSections, tags = [], metaDescription, published = false, publishDate } = req.body;
 
+    // Helper to generate slug
+    const generateSlug = (titleStr) => {
+      return titleStr
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    };
+
     // Filter out empty content sections and ensure at least one valid section
     let validSections = (contentSections || [])
       .filter(s => s && typeof s === 'object')
@@ -920,8 +942,10 @@ router.post('/autosave', authenticateToken, async (req, res) => {
       validSections = [{ heading: 'Content', content: 'Your content goes here...' }];
     }
 
+    const titleValue = (title || 'Untitled Draft').trim();
     const blogPost = new BlogPost({
-      title: (title || 'Untitled Draft').trim(),
+      title: titleValue,
+      slug: generateSlug(titleValue), // Set slug explicitly
       subtitle: (subtitle || '').trim(),
       author: (author || 'Unknown').trim(),
       category: category || 'Tips & Advice',
@@ -935,6 +959,7 @@ router.post('/autosave', authenticateToken, async (req, res) => {
       lastAutoSavedAt: new Date()
     });
 
+    console.log('Autosave: Created BlogPost with slug:', blogPost.slug);
     await blogPost.save();
 
     res.status(201).json({

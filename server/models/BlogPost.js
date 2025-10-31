@@ -141,16 +141,26 @@ const blogPostSchema = new mongoose.Schema({
 
 // Auto-generate slug from title
 blogPostSchema.pre('save', function(next) {
-  // Always generate slug if title exists and slug is not set, or if title was modified
-  if (this.title && (!this.slug || this.isModified('title'))) {
-    this.slug = this.title
+  console.log('Pre-save hook: slug generation - title:', this.title, 'current slug:', this.slug, 'isNew:', this.isNew);
+  
+  // For new documents or when title is provided, generate slug
+  if (this.title) {
+    const newSlug = this.title
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_]+/g, '-')
       .replace(/^-+|-+$/g, '');
-    console.log('Generated slug from title:', this.title, '->', this.slug);
+    
+    if (!this.slug || this.isModified('title') || this.isNew) {
+      this.slug = newSlug;
+      console.log('✓ Generated slug:', newSlug);
+    }
+  } else {
+    console.log('⚠ Title is missing, cannot generate slug');
   }
+  
+  console.log('Pre-save hook: final slug value:', this.slug);
   this.updatedAt = Date.now();
   next();
 });
