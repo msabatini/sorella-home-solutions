@@ -11,19 +11,52 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const blogRoutes = require('./routes/blog');
 const settingsRoutes = require('./routes/settings');
+const Admin = require('./models/Admin');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-// ============ DATABASE CONNECTION ============
+// ============ DATABASE CONNECTION & INITIALIZATION ============
 const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/sorella-home-solutions';
     await mongoose.connect(mongoUri);
     console.log('✅ MongoDB connected successfully');
+    
+    // Initialize admin user if not exists
+    await initializeAdmin();
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
     process.exit(1);
+  }
+};
+
+// ============ ADMIN INITIALIZATION ============
+const initializeAdmin = async () => {
+  try {
+    const existingAdmin = await Admin.findOne({ username: 'admin' });
+    
+    if (existingAdmin) {
+      console.log('ℹ️  Admin user already exists');
+      return;
+    }
+    
+    // Create default admin user
+    const admin = new Admin({
+      username: process.env.ADMIN_USERNAME || 'admin',
+      password: process.env.ADMIN_PASSWORD || 'sorella123',
+      email: 'admin@sorellahomesolutions.com',
+      role: 'admin'
+    });
+    
+    await admin.save();
+    console.log('✅ Admin user created successfully');
+    console.log(`   Username: ${admin.username}`);
+    console.log(`   Email: ${admin.email}`);
+    console.log(`   Role: ${admin.role}`);
+  } catch (error) {
+    console.error('❌ Error initializing admin:', error);
+    // Don't exit - server should still run even if admin initialization fails
   }
 };
 
