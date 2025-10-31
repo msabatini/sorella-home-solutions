@@ -141,13 +141,15 @@ const blogPostSchema = new mongoose.Schema({
 
 // Auto-generate slug from title
 blogPostSchema.pre('save', function(next) {
-  if (this.isModified('title')) {
+  // Always generate slug if title exists and slug is not set, or if title was modified
+  if (this.title && (!this.slug || this.isModified('title'))) {
     this.slug = this.title
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_]+/g, '-')
       .replace(/^-+|-+$/g, '');
+    console.log('Generated slug from title:', this.title, '->', this.slug);
   }
   this.updatedAt = Date.now();
   next();
