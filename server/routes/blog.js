@@ -603,6 +603,17 @@ router.post('/', authenticateToken, [
         .replace(/^-+|-+$/g, '');
     };
 
+    // Calculate the actual publish date for display
+    let actualDate = Date.now();
+    let actualPublishDate = null;
+    
+    if (scheduleForLater && publishDate) {
+      actualPublishDate = new Date(publishDate);
+      actualDate = actualPublishDate; // Use publishDate as the display date
+    } else if (date) {
+      actualDate = new Date(date);
+    }
+
     const blogPost = new BlogPost({
       title: title.trim(),
       slug: generateSlug(title), // Set slug explicitly
@@ -618,8 +629,8 @@ router.post('/', authenticateToken, [
       tags,
       metaDescription,
       published: scheduleForLater ? false : published,
-      date: date ? new Date(date) : Date.now(),
-      publishDate: scheduleForLater && publishDate ? new Date(publishDate) : null,
+      date: actualDate,
+      publishDate: actualPublishDate,
       featured
     });
 
@@ -678,11 +689,25 @@ router.put('/:id', authenticateToken, async (req, res) => {
       });
     }
 
+    // If publishDate is being updated, sync it to the date field
+    if (updates.publishDate) {
+      updates.date = new Date(updates.publishDate);
+      console.log('Syncing publishDate to date field:', updates.publishDate);
+    }
+
+    // Use findByIdAndUpdate with 'new' option to get the updated document
+    // Note: We use runValidators:true but findByIdAndUpdate may not trigger all pre-save hooks
     const post = await BlogPost.findByIdAndUpdate(
       id,
       updates,
       { new: true, runValidators: true }
     );
+
+    // For extra safety, if publishDate was updated, explicitly set the date field
+    if (updates.publishDate && post) {
+      post.date = new Date(updates.publishDate);
+      await post.save();
+    }
 
     // Create revision after successful update
     await createPostRevision(id, oldPost.toObject(), post.toObject(), 'manual');
