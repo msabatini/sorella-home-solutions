@@ -614,6 +614,24 @@ router.post('/', authenticateToken, [
 
   } catch (error) {
     console.error('Error creating blog post:', error);
+    
+    // Handle MongoDB duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'A blog post with this title already exists. Please use a different title.'
+      });
+    }
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error: ' + messages.join(', ')
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: error.message || 'Error creating blog post'
@@ -919,6 +937,24 @@ router.post('/autosave', authenticateToken, async (req, res) => {
 
   } catch (error) {
     console.error('Error auto-saving blog post:', error);
+    
+    // Handle MongoDB duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'A blog post with this title already exists.'
+      });
+    }
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error: ' + messages.join(', ')
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: error.message || 'Error auto-saving blog post'
@@ -983,6 +1019,24 @@ router.put('/:id/autosave', authenticateToken, async (req, res) => {
 
   } catch (error) {
     console.error('Error auto-saving blog post:', error);
+    
+    // Handle MongoDB duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'A blog post with this title already exists.'
+      });
+    }
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error: ' + messages.join(', ')
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: error.message || 'Error auto-saving blog post'

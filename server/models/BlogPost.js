@@ -156,11 +156,21 @@ blogPostSchema.pre('save', function(next) {
 // Calculate read time and word count based on content
 blogPostSchema.pre('save', function(next) {
   if (this.isModified('introText') || this.isModified('contentSections')) {
-    const totalText = this.introText + ' ' + 
-      this.contentSections.map(s => s.heading + ' ' + s.content).join(' ');
-    const wordCount = totalText.trim().split(/\s+/).filter(w => w.length > 0).length;
-    this.readTime = Math.max(1, Math.ceil(wordCount / 200)); // Average 200 words per minute
-    this.wordCount = wordCount;
+    try {
+      const introText = this.introText || '';
+      const contentText = Array.isArray(this.contentSections) 
+        ? this.contentSections.map(s => (s.heading || '') + ' ' + (s.content || '')).join(' ')
+        : '';
+      
+      const totalText = introText + ' ' + contentText;
+      const wordCount = totalText.trim().split(/\s+/).filter(w => w.length > 0).length;
+      this.readTime = Math.max(1, Math.ceil(wordCount / 200)); // Average 200 words per minute
+      this.wordCount = wordCount;
+    } catch (err) {
+      console.error('Error calculating read time:', err);
+      this.readTime = 5;
+      this.wordCount = 0;
+    }
   }
   next();
 });
