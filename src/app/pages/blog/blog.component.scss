@@ -716,3 +716,20 @@
     font-size: 0.95rem;
   }
 }
+
+// Ensure all blog content is fully visible
+.blog-content,
+.blog-article,
+.blog-post-header,
+.blog-post-intro,
+.blog-featured-image,
+.blog-section {
+  opacity: 1 !important;
+}
+
+// Override any animation classes that might be fading content
+.blog-article .animate-on-scroll,
+.blog-article .animate-on-load,
+.blog-article .fade-in {
+  opacity: 1 !important;
+}
