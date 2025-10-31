@@ -74,7 +74,9 @@ async function createPostRevision(postId, oldPost, newPost, revisionType = 'manu
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 10, category, tag, search, sortBy = 'date' } = req.query;
-    const skip = (page - 1) * limit;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
     const now = new Date();
 
     let query = { 
@@ -124,16 +126,16 @@ router.get('/', async (req, res) => {
     const posts = await BlogPost.find(query)
       .sort(sortOrder)
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(limitNum);
 
     res.json({
       success: true,
       data: posts,
       pagination: {
         total,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        pages: Math.ceil(total / limit)
+        page: pageNum,
+        limit: limitNum,
+        pages: Math.ceil(total / limitNum)
       }
     });
 
@@ -215,8 +217,10 @@ router.get('/:id/related', async (req, res) => {
 // Get all blog posts for admin (including unpublished)
 router.get('/admin/all', authenticateToken, async (req, res) => {
   try {
-    const { page = 1, limit = 100, search } = req.query;
-    const skip = (page - 1) * limit;
+    const { page = 1, limit = 100, search, includeUnpublished = true } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     let query = {}; // No published filter - get all posts
 
@@ -233,16 +237,16 @@ router.get('/admin/all', authenticateToken, async (req, res) => {
     const posts = await BlogPost.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(limitNum);
 
     res.json({
       success: true,
       data: posts,
       pagination: {
         total,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        pages: Math.ceil(total / limit)
+        page: pageNum,
+        limit: limitNum,
+        pages: Math.ceil(total / limitNum)
       }
     });
 
@@ -261,14 +265,16 @@ router.get('/admin/all', authenticateToken, async (req, res) => {
 router.get('/admin/comments/all', authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 50 } = req.query;
-    const skip = (page - 1) * limit;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     const total = await Comment.countDocuments({});
     const comments = await Comment.find({})
       .populate('blogPostId', 'title')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(limitNum);
 
     // Map to include blogPostTitle for convenience
     const enrichedComments = comments.map(comment => ({
@@ -281,9 +287,9 @@ router.get('/admin/comments/all', authenticateToken, async (req, res) => {
       data: enrichedComments,
       pagination: {
         total,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        pages: Math.ceil(total / limit)
+        page: pageNum,
+        limit: limitNum,
+        pages: Math.ceil(total / limitNum)
       }
     });
 
@@ -490,22 +496,24 @@ router.get('/:id/comments', async (req, res) => {
   try {
     const { id } = req.params;
     const { page = 1, limit = 10 } = req.query;
-    const skip = (page - 1) * limit;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     const total = await Comment.countDocuments({ blogPostId: id, approved: true });
     const comments = await Comment.find({ blogPostId: id, approved: true })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(limitNum);
 
     res.json({
       success: true,
       data: comments,
       pagination: {
         total,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        pages: Math.ceil(total / limit)
+        page: pageNum,
+        limit: limitNum,
+        pages: Math.ceil(total / limitNum)
       }
     });
 
