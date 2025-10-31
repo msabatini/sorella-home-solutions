@@ -185,20 +185,8 @@
 
 // Page content staggered fade-in
 .page-content-fade {
-  opacity: 1;
+  opacity: 1 !important;
   transform: translateY(0);
-  animation: pageContentFadeIn 0.4s ease-out forwards;
-}
-
-@keyframes pageContentFadeIn {
-  from {
-    opacity: 0.2;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 // Staggered page sections
