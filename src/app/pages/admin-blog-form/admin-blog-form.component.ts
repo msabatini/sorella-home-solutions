@@ -297,8 +297,10 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
     this.error = null;
     this.success = null;
 
-    if (this.form.invalid || this.contentSections.length === 0) {
-      this.error = 'Please fill in all required fields';
+    // Validate form and get specific error messages
+    const validationError = this.getFormValidationErrors();
+    if (validationError) {
+      this.error = validationError;
       return;
     }
 
@@ -331,10 +333,6 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
       readTime: this.getReadingTime(),
       wordCount: this.totalWordCount
     };
-
-    // Debug: log what's being sent
-    console.log('Sending blog post data:', postData);
-    console.log('Content sections:', this.contentSections);
 
     const request = this.isEdit
       ? this.blogService.updatePost(this.postId!, postData)
@@ -375,6 +373,53 @@ export class AdminBlogFormComponent implements OnInit, OnDestroy {
   cancel(): void {
     this.stopAutoSave();
     this.router.navigate(['/admin/blog']);
+  }
+
+  /**
+   * Get specific form validation error messages
+   */
+  private getFormValidationErrors(): string | null {
+    if (this.form.invalid) {
+      const errors: string[] = [];
+
+      // Check each form control for validation errors
+      const fieldLabels: { [key: string]: string } = {
+        'title': 'Title',
+        'subtitle': 'Subtitle',
+        'author': 'Author',
+        'category': 'Category',
+        'introText': 'Introduction text',
+        'featuredImage': 'Featured image',
+        'publishDate': 'Publish date'
+      };
+
+      Object.keys(this.form.controls).forEach(key => {
+        const control = this.form.get(key);
+        if (control && control.errors) {
+          const fieldLabel = fieldLabels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+          
+          if (control.errors['required']) {
+            errors.push(`${fieldLabel} is required`);
+          } else if (control.errors['minlength']) {
+            const minLength = control.errors['minlength'].requiredLength;
+            errors.push(`${fieldLabel} must be at least ${minLength} characters`);
+          } else if (control.errors['maxlength']) {
+            const maxLength = control.errors['maxlength'].requiredLength;
+            errors.push(`${fieldLabel} must not exceed ${maxLength} characters`);
+          } else if (control.errors['pattern']) {
+            errors.push(`${fieldLabel} format is invalid`);
+          }
+        }
+      });
+
+      if (this.contentSections.length === 0) {
+        errors.push('At least one content section is required');
+      }
+
+      return errors.length > 0 ? errors.join('; ') : null;
+    }
+
+    return null;
   }
 
   // Word Count Calculations
