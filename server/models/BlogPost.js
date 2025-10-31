@@ -165,6 +165,15 @@ blogPostSchema.pre('save', function(next) {
   next();
 });
 
+// Handle custom publish date
+blogPostSchema.pre('save', function(next) {
+  // If publishDate is provided, use it as the main date field for display
+  if (this.publishDate && this.isModified('publishDate')) {
+    this.date = this.publishDate;
+  }
+  next();
+});
+
 // Calculate read time and word count based on content
 // Only recalculate if readTime wasn't explicitly provided by client
 blogPostSchema.pre('save', function(next) {
