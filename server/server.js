@@ -68,6 +68,7 @@ app.use(helmet());
 // CORS configuration
 const allowedOrigins = [
   'http://localhost:4200',
+  'http://localhost:4201',
   'http://localhost:3000',
   'https://sorellahomesolutions.com',
   'https://www.sorellahomesolutions.com',

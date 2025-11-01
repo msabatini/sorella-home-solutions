@@ -291,7 +291,6 @@
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 162, 255, 0.1);
-  overflow-x: auto;
 }
 
 .posts-table {
@@ -381,6 +380,7 @@
 .title-info {
   flex: 1;
   min-width: 0;
+  width: 450px;
 
   .post-title {
     font-weight: 600;

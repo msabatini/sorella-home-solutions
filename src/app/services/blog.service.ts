@@ -101,6 +101,8 @@ export interface Comment {
   content: string;
   approved: boolean;
   createdAt: string;
+  parentCommentId?: string | null;
+  replies?: Comment[];
 }
 
 export interface BlogResponse {
@@ -168,12 +170,24 @@ export class BlogService {
     return this.http.get<BlogResponse>(`${this.apiUrl}/${id}/related`);
   }
 
-  // Add comment to blog post
-  addComment(blogPostId: string, comment: { author: string; email: string; content: string }): Observable<any> {
+  // Generate math captcha
+  generateCaptcha(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/captcha/generate`);
+  }
+
+  // Add comment to blog post (with spam prevention)
+  addComment(blogPostId: string, comment: { 
+    author: string; 
+    email: string; 
+    content: string;
+    captchaAnswer: string;
+    captchaProblem: string;
+    parentCommentId?: string;
+  }): Observable<any> {
     return this.http.post(`${this.apiUrl}/${blogPostId}/comments`, comment);
   }
 
-  // Get comments for blog post
+  // Get comments for blog post (threaded structure)
   getComments(blogPostId: string, page: number = 1, limit: number = 10): Observable<CommentsResponse> {
     const params = new HttpParams()
       .set('page', page.toString())

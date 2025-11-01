@@ -1,0 +1,228 @@
+<section class="blog-comments-section">
+  <!-- Section Header -->
+  <div class="comments-header">
+    <h2 class="comments-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      Comments
+    </h2>
+    <p class="comments-subtitle">
+      {{ comments.length }} 
+      {{ comments.length === 1 ? 'comment' : 'comments' }}
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoadingComments" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading comments...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="commentsError && !isLoadingComments" class="error-message">
+    {{ commentsError }}
+  </div>
+
+  <!-- Comments List -->
+  <div *ngIf="!isLoadingComments && !commentsError" class="comments-list">
+    <!-- Empty State -->
+    <div *ngIf="comments.length === 0 && !showCommentForm" class="empty-state">
+      <p>No comments yet. Be the first to share your thoughts!</p>
+    </div>
+
+    <!-- Top-level Comments -->
+    <div *ngFor="let comment of comments" class="comment-thread">
+      <!-- Parent Comment -->
+      <div class="comment comment-top-level">
+        <div class="comment-header">
+          <div class="author-info">
+            <span class="author-name">{{ comment.author }}</span>
+            <span class="comment-date" [title]="comment.createdAt">
+              {{ formatDate(comment.createdAt) }}
+            </span>
+          </div>
+          <span class="author-email">{{ maskEmail(comment.email) }}</span>
+        </div>
+        <div class="comment-content">
+          {{ comment.content }}
+        </div>
+        <button 
+          class="reply-button"
+          (click)="replyToComment(comment._id, comment.author)"
+          [disabled]="isSubmittingComment">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          Reply
+        </button>
+      </div>
+
+      <!-- Replies (Threaded) -->
+      <div *ngIf="comment.replies && comment.replies.length > 0" class="replies-container">
+        <div *ngFor="let reply of comment.replies" class="comment comment-reply">
+          <div class="reply-indicator">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+            </svg>
+            <span>Reply to {{ comment.author }}</span>
+          </div>
+          
+          <div class="comment-header">
+            <div class="author-info">
+              <span class="author-name">{{ reply.author }}</span>
+              <span class="comment-date" [title]="reply.createdAt">
+                {{ formatDate(reply.createdAt) }}
+              </span>
+            </div>
+            <span class="author-email">{{ maskEmail(reply.email) }}</span>
+          </div>
+          <div class="comment-content">
+            {{ reply.content }}
+          </div>
+          <button 
+            class="reply-button"
+            (click)="replyToComment(comment._id, comment.author)"
+            [disabled]="isSubmittingComment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Reply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comment Form -->
+  <div class="comment-form-section">
+    <!-- Toggle Button -->
+    <button 
+      *ngIf="!showCommentForm"
+      class="btn-post-comment"
+      (click)="toggleCommentForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      Leave a Comment
+    </button>
+
+    <!-- Form -->
+    <form *ngIf="showCommentForm" class="comment-form" (ngSubmit)="submitComment()">
+      <!-- Form Header -->
+      <div class="form-header">
+        <h3>
+          <span *ngIf="!replyingTo">Add a Comment</span>
+          <span *ngIf="replyingTo">Reply to {{ replyingTo.authorName }}</span>
+        </h3>
+        <button 
+          type="button" 
+          class="close-button"
+          (click)="replyingTo ? cancelReply() : toggleCommentForm()">
+          ✕
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="submitError" class="form-error">
+        {{ submitError }}
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="submitSuccess" class="form-success">
+        {{ submitSuccess }}
+      </div>
+
+      <!-- Name Field -->
+      <div class="form-group">
+        <label for="author">Your Name *</label>
+        <input
+          id="author"
+          type="text"
+          class="form-input"
+          [(ngModel)]="formData.author"
+          name="author"
+          placeholder="John Doe"
+          required
+          [disabled]="isSubmittingComment">
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input
+          id="email"
+          type="email"
+          class="form-input"
+          [(ngModel)]="formData.email"
+          name="email"
+          placeholder="john@example.com"
+          required
+          [disabled]="isSubmittingComment">
+        <small class="help-text">We'll never share your email publicly</small>
+      </div>
+
+      <!-- Comment Field -->
+      <div class="form-group">
+        <label for="content">Comment *</label>
+        <textarea
+          id="content"
+          class="form-textarea"
+          [(ngModel)]="formData.content"
+          name="content"
+          placeholder="Share your thoughts, questions, or feedback..."
+          rows="4"
+          required
+          [disabled]="isSubmittingComment"></textarea>
+        <small class="help-text">
+          {{ formData.content.length }}/2000 characters
+        </small>
+      </div>
+
+      <!-- Captcha -->
+      <div *ngIf="captcha" class="form-group captcha-group">
+        <label>Security Check *</label>
+        <div class="captcha-problem">
+          <span class="problem-text">
+            Type the word: <strong>{{ captcha.problem }}</strong>
+          </span>
+          <input
+            type="text"
+            class="captcha-input"
+            [(ngModel)]="captchaAnswer"
+            name="captchaAnswer"
+            placeholder="Enter the word"
+            required
+            autocomplete="off"
+            [disabled]="isSubmittingComment">
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="form-buttons">
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="isSubmittingComment">
+          <span *ngIf="!isSubmittingComment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            {{ replyingTo ? 'Post Reply' : 'Post Comment' }}
+          </span>
+          <span *ngIf="isSubmittingComment">
+            <span class="spinner"></span>
+            Posting...
+          </span>
+        </button>
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="replyingTo ? cancelReply() : toggleCommentForm()"
+          [disabled]="isSubmittingComment">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

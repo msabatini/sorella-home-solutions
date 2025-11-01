@@ -1,0 +1,75 @@
+<!-- Modal Overlay -->
+<div 
+  *ngIf="isVisible" 
+  class="modal-overlay"
+  (click)="close()">
+  
+  <!-- Modal Content -->
+  <div 
+    class="modal-content"
+    [ngClass]="'modal-' + modalConfig?.type"
+    (click)="onModalClick($event)">
+    
+    <!-- Modal Header with Icon -->
+    <div class="modal-header">
+      <!-- Success Icon -->
+      <svg *ngIf="modalConfig?.type === 'success'" class="modal-icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="16 12 12 8 8 12"></polyline>
+        <polyline points="12 8 12 14"></polyline>
+      </svg>
+
+      <!-- Error Icon -->
+      <svg *ngIf="modalConfig?.type === 'error'" class="modal-icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+
+      <!-- Warning Icon -->
+      <svg *ngIf="modalConfig?.type === 'warning'" class="modal-icon icon-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 20h20L12 2Z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+
+      <!-- Info Icon -->
+      <svg *ngIf="modalConfig?.type === 'info'" class="modal-icon icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+
+      <!-- Confirm Icon -->
+      <svg *ngIf="modalConfig?.type === 'confirm'" class="modal-icon icon-confirm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
+        <polyline points="16 12 12 8 8 12"></polyline>
+        <line x1="12" y1="8" x2="12" y2="14"></line>
+      </svg>
+    </div>
+
+    <!-- Modal Title -->
+    <h2 class="modal-title">{{ modalConfig?.title }}</h2>
+
+    <!-- Modal Message -->
+    <p class="modal-message">{{ modalConfig?.message }}</p>
+
+    <!-- Modal Buttons -->
+    <div class="modal-buttons">
+      <button 
+        *ngIf="modalConfig?.type === 'confirm'"
+        type="button" 
+        class="btn btn-secondary"
+        (click)="onCancel()">
+        {{ modalConfig?.cancelText || 'Cancel' }}
+      </button>
+      
+      <button 
+        type="button" 
+        [ngClass]="'btn btn-' + (modalConfig?.type === 'error' ? 'danger' : 'primary')"
+        (click)="onConfirm()">
+        {{ modalConfig?.confirmText || 'OK' }}
+      </button>
+    </div>
+  </div>
+</div>

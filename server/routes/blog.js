@@ -6,6 +6,66 @@ const PostRevision = require('../models/PostRevision');
 const Comment = require('../models/Comment');
 const { authenticateToken } = require('../middleware/auth');
 
+// ============ SPAM PREVENTION HELPERS ============
+
+// Spam keywords to filter out
+const SPAM_KEYWORDS = [
+  'viagra', 'cialis', 'casino', 'poker', 'lottery', 'bitcoin', 'crypto',
+  'forex', 'mlm', 'pyramid', 'nigerian prince', 'click here', 'buy now',
+  'free money', 'work from home', 'make money fast', 'guaranteed profit',
+  'xxxx', 'porn', 'adult', 'xxx'
+];
+
+// Simple 4-letter words for captcha
+const CAPTCHA_WORDS = [
+  'home', 'blog', 'help', 'love', 'time', 'work', 'life', 'team', 'post',
+  'care', 'good', 'best', 'week', 'hear', 'real', 'safe', 'easy', 'user',
+  'free', 'news', 'word', 'code', 'data', 'fast', 'sure', 'next', 'gold',
+  'made', 'type', 'look', 'soul', 'kind', 'open', 'view', 'your', 'make'
+];
+
+// Check if content contains spam keywords
+function containsSpamKeywords(content) {
+  const lowerContent = content.toLowerCase();
+  return SPAM_KEYWORDS.some(keyword => lowerContent.includes(keyword));
+}
+
+// Check rate limiting: one comment per email per minute
+async function checkRateLimit(email) {
+  const oneMinuteAgo = new Date(Date.now() - 60000);
+  const recentComment = await Comment.findOne({
+    email: email.toLowerCase(),
+    createdAt: { $gte: oneMinuteAgo }
+  });
+  return !recentComment; // Returns true if allowed (no recent comment found)
+}
+
+// Verify text captcha answer
+function verifyCaptcha(captchaWord, userAnswer) {
+  // Case-insensitive verification
+  try {
+    const trimmedAnswer = String(userAnswer || '').trim().toLowerCase();
+    const expectedWord = String(captchaWord || '').toLowerCase();
+    
+    if (!trimmedAnswer || !expectedWord) {
+      return false;
+    }
+    
+    console.log(`[Captcha] Expected: "${expectedWord}", Got: "${trimmedAnswer}", Match: ${trimmedAnswer === expectedWord}`);
+    
+    return trimmedAnswer === expectedWord;
+  } catch (error) {
+    console.error('[Captcha] Verification error:', error);
+    return false;
+  }
+}
+
+// Generate random 4-letter word for captcha
+function generateCaptchaWord() {
+  const word = CAPTCHA_WORDS[Math.floor(Math.random() * CAPTCHA_WORDS.length)];
+  return word;
+}
+
 // Helper function to track changes and create revision
 async function createPostRevision(postId, oldPost, newPost, revisionType = 'manual', changedBy = 'Admin') {
   try {
@@ -438,11 +498,32 @@ router.get('/:idOrSlug', async (req, res) => {
   }
 });
 
-// Add comment to blog post
+// Generate text captcha
+router.get('/captcha/generate', (req, res) => {
+  try {
+    const word = generateCaptchaWord();
+    // Send the word (displayed to user) to the client
+    res.json({
+      success: true,
+      problem: word, // The word for user to type
+      sessionId: Date.now() // Simple session ID for frontend to track this captcha instance
+    });
+  } catch (error) {
+    console.error('Error generating captcha:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error generating captcha'
+    });
+  }
+});
+
+// Add comment to blog post (with spam prevention)
 router.post('/:id/comments', [
-  body('author').trim().isLength({ min: 2, max: 100 }),
-  body('email').isEmail().normalizeEmail(),
-  body('content').trim().isLength({ min: 5, max: 2000 })
+  body('author').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be 2-100 characters'),
+  body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+  body('content').trim().isLength({ min: 5, max: 2000 }).withMessage('Comment must be 5-2000 characters'),
+  body('captchaAnswer').trim().notEmpty().withMessage('Captcha answer required'),
+  body('captchaProblem').trim().notEmpty().withMessage('Captcha problem required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -455,7 +536,8 @@ router.post('/:id/comments', [
     }
 
     const { id } = req.params;
-    const { author, email, content } = req.body;
+    const { author, email, content, captchaAnswer, captchaProblem, parentCommentId } = req.body;
+    const ipAddress = req.ip || req.connection.remoteAddress;
 
     // Verify blog post exists
     const post = await BlogPost.findById(id);
@@ -466,15 +548,51 @@ router.post('/:id/comments', [
       });
     }
 
+    // Verify captcha
+    if (!verifyCaptcha(captchaProblem, captchaAnswer)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Incorrect captcha answer',
+        code: 'CAPTCHA_FAILED'
+      });
+    }
+
+    // Check for spam keywords
+    if (containsSpamKeywords(content)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Your comment contains flagged content. Please review and try again.',
+        code: 'SPAM_DETECTED'
+      });
+    }
+
+    // If parentCommentId provided, verify it exists and belongs to the same post
+    if (parentCommentId) {
+      const parentComment = await Comment.findById(parentCommentId);
+      if (!parentComment || parentComment.blogPostId.toString() !== id) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid parent comment'
+        });
+      }
+    }
+
     // Create comment
     const comment = new Comment({
       blogPostId: id,
+      parentCommentId: parentCommentId || null,
       author,
       email,
-      content
+      content,
+      ipAddress
     });
 
     await comment.save();
+
+    // Populate and return with parent info if it's a reply
+    if (parentCommentId) {
+      await comment.populate('parentCommentId', 'author');
+    }
 
     res.status(201).json({
       success: true,
@@ -491,7 +609,7 @@ router.post('/:id/comments', [
   }
 });
 
-// Get comments for a blog post
+// Get comments for a blog post (threaded/nested structure)
 router.get('/:id/comments', async (req, res) => {
   try {
     const { id } = req.params;
@@ -500,15 +618,44 @@ router.get('/:id/comments', async (req, res) => {
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
-    const total = await Comment.countDocuments({ blogPostId: id, approved: true });
-    const comments = await Comment.find({ blogPostId: id, approved: true })
+    // Get total count of top-level comments only
+    const total = await Comment.countDocuments({ 
+      blogPostId: id, 
+      approved: true,
+      parentCommentId: null 
+    });
+
+    // Get top-level comments (pagination)
+    const topLevelComments = await Comment.find({ 
+      blogPostId: id, 
+      approved: true,
+      parentCommentId: null 
+    })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limitNum);
 
+    // For each top-level comment, fetch its replies
+    const threaded = await Promise.all(
+      topLevelComments.map(async (comment) => {
+        const replies = await Comment.find({
+          blogPostId: id,
+          approved: true,
+          parentCommentId: comment._id
+        })
+          .populate('parentCommentId', 'author')
+          .sort({ createdAt: 1 }); // Oldest replies first
+
+        return {
+          ...comment.toObject(),
+          replies: replies
+        };
+      })
+    );
+
     res.json({
       success: true,
-      data: comments,
+      data: threaded,
       pagination: {
         total,
         page: pageNum,

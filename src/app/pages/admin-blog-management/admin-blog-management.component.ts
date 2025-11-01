@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { BlogService, BlogPost } from '../../services/blog.service';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
+import { ModalComponent } from '../../components/modal/modal.component';
 
 @Component({
   selector: 'app-admin-blog-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ModalComponent],
   templateUrl: './admin-blog-management.component.html',
   styleUrls: ['./admin-blog-management.component.scss']
 })
@@ -32,7 +34,8 @@ export class AdminBlogManagementComponent implements OnInit {
   constructor(
     private blogService: BlogService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +55,7 @@ export class AdminBlogManagementComponent implements OnInit {
       error: (error) => {
         this.error = 'Failed to load blog posts';
         this.loading = false;
-        console.error('Error loading posts:', error);
+        this.modalService.showError('Error Loading Posts', 'Failed to load blog posts');
       }
     });
   }
@@ -80,7 +83,17 @@ export class AdminBlogManagementComponent implements OnInit {
 
   confirmDelete(id: string, event: Event): void {
     event.stopPropagation();
-    this.deleteConfirmId = id;
+    
+    this.modalService.showConfirm(
+      'Delete Blog Post',
+      'Are you sure you want to delete this blog post? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).then(confirmed => {
+      if (confirmed) {
+        this.deletePost(id);
+      }
+    });
   }
 
   cancelDelete(): void {
@@ -95,10 +108,11 @@ export class AdminBlogManagementComponent implements OnInit {
         this.posts = this.posts.filter(p => p._id !== id);
         this.deleteConfirmId = null;
         this.deleting = null;
+        this.modalService.showSuccess('Success', 'Blog post deleted successfully');
       },
       error: (error) => {
-        console.error('Error deleting post:', error);
         this.deleting = null;
+        this.modalService.showError('Error', 'Failed to delete blog post');
       }
     });
   }
@@ -109,9 +123,11 @@ export class AdminBlogManagementComponent implements OnInit {
     this.blogService.updatePost(post._id, updated).subscribe({
       next: () => {
         post.published = !post.published;
+        const action = post.published ? 'published' : 'unpublished';
+        this.modalService.showSuccess('Success', `Blog post ${action} successfully`);
       },
       error: (error) => {
-        console.error('Error updating post:', error);
+        this.modalService.showError('Error', 'Failed to update blog post');
       }
     });
   }
@@ -179,18 +195,13 @@ export class AdminBlogManagementComponent implements OnInit {
           }
         });
 
-        this.bulkActionMessage = `✓ ${this.selectedPostIds.size} post(s) published successfully`;
+        this.modalService.showSuccess('Success', `${this.selectedPostIds.size} post(s) published successfully`);
         this.clearBulkSelection();
         this.bulkActionInProgress = false;
-
-        // Clear message after 3 seconds
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       },
       error: (error) => {
-        console.error('Bulk publish error:', error);
-        this.bulkActionMessage = '✗ Failed to publish posts';
+        this.modalService.showError('Error', 'Failed to publish posts');
         this.bulkActionInProgress = false;
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       }
     });
   }
@@ -209,27 +220,35 @@ export class AdminBlogManagementComponent implements OnInit {
           }
         });
 
-        this.bulkActionMessage = `✓ ${this.selectedPostIds.size} post(s) unpublished successfully`;
+        this.modalService.showSuccess('Success', `${this.selectedPostIds.size} post(s) unpublished successfully`);
         this.clearBulkSelection();
         this.bulkActionInProgress = false;
-
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       },
       error: (error) => {
-        console.error('Bulk unpublish error:', error);
-        this.bulkActionMessage = '✗ Failed to unpublish posts';
+        this.modalService.showError('Error', 'Failed to unpublish posts');
         this.bulkActionInProgress = false;
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       }
     });
   }
 
   bulkDelete(): void {
     if (!this.bulkDeleteConfirm) {
-      this.bulkDeleteConfirm = true;
+      this.modalService.showConfirm(
+        'Delete Multiple Posts',
+        `Are you sure you want to delete ${this.selectedPostIds.size} blog post(s)? This action cannot be undone.`,
+        'Delete All',
+        'Cancel'
+      ).then(confirmed => {
+        if (confirmed) {
+          this.bulkDeleteConfirm = true;
+          this.performBulkDelete();
+        }
+      });
       return;
     }
+  }
 
+  private performBulkDelete(): void {
     this.bulkActionInProgress = true;
     this.bulkActionMessage = null;
 
@@ -239,19 +258,15 @@ export class AdminBlogManagementComponent implements OnInit {
         const idsToDelete = Array.from(this.selectedPostIds);
         this.posts = this.posts.filter(p => !idsToDelete.includes(p._id));
 
-        this.bulkActionMessage = `✓ ${this.selectedPostIds.size} post(s) deleted successfully`;
+        this.modalService.showSuccess('Success', `${this.selectedPostIds.size} post(s) deleted successfully`);
         this.clearBulkSelection();
         this.bulkActionInProgress = false;
         this.bulkDeleteConfirm = false;
-
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       },
       error: (error) => {
-        console.error('Bulk delete error:', error);
-        this.bulkActionMessage = '✗ Failed to delete posts';
+        this.modalService.showError('Error', 'Failed to delete posts');
         this.bulkActionInProgress = false;
         this.bulkDeleteConfirm = false;
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       }
     });
   }
@@ -271,17 +286,13 @@ export class AdminBlogManagementComponent implements OnInit {
           }
         });
 
-        this.bulkActionMessage = `✓ Category updated for ${this.selectedPostIds.size} post(s)`;
+        this.modalService.showSuccess('Success', `Category updated for ${this.selectedPostIds.size} post(s)`);
         this.clearBulkSelection();
         this.bulkActionInProgress = false;
-
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       },
       error: (error) => {
-        console.error('Bulk category update error:', error);
-        this.bulkActionMessage = '✗ Failed to update category';
+        this.modalService.showError('Error', 'Failed to update category');
         this.bulkActionInProgress = false;
-        setTimeout(() => this.bulkActionMessage = null, 3000);
       }
     });
   }

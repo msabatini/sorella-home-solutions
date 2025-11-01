@@ -98,6 +98,12 @@
             [hashtags]="post.tags">
           </app-social-share-buttons>
 
+          <!-- Comments Section -->
+          <app-blog-comments
+            [blogPostId]="post._id"
+            class="animate-on-scroll fade-in-up">
+          </app-blog-comments>
+
         </article>
       </ng-container>
 

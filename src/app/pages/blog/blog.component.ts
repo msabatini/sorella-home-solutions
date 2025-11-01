@@ -9,6 +9,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { BackToTopComponent } from '../../components/back-to-top/back-to-top.component';
 import { SocialShareButtonsComponent } from '../../components/social-share-buttons/social-share-buttons.component';
+import { BlogCommentsComponent } from '../../components/blog-comments/blog-comments.component';
 import { AnimationService } from '../../services/animation.service';
 import { BlogService, BlogPost } from '../../services/blog.service';
 import { ServiceIcons } from '../../../assets/icons/service-icons';
@@ -23,7 +24,8 @@ import { ServiceIcons } from '../../../assets/icons/service-icons';
     HeaderComponent, 
     FooterComponent, 
     BackToTopComponent,
-    SocialShareButtonsComponent
+    SocialShareButtonsComponent,
+    BlogCommentsComponent
   ],
   templateUrl: './blog.component.html',
   styleUrls: ['./blog.component.scss']

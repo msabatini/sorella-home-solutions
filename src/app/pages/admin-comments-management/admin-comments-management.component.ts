@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
+import { ModalComponent } from '../../components/modal/modal.component';
 
 interface Comment {
   _id: string;
@@ -20,7 +22,7 @@ interface Comment {
 @Component({
   selector: 'app-admin-comments-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './admin-comments-management.component.html',
   styleUrls: ['./admin-comments-management.component.scss']
 })
@@ -37,7 +39,8 @@ export class AdminCommentsManagementComponent implements OnInit {
   constructor(
     private blogService: BlogService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -55,9 +58,9 @@ export class AdminCommentsManagementComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading comments:', err);
         this.error = 'Failed to load comments. Please try again.';
         this.loading = false;
+        this.modalService.showError('Error Loading Comments', 'Failed to load comments. Please try again.');
       }
     });
   }
@@ -99,12 +102,11 @@ export class AdminCommentsManagementComponent implements OnInit {
     this.blogService.approveComment(comment._id).subscribe({
       next: () => {
         comment.approved = true;
-        this.showNotification('Comment approved successfully', 'success');
+        this.modalService.showSuccess('Success', 'Comment approved successfully');
         this.applyFilters();
       },
       error: (err) => {
-        console.error('Error approving comment:', err);
-        this.showNotification('Failed to approve comment', 'error');
+        this.modalService.showError('Error', 'Failed to approve comment');
       },
       complete: () => {
         this.processingCommentId = null;
@@ -119,12 +121,11 @@ export class AdminCommentsManagementComponent implements OnInit {
     this.blogService.rejectComment(comment._id).subscribe({
       next: () => {
         comment.approved = false;
-        this.showNotification('Comment rejected successfully', 'success');
+        this.modalService.showSuccess('Success', 'Comment rejected successfully');
         this.applyFilters();
       },
       error: (err) => {
-        console.error('Error rejecting comment:', err);
-        this.showNotification('Failed to reject comment', 'error');
+        this.modalService.showError('Error', 'Failed to reject comment');
       },
       complete: () => {
         this.processingCommentId = null;
@@ -133,25 +134,31 @@ export class AdminCommentsManagementComponent implements OnInit {
   }
 
   deleteComment(comment: Comment): void {
-    if (confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
-      if (!comment._id) return;
-      
-      this.processingCommentId = comment._id;
-      this.blogService.deleteComment(comment._id).subscribe({
-        next: () => {
-          this.comments = this.comments.filter(c => c._id !== comment._id);
-          this.applyFilters();
-          this.showNotification('Comment deleted successfully', 'success');
-        },
-        error: (err) => {
-          console.error('Error deleting comment:', err);
-          this.showNotification('Failed to delete comment', 'error');
-        },
-        complete: () => {
-          this.processingCommentId = null;
-        }
-      });
-    }
+    if (!comment._id) return;
+
+    this.modalService.showConfirm(
+      'Delete Comment',
+      'Are you sure you want to delete this comment? This action cannot be undone.',
+      'Delete',
+      'Cancel'
+    ).then(confirmed => {
+      if (confirmed) {
+        this.processingCommentId = comment._id;
+        this.blogService.deleteComment(comment._id).subscribe({
+          next: () => {
+            this.comments = this.comments.filter(c => c._id !== comment._id);
+            this.applyFilters();
+            this.modalService.showSuccess('Success', 'Comment deleted successfully');
+          },
+          error: (err) => {
+            this.modalService.showError('Error', 'Failed to delete comment');
+          },
+          complete: () => {
+            this.processingCommentId = null;
+          }
+        });
+      }
+    });
   }
 
   viewBlogPost(blogPostId: string): void {
@@ -170,11 +177,6 @@ export class AdminCommentsManagementComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
-  }
-
-  private showNotification(message: string, type: 'success' | 'error'): void {
-    // This can be enhanced with a toast notification service
-    console.log(`${type.toUpperCase()}: ${message}`);
   }
 
   logout(): void {

@@ -1,0 +1,274 @@
+// Modal Overlay
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Modal Content
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  padding: 2.5rem;
+  text-align: center;
+  animation: slideUp 0.3s ease-out;
+  border-left: 4px solid #00a2ff;
+
+  &.modal-success {
+    border-left-color: #10b981;
+  }
+
+  &.modal-error {
+    border-left-color: #ef4444;
+  }
+
+  &.modal-warning {
+    border-left-color: #f59e0b;
+  }
+
+  &.modal-info {
+    border-left-color: #3b82f6;
+  }
+
+  &.modal-confirm {
+    border-left-color: #00a2ff;
+  }
+}
+
+// Modal Header
+.modal-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+// Modal Icon
+.modal-icon {
+  width: 60px;
+  height: 60px;
+  stroke-width: 1.5;
+
+  &.icon-success {
+    color: #10b981;
+    animation: successBounce 0.5s ease-out;
+  }
+
+  &.icon-error {
+    color: #ef4444;
+    animation: errorShake 0.5s ease-out;
+  }
+
+  &.icon-warning {
+    color: #f59e0b;
+    animation: warningPulse 0.5s ease-out;
+  }
+
+  &.icon-info {
+    color: #3b82f6;
+    animation: infoPulse 0.5s ease-out;
+  }
+
+  &.icon-confirm {
+    color: #00a2ff;
+    animation: confirmBounce 0.5s ease-out;
+  }
+}
+
+@keyframes successBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes warningPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes infoPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes confirmBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Modal Title
+.modal-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0e2340;
+  line-height: 1.4;
+}
+
+// Modal Message
+.modal-message {
+  margin: 0 0 2rem 0;
+  font-size: 1rem;
+  color: #64748b;
+  line-height: 1.6;
+  letter-spacing: 0.3px;
+}
+
+// Modal Buttons
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .btn {
+    padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &.btn-primary {
+      background: linear-gradient(135deg, #00a2ff 0%, #0ea5e9 100%);
+      color: white;
+
+      &:hover {
+        box-shadow: 0 8px 20px rgba(0, 162, 255, 0.35);
+      }
+    }
+
+    &.btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+
+      &:hover {
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
+      }
+    }
+
+    &.btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+
+      &:hover {
+        background: #cbd5e1;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    padding: 2rem;
+  }
+
+  .modal-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+
+    .btn {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+}

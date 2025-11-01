@@ -6,6 +6,11 @@ const commentSchema = new mongoose.Schema({
     ref: 'BlogPost',
     required: true
   },
+  parentCommentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment',
+    default: null // null = top-level comment, has value = reply to a comment
+  },
   author: {
     type: String,
     required: true,
@@ -26,10 +31,19 @@ const commentSchema = new mongoose.Schema({
     type: Boolean,
     default: true // Published immediately as per requirement
   },
+  ipAddress: {
+    type: String,
+    default: null // For rate limiting and spam detection
+  },
   createdAt: {
     type: Date,
     default: Date.now
   }
 });
+
+// Index for efficient queries
+commentSchema.index({ blogPostId: 1, createdAt: -1 });
+commentSchema.index({ parentCommentId: 1 });
+commentSchema.index({ email: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Comment', commentSchema);

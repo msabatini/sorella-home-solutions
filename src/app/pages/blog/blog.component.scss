@@ -186,6 +186,7 @@
 
 .blog-article {
   line-height: 1.8;
+  margin-bottom: 5rem;
 }
 
 // Blog Post Header & Metadata
@@ -375,6 +376,12 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 162, 255, 0.3);
   }
+}
+
+// Blog Comments Section
+.blog-article app-blog-comments {
+  display: block;
+  margin-top: 4rem;
 }
 
 // Blog CTA Info (within blog section)
