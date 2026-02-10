@@ -16,24 +16,59 @@ const Admin = require('./models/Admin');
 const app = express();
 const PORT = process.env.PORT || 3002;
 
+// Database connection status
+let dbConnected = false;
+let dbError = null;
+
 // ============ DATABASE CONNECTION & INITIALIZATION ============
 const connectDB = async () => {
+  const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/sorella-home-solutions';
+  console.log(`📡 Attempting to connect to MongoDB...`);
+  
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/sorella-home-solutions';
-    await mongoose.connect(mongoUri);
+    // Mongoose 6+ always uses useNewUrlParser and useUnifiedTopology, 
+    // but we can add some helpful options for resilience
+    const options = {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    };
+
+    await mongoose.connect(mongoUri, options);
+    dbConnected = true;
+    dbError = null;
     console.log('✅ MongoDB connected successfully');
     
     // Initialize admin user if not exists
     await initializeAdmin();
   } catch (error) {
+    dbConnected = false;
+    dbError = error.message;
     console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
+    console.error('   URI:', mongoUri.replace(/\/\/.*@/, '//****:****@')); // Hide credentials in logs
+    
+    // In production on Render, we might want to exit to let Render restart the instance,
+    // but for debugging it's better to keep it running so we can see the health check.
+    // Let's only exit if it's a critical error that we can't recover from.
+    // For now, we'll keep it running.
   }
 };
+
+// Handle connection events
+mongoose.connection.on('disconnected', () => {
+  dbConnected = false;
+  console.log('❌ MongoDB disconnected');
+});
+
+mongoose.connection.on('connected', () => {
+  dbConnected = true;
+  dbError = null;
+  console.log('✅ MongoDB connected');
+});
 
 // ============ ADMIN INITIALIZATION ============
 const initializeAdmin = async () => {
   try {
+    console.log('👤 Checking for admin user...');
     const existingAdmin = await Admin.findOne({ username: 'admin' });
     
     if (existingAdmin) {
@@ -41,6 +76,7 @@ const initializeAdmin = async () => {
       return;
     }
     
+    console.log('👤 Creating default admin user...');
     // Create default admin user
     const admin = new Admin({
       username: process.env.ADMIN_USERNAME || 'admin',
@@ -51,20 +87,13 @@ const initializeAdmin = async () => {
     
     await admin.save();
     console.log('✅ Admin user created successfully');
-    console.log(`   Username: ${admin.username}`);
-    console.log(`   Email: ${admin.email}`);
-    console.log(`   Role: ${admin.role}`);
   } catch (error) {
     console.error('❌ Error initializing admin:', error);
-    // Don't exit - server should still run even if admin initialization fails
   }
 };
 
-connectDB();
-
 // Security middleware
 app.use(helmet());
-
 // CORS configuration
 const allowedOrigins = [
   'http://localhost:4200',
@@ -106,7 +135,7 @@ const contactLimiter = rateLimit({
 
 // Email transporter configuration
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
@@ -272,9 +301,14 @@ app.post('/api/contact', contactLimiter, contactValidation, async (req, res) => 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
-    status: 'OK', 
+    status: dbConnected ? 'OK' : 'DEGRADED', 
+    database: {
+      connected: dbConnected,
+      error: dbError || (dbConnected ? null : 'Not connected to MongoDB')
+    },
     timestamp: new Date().toISOString(),
-    service: 'Sorella Contact API'
+    service: 'Sorella Contact API',
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
@@ -301,10 +335,32 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Sorella Contact API running on port ${PORT}`);
   console.log(`📧 Email configured for: ${process.env.EMAIL_USER || 'Not configured'}`);
   console.log(`📬 Recipient: ${process.env.RECIPIENT_EMAIL || 'megan@sorellahomesolutions.com'}`);
+  
+  // Connect to DB after server starts to ensure we're listening for health checks
+  connectDB();
+});
+
+// Security middleware
+app.use(helmet());
+
+// Handle unhandled rejections
+process.on('unhandledRejection', (err) => {
+  console.error('❌ UNHANDLED REJECTION! Shutting down...');
+  console.error(err.name, err.message, err.stack);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('❌ UNCAUGHT EXCEPTION! Shutting down...');
+  console.error(err.name, err.message, err.stack);
+  process.exit(1);
 });
 
 module.exports = app;
