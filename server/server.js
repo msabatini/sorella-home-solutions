@@ -94,6 +94,7 @@ const initializeAdmin = async () => {
 
 // Security middleware
 app.use(helmet());
+
 // CORS configuration
 const allowedOrigins = [
   'http://localhost:4200',
@@ -334,6 +335,19 @@ app.use((error, req, res, next) => {
   });
 });
 
+// Handle unhandled rejections and uncaught exceptions BEFORE starting server
+process.on('unhandledRejection', (err) => {
+  console.error('❌ UNHANDLED REJECTION! Shutting down...');
+  console.error(err.name, err.message, err.stack);
+  process.exit(1);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ UNCAUGHT EXCEPTION! Shutting down...');
+  console.error(err.name, err.message, err.stack);
+  process.exit(1);
+});
+
 // Start server
 const server = app.listen(PORT, () => {
   console.log(`🚀 Sorella Contact API running on port ${PORT}`);
@@ -342,25 +356,6 @@ const server = app.listen(PORT, () => {
   
   // Connect to DB after server starts to ensure we're listening for health checks
   connectDB();
-});
-
-// Security middleware
-app.use(helmet());
-
-// Handle unhandled rejections
-process.on('unhandledRejection', (err) => {
-  console.error('❌ UNHANDLED REJECTION! Shutting down...');
-  console.error(err.name, err.message, err.stack);
-  server.close(() => {
-    process.exit(1);
-  });
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-  console.error('❌ UNCAUGHT EXCEPTION! Shutting down...');
-  console.error(err.name, err.message, err.stack);
-  process.exit(1);
 });
 
 module.exports = app;
