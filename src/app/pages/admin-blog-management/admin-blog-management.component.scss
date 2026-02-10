@@ -335,6 +335,10 @@
   }
 }
 
+.col-order {
+  min-width: 100px;
+}
+
 .col-title {
   min-width: 280px;
 }
@@ -361,6 +365,40 @@
 
 .col-actions {
   min-width: 140px;
+}
+
+.rank-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .rank-input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    color: #0e2340;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #00a2ff;
+      box-shadow: 0 0 0 3px rgba(0, 162, 255, 0.1);
+    }
+
+    // Hide arrows/spinners
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
 }
 
 .title-cell {

@@ -99,6 +99,11 @@ const blogPostSchema = new mongoose.Schema({
     default: false,
     index: true
   },
+  sortOrder: {
+    type: Number,
+    default: 0,
+    index: true
+  },
   socialMeta: {
     ogTitle: {
       type: String,

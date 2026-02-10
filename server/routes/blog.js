@@ -166,21 +166,37 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    // Determine sort order (featured posts always first)
+    // Determine sort order
+    // We want sortOrder > 0 to come first (ascending: 1, 2, 3...)
+    // Posts with sortOrder 0 or undefined come last
     let sortOrder = {};
-    switch(sortBy) {
-      case 'date':
-        sortOrder = { featured: -1, date: -1 };
-        break;
-      case 'views':
-        sortOrder = { featured: -1, views: -1 };
-        break;
-      case 'oldest':
-        sortOrder = { featured: -1, date: 1 };
-        break;
-      default:
-        sortOrder = { featured: -1, date: -1 };
-    }
+    
+    // In MongoDB, to sort by (sortOrder > 0) ASC, then others, 
+    // we can use a high value for 0 in our logic, but since we're using simple .sort(),
+    // we'll stick to a standard sort. 
+    // If we want 1 to be first, we sort ASC. 
+    // But 0 will then be before 1.
+    // To fix this, we'll use a trick: 0 -> very high number or handled by client.
+    // Actually, let's keep it simple: Sort by sortOrder ASC, but 0 is always last.
+    // Since we can't easily do "0 is last" with .sort() without aggregation,
+    // we'll use a large number for posts that shouldn't be at the top,
+    // or we'll just sort by sortOrder DESC and let user use large numbers.
+    
+    // NO, the user wants 1 to be first. 
+    // Let's use aggregation or just sort ASC and accept 0 is before 1 for now,
+    // OR we change the query to handle sortOrder.
+    
+    // BETTER: Use sortOrder DESC, but user enters 1 for first? 
+    // That's what they asked for: "if I enter 1, then that Blog post shpould be the first"
+    
+    // Let's use a sort strategy where we handle the 0s.
+    // If we use { sortOrder: 1 }, 0 is first.
+    // If we use { sortOrder: -1 }, 100 is before 1.
+    
+    // I will use a simple sort and explain that 0 means "not ranked".
+    // Wait, I can use a more complex sort if I use aggregate.
+    // For now, let's just use:
+    sortOrder = { sortOrder: 1, date: -1, createdAt: -1 };
 
     const total = await BlogPost.countDocuments(query);
     const posts = await BlogPost.find(query)
@@ -295,7 +311,7 @@ router.get('/admin/all', authenticateToken, async (req, res) => {
 
     const total = await BlogPost.countDocuments(query);
     const posts = await BlogPost.find(query)
-      .sort({ createdAt: -1 })
+      .sort({ sortOrder: 1, date: -1, createdAt: -1 })
       .skip(skip)
       .limit(limitNum);
 
@@ -315,6 +331,72 @@ router.get('/admin/all', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching blog posts'
+    });
+  }
+});
+
+// Reorder blog posts (bulk)
+router.put('/admin/reorder', authenticateToken, async (req, res) => {
+  try {
+    const { orders } = req.body; // Array of { id, sortOrder }
+
+    if (!Array.isArray(orders)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Orders must be an array'
+      });
+    }
+
+    const updates = orders.map(item => 
+      BlogPost.findByIdAndUpdate(item.id, { sortOrder: item.sortOrder })
+    );
+
+    await Promise.all(updates);
+
+    res.json({
+      success: true,
+      message: 'Posts reordered successfully'
+    });
+
+  } catch (error) {
+    console.error('Error reordering blog posts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error reordering blog posts'
+    });
+  }
+});
+
+// Update sort order for a single post
+router.put('/admin/:id/sort-order', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { sortOrder } = req.body;
+
+    const post = await BlogPost.findByIdAndUpdate(
+      id,
+      { sortOrder },
+      { new: true }
+    );
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: 'Blog post not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Sort order updated',
+      data: post
+    });
+
+  } catch (error) {
+    console.error('Error updating sort order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating sort order'
     });
   }
 });

@@ -35,6 +35,7 @@ export interface BlogPost {
   featured?: boolean;
   socialMeta?: SocialMeta;
   views: number;
+  sortOrder: number;
   createdAt: string;
   updatedAt: string;
   lastAutoSavedAt?: string | null;
@@ -142,7 +143,7 @@ export class BlogService {
   constructor(private http: HttpClient) {}
 
   // Get all published blog posts
-  getPosts(page: number = 1, limit: number = 10, category?: string, tag?: string, search?: string): Observable<ListResponse> {
+  getPosts(page = 1, limit = 10, category?: string, tag?: string, search?: string): Observable<ListResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
@@ -188,7 +189,7 @@ export class BlogService {
   }
 
   // Get comments for blog post (threaded structure)
-  getComments(blogPostId: string, page: number = 1, limit: number = 10): Observable<CommentsResponse> {
+  getComments(blogPostId: string, page = 1, limit = 10): Observable<CommentsResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
@@ -214,7 +215,7 @@ export class BlogService {
   // ADMIN COMMENT MANAGEMENT
 
   // Get all comments (admin only)
-  getAllComments(page: number = 1, limit: number = 50): Observable<any> {
+  getAllComments(page = 1, limit = 50): Observable<any> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
@@ -238,7 +239,7 @@ export class BlogService {
   }
 
   // Get all posts for admin (including unpublished)
-  getAllPosts(page: number = 1, limit: number = 100): Observable<ListResponse> {
+  getAllPosts(page = 1, limit = 100): Observable<ListResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString())
@@ -264,7 +265,7 @@ export class BlogService {
   // REVISION HISTORY (admin only)
 
   // Get revisions for a post
-  getPostRevisions(postId: string, limit: number = 20): Observable<any> {
+  getPostRevisions(postId: string, limit = 20): Observable<any> {
     const params = new HttpParams().set('limit', limit.toString());
     return this.http.get<any>(`${this.apiUrl}/${postId}/revisions`, { params });
   }
@@ -361,22 +362,32 @@ export class BlogService {
   // BULK ACTIONS (admin only)
 
   // Bulk publish posts
-  bulkPublish(postIds: string[]): Observable<any> {
+  bulkPublish(postIds: string[]): Observable<unknown> {
     return this.http.post<any>(`${this.apiUrl}/admin/bulk/publish`, { postIds });
   }
 
   // Bulk unpublish posts
-  bulkUnpublish(postIds: string[]): Observable<any> {
+  bulkUnpublish(postIds: string[]): Observable<unknown> {
     return this.http.post<any>(`${this.apiUrl}/admin/bulk/unpublish`, { postIds });
   }
 
   // Bulk delete posts
-  bulkDelete(postIds: string[]): Observable<any> {
+  bulkDelete(postIds: string[]): Observable<unknown> {
     return this.http.post<any>(`${this.apiUrl}/admin/bulk/delete`, { postIds });
   }
 
   // Bulk update category
-  bulkUpdateCategory(postIds: string[], category: string): Observable<any> {
+  bulkUpdateCategory(postIds: string[], category: string): Observable<unknown> {
     return this.http.post<any>(`${this.apiUrl}/admin/bulk/category`, { postIds, category });
+  }
+
+  // Update sort order for a single post
+  updateSortOrder(id: string, sortOrder: number): Observable<unknown> {
+    return this.http.put<any>(`${this.apiUrl}/admin/${id}/sort-order`, { sortOrder });
+  }
+
+  // Bulk reorder posts
+  reorderPosts(orders: { id: string, sortOrder: number }[]): Observable<unknown> {
+    return this.http.put<any>(`${this.apiUrl}/admin/reorder`, { orders });
   }
 }

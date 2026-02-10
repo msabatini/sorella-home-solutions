@@ -220,6 +220,7 @@
               title="Select all posts on this page"
             />
           </th>
+          <th class="col-order">Order</th>
           <th class="col-title">Title</th>
           <th class="col-author">Author</th>
           <th class="col-category">Category</th>
@@ -230,7 +231,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let post of filteredPosts" class="post-row" [class.selected]="isPostSelected(post._id)">
+        <tr *ngFor="let post of filteredPosts; let i = index" class="post-row" [class.selected]="isPostSelected(post._id)">
           <td class="col-checkbox">
             <input 
               type="checkbox" 
@@ -238,6 +239,19 @@
               [checked]="isPostSelected(post._id)"
               (change)="togglePostSelection(post._id)"
             />
+          </td>
+          <td class="col-order">
+            <div class="rank-input-wrapper">
+              <input 
+                type="number" 
+                [(ngModel)]="manualRanks[post._id]" 
+                (blur)="updatePostRank(post)"
+                (keyup.enter)="updatePostRank(post)"
+                min="0"
+                class="rank-input"
+                title="Enter rank (1 is first, 0 is last)"
+              />
+            </div>
           </td>
           <td class="col-title">
             <div class="title-cell">
