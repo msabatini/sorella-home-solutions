@@ -199,7 +199,7 @@ app.post('/api/contact', contactLimiter, contactValidation, async (req, res) => 
     // Service type display names
     const serviceDisplayNames = {
       'property-management': 'Property Management',
-      'project-oversight': 'Project Management & Oversight',
+      'project-oversight': 'Construction and Project Management',
       'move-management': 'Move Management',
       'concierge': 'Concierge Services',
       'corporate-relocation': 'Corporate Relocation',

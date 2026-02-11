@@ -24,8 +24,6 @@
         type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      <!-- Fallback background image for when video fails to load -->
-      <div class="hero-fallback-bg" [class.show]="!videoLoaded"></div>
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -103,7 +101,7 @@
     </div>
   </section>
 
-  <!-- Project Management & Oversight Highlight Section -->
+  <!-- Construction and Project Management Highlight Section -->
   <section id="project-management" class="service-highlight service-highlight-left service-highlight-bg page-content-fade page-section-5">
     <div class="container">
       <div class="service-highlight-content">
@@ -111,7 +109,7 @@
         <div class="service-highlight-text animate-on-scroll slide-left">
           <div class="service-highlight-header">
             <div class="service-highlight-icon" [innerHTML]="services[1].icon"></div>
-            <h2 class="service-highlight-title">Project Management & Oversight</h2>
+            <h2 class="service-highlight-title">Construction and Project Management</h2>
           </div>
           <h3 class="service-highlight-subtitle">from renovations to repairs, handled with expert precision.</h3>
           <p class="service-highlight-description">
@@ -326,7 +324,7 @@
                 <select id="serviceType" formControlName="serviceType">
                   <option value="">Select a service</option>
                   <option value="property-management">Property Management</option>
-                  <option value="project-oversight">Project Management & Oversight</option>
+                  <option value="project-oversight">Construction and Project Management</option>
                   <option value="move-management">Move Management</option>
                   <option value="concierge">Concierge Services</option>
                   <option value="corporate-relocation">Corporate Relocation</option>

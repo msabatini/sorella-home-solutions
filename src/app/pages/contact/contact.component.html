@@ -28,36 +28,7 @@
     </div>
   </section>
 
-  <!-- Intro Section -->
-  <section class="contact-intro page-content-fade page-section-2">
-    <div class="intro-container">
-      <div class="intro-content">
-        <div class="intro-icon-wrapper">
-          <div class="intro-icon">
-            <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Heart/Care Icon with Home Elements -->
-              <path d="M32 12C28.5 8.5 23 8.5 19.5 12C16 15.5 16 21 19.5 24.5L32 37L44.5 24.5C48 21 48 15.5 44.5 12C41 8.5 35.5 8.5 32 12Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(0, 162, 255, 0.1)"/>
-              <!-- House outline within heart -->
-              <path d="M26 28L32 22L38 28V34C38 34.5 37.5 35 37 35H27C26.5 35 26 34.5 26 34V28Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M29 35V31H35V35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Decorative elements -->
-              <circle cx="20" cy="45" r="2" fill="currentColor" opacity="0.3"/>
-              <circle cx="44" cy="45" r="2" fill="currentColor" opacity="0.3"/>
-              <circle cx="32" cy="50" r="1.5" fill="currentColor" opacity="0.4"/>
-              <!-- Connection lines -->
-              <path d="M20 47C24 49 28 50 32 50C36 50 40 49 44 47" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-            </svg>
-          </div>
-        </div>
-        <div class="intro-text">
-          <h2 class="intro-title">We'd love to take care of the details, so you can focus on what matters most.</h2>
-          <p class="intro-description">
-            To get started, simply fill out the form below and a member of our team will be in touch right away.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+ 
 
   <!-- Contact Methods Section -->
   <!-- <section class="contact-methods-section page-content-fade page-section-3">
@@ -126,6 +97,24 @@
               <span>On-site consultations available</span>
             </div>
           </div>
+
+          <div class="info-card">
+            <div class="info-icon" [innerHTML]="getIconSvg('location')"></div>
+            <div class="info-content">
+              <h3>Nantucket</h3>
+              <p>2 Sanford Rd, Unit 5</p>
+              <span>Nantucket, MA 02554</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon" [innerHTML]="getIconSvg('location')"></div>
+            <div class="info-content">
+              <h3>South Shore</h3>
+              <p>800 Hingham Street, Suite 200N</p>
+              <span>Rockland MA 02370</span>
+            </div>
+          </div>
         </div>
 
         <!-- Contact Form -->
@@ -178,7 +167,7 @@
                 <select id="serviceType" formControlName="serviceType">
                   <option value="">Select a service</option>
                   <option value="property-management">Property Management</option>
-                  <option value="project-oversight">Project Management & Oversight</option>
+                  <option value="project-oversight">Construction and Project Management</option>
                   <option value="move-management">Move Management</option>
                   <option value="concierge">Concierge Services</option>
                   <option value="corporate-relocation">Corporate Relocation</option>

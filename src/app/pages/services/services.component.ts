@@ -80,10 +80,10 @@ export class ServicesComponent implements OnInit, OnDestroy, AfterViewInit {
         sectionId: 'property-management'
       },
       {
-        title: 'Project Management & Oversight',
+        title: 'Construction and Project Management',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
         description: 'Regardless of size, we know home projects require time, coordination and expertise.',
-        detailedDescription: 'At Sorella, we aim to be the trusted partner for homeowners who what their projects managed with the same care and precision as their homes are lived in.',
+        detailedDescription: 'At Sorella, we aim to be the trusted partner for homeowners who want their projects managed with the same care and precision as their homes are lived in',
         detailedDescription2: 'We deliver a high-tech, high-touch approach that leverages digital platforms for real-timeproject tracking and transparent communication, providing tailored updates for each clientwhile ensuring seamless execution, meticulous attention to detail, and a stress-freeexperience.',
         quote: {
           text: 'We know how overwhelming home projects can feel. Our job is to make sure the process is smooth, efficient, and successful—delivering results that exceed expectations.',

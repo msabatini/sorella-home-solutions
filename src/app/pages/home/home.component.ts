@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   formSubmitted = false;
   
   // Video properties
-  videoLoaded = false; // Start with false so fallback shows initially
+  videoLoaded = true; // Set to true initially to prevent hiding the video element
   isMobile = false;
   currentVideoSrc = '/home-page-hero-video4-web-compressed.mp4'; // Using existing deployed video file
   videoRetryCount = 0;
@@ -90,7 +90,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         sectionId: 'property-management'
       },
       {
-        title: 'Project Management & Oversight',
+        title: 'Construction and Project Management',
         icon: this.sanitizer.bypassSecurityTrustHtml(ServiceIcons.projectManagement),
         description: 'Strategic planning and execution of projects of all scopes and sizes.',
         sectionId: 'project-management'
@@ -321,7 +321,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }, delayMs);
     } else {
-      console.error('[VIDEO] ❌ Max retries exceeded. Fallback background will be shown.');
+      console.error('[VIDEO] ❌ Max retries exceeded.');
       this.videoLoaded = false;
     }
   }
@@ -380,7 +380,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         document.removeEventListener('scroll', playOnInteraction);
       }).catch(error => {
         console.error(`[VIDEO] ❌ Video play failed even after interaction - ${error.name}: ${error.message}`);
-        // If video still fails, show fallback background
         this.videoLoaded = false;
       });
     };
