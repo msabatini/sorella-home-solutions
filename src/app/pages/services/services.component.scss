@@ -391,7 +391,7 @@
 
 // Detailed Services Section
 .services-detailed {
-  padding: 8rem 0 0;
+  padding: 4rem 0 0;
 }
 
 .detailed-container {
@@ -439,8 +439,8 @@
   // Tablet responsive
   @media (max-width: 1024px) {
     .service-content {
-      padding: 4rem;
-      max-width: 600px;
+      padding: 0;
+      max-width: 720px;
     }
   }
   
