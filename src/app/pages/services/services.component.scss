@@ -472,6 +472,9 @@
   justify-content: center;
   max-width: 800px;
   margin: 0 auto;
+  .service-info {
+    text-align: left;
+  }
   
   // Ensure content doesn't touch edges on very large screens
   @media (min-width: 1400px) {
